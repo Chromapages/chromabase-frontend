@@ -22,7 +22,7 @@ if (!getApps().length) {
         try {
             // In Next.js, resolving paths correctly relative to the project root is important.
             // We assume service-account.json is in the root directory.
-            const serviceAccount = require('../../service-account.json');
+            const serviceAccount = require('../service-account.json');
             credential = cert(serviceAccount);
         } catch (e) {
             console.error('Local service-account.json not found or invalid format.');
