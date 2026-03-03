@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getDocuments, addDocument, updateDocument, deleteDocument, getDocument, bulkDeleteDocuments, bulkUpdateDocuments } from '@/lib/firestore';
-import { isFirebaseConfigured } from '@/lib/firebase';
 
 export function useEntity<T extends { id: string }>(collectionName: string, mockData: T[] = []) {
     const queryClient = useQueryClient();
@@ -9,14 +8,7 @@ export function useEntity<T extends { id: string }>(collectionName: string, mock
     const useList = () => useQuery({
         queryKey,
         queryFn: async (): Promise<T[]> => {
-            console.log(`[useEntity] Fetching list for ${collectionName}. Firebase: ${isFirebaseConfigured}`);
-            // Use API when Firebase is not configured (our custom API at localhost:3010)
-            if (!isFirebaseConfigured) {
-                console.log(`[useEntity] Calling API for ${collectionName}`);
-                const data = await getDocuments<T>(collectionName);
-                console.log(`[useEntity] API returned ${data.length} items from ${collectionName}`);
-                return data;
-            }
+            console.log(`[useEntity] Fetching list for ${collectionName}`);
             try {
                 const data = await getDocuments<T>(collectionName);
                 console.log(`[useEntity] Fetched ${data.length} items from ${collectionName}`);
@@ -31,9 +23,6 @@ export function useEntity<T extends { id: string }>(collectionName: string, mock
     const useGet = (id: string, options?: { enabled?: boolean }) => useQuery({
         queryKey: [...queryKey, id],
         queryFn: async (): Promise<T | null> => {
-            if (!isFirebaseConfigured) {
-                return getDocument<T>(collectionName, id);
-            }
             return getDocument<T>(collectionName, id);
         },
         enabled: options?.enabled !== undefined ? options.enabled : !!id,

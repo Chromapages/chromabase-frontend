@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Sidebar } from '@/components/layout/sidebar';
 import { Header } from '@/components/layout/header';
-import { DemoBanner } from '@/components/layout/demo-banner';
 import { CommandPalette } from '@/components/global/command-palette';
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -13,7 +12,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
     return (
         <QueryClientProvider client={queryClient}>
             <div className="flex flex-col h-screen overflow-hidden bg-background">
-                <DemoBanner />
                 <div className="flex flex-1 overflow-hidden">
                     <aside className="w-64 hidden md:block border-r border-border/50 shrink-0">
                         <Sidebar />

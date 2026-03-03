@@ -1,0 +1,3 @@
+module.exports=[55891,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(24108);a.n(d("[project]/chromabase-frontend/node_modules/next/dist/client/components/builtin/global-error.js <module evaluation>"))},65749,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(24108);a.n(d("[project]/chromabase-frontend/node_modules/next/dist/client/components/builtin/global-error.js"))},184,a=>{"use strict";a.i(55891);var b=a.i(65749);a.n(b)}];
+
+//# sourceMappingURL=6e29e_next_dist_client_components_builtin_global-error_61e693a9.js.map

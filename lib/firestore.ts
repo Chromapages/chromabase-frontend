@@ -84,5 +84,4 @@ export const bulkUpdateDocuments = async <T = any>(collectionName: string, ids: 
     });
 };
 
-// Keep for compatibility
-export const isFirebaseConfigured = false;
+
