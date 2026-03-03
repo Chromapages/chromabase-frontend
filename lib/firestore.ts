@@ -1,0 +1,88 @@
+// Chromabase API Client - connects to Express API at localhost:3010
+// Originally Firebase, now uses custom API
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+
+async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const url = `${API_BASE}${endpoint}`;
+    console.log(`[API] ${options.method || 'GET'} ${endpoint}`);
+
+    const response = await fetch(url, {
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    return result.data || result;
+}
+
+// Map collection names to API endpoints
+const ENDPOINT_MAP: Record<string, string> = {
+    clients: '/api/clients',
+    leads: '/api/leads',
+    deals: '/api/deals',
+    tasks: '/api/tasks',
+    proposals: '/api/proposals',
+    quotes: '/api/quotes',
+    campaigns: '/api/campaigns',
+    activities: '/api/activities',
+    team: '/api/team',
+    accounts: '/api/accounts',
+};
+
+function getEndpoint(collectionName: string): string {
+    return ENDPOINT_MAP[collectionName] || `/api/${collectionName}`;
+}
+
+export const getDocument = async <T = any>(collectionName: string, id: string): Promise<T | null> => {
+    return apiRequest<T>(`${getEndpoint(collectionName)}/${id}`);
+};
+
+export const getDocuments = async <T = any>(collectionName: string): Promise<T[]> => {
+    return apiRequest<T[]>(getEndpoint(collectionName));
+};
+
+export const addDocument = async <T = any>(collectionName: string, data: Partial<T>): Promise<string> => {
+    const result = await apiRequest<{ id: string }>(getEndpoint(collectionName), {
+        method: 'POST',
+        body: JSON.stringify(data),
+    });
+    return result.id;
+};
+
+export const updateDocument = async <T = any>(collectionName: string, id: string, data: Partial<T>): Promise<void> => {
+    await apiRequest(`${getEndpoint(collectionName)}/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+    });
+};
+
+export const deleteDocument = async (collectionName: string, id: string): Promise<void> => {
+    await apiRequest(`${getEndpoint(collectionName)}/${id}`, {
+        method: 'DELETE',
+    });
+};
+
+export const bulkDeleteDocuments = async (collectionName: string, ids: string[]): Promise<void> => {
+    await apiRequest(`${getEndpoint(collectionName)}/bulk-delete`, {
+        method: 'POST',
+        body: JSON.stringify({ ids }),
+    });
+};
+
+export const bulkUpdateDocuments = async <T = any>(collectionName: string, ids: string[], data: Partial<T>): Promise<void> => {
+    await apiRequest(`${getEndpoint(collectionName)}/bulk-update`, {
+        method: 'PUT',
+        body: JSON.stringify({ ids, data }),
+    });
+};
+
+// Keep for compatibility
+export const isFirebaseConfigured = false;
