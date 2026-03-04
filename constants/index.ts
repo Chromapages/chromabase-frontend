@@ -16,6 +16,7 @@ export const ROUTES = {
   TEAM: '/team',
   REPORTS: '/reports',
   CONTACTS: '/contacts',
+  CAMPAIGNS: '/campaigns',
 } as const;
 
 // Deal stage options

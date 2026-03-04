@@ -2,152 +2,516 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Exclude macOS AppleDouble resource fork files from Tailwind scanning */
+@source not "../**/._*";
+
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================================
+   SWISS MODERNISM 2.0 × APPLE HIG — DESIGN SYSTEM
+   Mathematical grid, disciplined typography, Liquid Glass
+   ============================================================ */
+
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Typography — Inter (Swiss precision, screen-optimised) */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
+
+  /* Color tokens */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Radius — 8pt grid, Swiss proportion system */
+  --radius-sm: calc(var(--radius) - 4px);   /* 8px  — inputs, small chips */
+  --radius-md: calc(var(--radius) - 2px);   /* 10px — buttons */
+  --radius-lg: var(--radius);               /* 12px — cards */
+  --radius-xl: calc(var(--radius) + 4px);   /* 16px — panels */
+  --radius-2xl: calc(var(--radius) + 8px);  /* 20px — sheets */
+  --radius-3xl: calc(var(--radius) + 12px); /* 24px — modals */
+  --radius-4xl: calc(var(--radius) + 16px); /* 28px — hero cards */
 }
 
+/* ============================================================
+   LIGHT MODE — Apple macOS Sonoma / Liquid Glass
+   ============================================================ */
 :root {
+  /* 8pt base radius */
   --radius: 0.75rem;
-  --background: #ffffff;
-  --foreground: #1d1d1f;
+
+  /* Backgrounds */
+  --background: #f5f5f7;         /* Apple off-white — not pure white */
+  --foreground: #1d1d1f;         /* Apple near-black */
+
+  /* Surfaces */
   --card: #ffffff;
   --card-foreground: #1d1d1f;
-  --popover: rgba(255, 255, 255, 0.85); /* For glassmorphism */
+  --popover: rgba(255, 255, 255, 0.92);
   --popover-foreground: #1d1d1f;
-  --primary: #007AFF; /* Apple Blue */
+
+  /* Brand */
+  --primary: #007AFF;            /* Apple Blue */
   --primary-foreground: #ffffff;
-  --secondary: #f5f5f7;
+
+  /* Neutral surfaces */
+  --secondary: #e8e8ed;
   --secondary-foreground: #1d1d1f;
   --muted: #f2f2f7;
-  --muted-foreground: #86868b;
+  --muted-foreground: #6e6e73;   /* Apple secondary label */
   --accent: #e5e5ea;
   --accent-foreground: #1d1d1f;
-  --destructive: #ff3b30;
+
+  /* Semantic */
+  --destructive: #ff3b30;        /* Apple Red */
   --destructive-foreground: #ffffff;
-  --success: #34c759;
+  --success: #34c759;            /* Apple Green */
   --success-foreground: #ffffff;
-  --warning: #ff9500;
+  --warning: #ff9500;            /* Apple Orange */
   --warning-foreground: #ffffff;
-  --border: #e5e5ea;
+
+  /* Structure */
+  --border: rgba(0, 0, 0, 0.08);
   --input: #e5e5ea;
   --ring: #007AFF;
+
+  /* Charts */
   --chart-1: #007AFF;
   --chart-2: #34c759;
   --chart-3: #5856d6;
   --chart-4: #ff9500;
   --chart-5: #ff2d55;
-  --sidebar: rgba(248, 249, 250, 0.75);
+
+  /* Sidebar — Liquid Glass */
+  --sidebar: rgba(242, 242, 247, 0.82);
   --sidebar-foreground: #1d1d1f;
   --sidebar-primary: #007AFF;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e5e5ea;
+  --sidebar-accent: rgba(0, 0, 0, 0.06);
   --sidebar-accent-foreground: #1d1d1f;
-  --sidebar-border: rgba(0, 0, 0, 0.05);
+  --sidebar-border: rgba(0, 0, 0, 0.06);
   --sidebar-ring: #007AFF;
+
+  /* Glass tokens */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.9);
+  --glass-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --glass-shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --glass-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.04);
+
+  /* Timing — Apple spring physics */
+  --duration-instant:  50ms;
+  --duration-fast:    150ms;
+  --duration-normal:  250ms;
+  --duration-slow:    400ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* ============================================================
+   DARK MODE — Apple macOS Midnight / visionOS
+   ============================================================ */
 .dark {
-  --background: #000000;
+  --background: #000000;         /* Pure Apple black */
   --foreground: #f5f5f7;
-  --card: #1c1c1e;
+
+  --card: #1c1c1e;               /* Apple elevated surface */
   --card-foreground: #f5f5f7;
-  --popover: rgba(28, 28, 30, 0.85);
+  --popover: rgba(28, 28, 30, 0.94);
   --popover-foreground: #f5f5f7;
-  --primary: #0a84ff;
+
+  --primary: #0a84ff;            /* Apple Blue dark */
   --primary-foreground: #ffffff;
+
   --secondary: #2c2c2e;
   --secondary-foreground: #f5f5f7;
-  --muted: #2c2c2e;
-  --muted-foreground: #8e8e93;
+  --muted: #1c1c1e;
+  --muted-foreground: #8e8e93;   /* Apple tertiary label */
   --accent: #3a3a3c;
   --accent-foreground: #f5f5f7;
+
   --destructive: #ff453a;
   --destructive-foreground: #ffffff;
   --success: #30d158;
   --success-foreground: #ffffff;
   --warning: #ffd60a;
   --warning-foreground: #000000;
-  --border: #38383a;
-  --input: #38383a;
+
+  --border: rgba(255, 255, 255, 0.1);
+  --input: #3a3a3c;
   --ring: #0a84ff;
+
   --chart-1: #0a84ff;
   --chart-2: #30d158;
   --chart-3: #5e5ce6;
   --chart-4: #ff9f0a;
   --chart-5: #ff375f;
-  --sidebar: rgba(28, 28, 30, 0.65);
+
+  /* Sidebar — Liquid Glass dark */
+  --sidebar: rgba(28, 28, 30, 0.72);
   --sidebar-foreground: #f5f5f7;
   --sidebar-primary: #0a84ff;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #3a3a3c;
+  --sidebar-accent: rgba(255, 255, 255, 0.07);
   --sidebar-accent-foreground: #f5f5f7;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-border: rgba(255, 255, 255, 0.08);
   --sidebar-ring: #0a84ff;
+
+  /* Glass tokens dark */
+  --glass-bg: rgba(28, 28, 30, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --glass-shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --glass-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
+/* ============================================================
+   BASE — Global resets, typography, Swiss rhythm
+   ============================================================ */
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  *,
+  *::before,
+  *::after {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  /* Focusable elements — Apple-style blue ring */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  html {
+    /* Subpixel text rendering — Swiss precision */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    /* Smooth theme transitions */
+    color-scheme: light dark;
+    /* Prevent FOUC scroll shift */
+    overflow-y: scroll;
   }
 
   body {
     @apply bg-background text-foreground;
+    font-size: 15px;             /* Apple standard body = 15–17px */
+    line-height: 1.6;
+    letter-spacing: -0.01em;    /* Swiss tightness */
+    font-variant-numeric: tabular-nums;
+    transition: background-color var(--duration-normal) ease,
+                color var(--duration-fast) ease;
+  }
+
+  /* Swiss headings — bold, tight, left-aligned */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.03em;    /* Swiss compression */
+    text-wrap: balance;
+  }
+
+  h1 { font-size: 2.125rem; font-weight: 700; letter-spacing: -0.04em; }
+  h2 { font-size: 1.5rem;   font-weight: 700; letter-spacing: -0.03em; }
+  h3 { font-size: 1.125rem; font-weight: 600; }
+  h4 { font-size: 0.9375rem; font-weight: 600; }
+
+  p {
+    line-height: 1.65;
+    max-width: 68ch; /* Swiss line-length discipline */
+  }
+
+  /* Selection — Apple blue tint */
+  ::selection {
+    background: rgba(0, 122, 255, 0.2);
+    color: inherit;
+  }
+
+  /* Links */
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity var(--duration-fast) ease;
+  }
+
+  /* Images */
+  img, svg, video {
+    display: block;
+    max-width: 100%;
   }
 }
 
+/* ============================================================
+   UTILITIES — Swiss Modernism 2.0 + Liquid Glass
+   ============================================================ */
 @layer utilities {
+
+  /* ── Liquid Glass surfaces ──────────────────────────────── */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow-md);
+  }
+
+  .glass-sm {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow-sm);
+  }
+
+  .glass-elevated {
+    background: var(--glass-bg);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow-lg);
+  }
+
+  /* ── Swiss card surface ─────────────────────────────────── */
+  .card-surface {
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: var(--glass-shadow-sm);
+    transition: box-shadow var(--duration-fast) ease,
+                border-color var(--duration-fast) ease;
+  }
+
+  .card-surface:hover {
+    box-shadow: var(--glass-shadow-md);
+    border-color: rgba(0, 122, 255, 0.15);
+  }
+
+  /* ── Swiss type utilities ───────────────────────────────── */
+  .text-label-micro {
+    font-size: 0.6875rem; /* 11px */
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  .text-label {
+    font-size: 0.75rem; /* 12px */
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+
+  .text-body-sm {
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.55;
+  }
+
+  .text-body {
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.6;
+  }
+
+  .text-headline {
+    font-size: 1.375rem; /* 22px */
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+  }
+
+  .text-display {
+    font-size: 2.125rem; /* 34px */
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+  }
+
+  /* ── Swiss numeric display ──────────────────────────────── */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  /* ── Motion-safe transitions ────────────────────────────── */
+  .transition-smooth {
+    transition: all var(--duration-normal) var(--ease-out-expo);
+  }
+
+  .transition-fast {
+    transition: all var(--duration-fast) ease;
+  }
+
+  .transition-spring {
+    transition: transform var(--duration-normal) var(--ease-spring),
+                opacity var(--duration-fast) ease;
+  }
+
+  /* ── Custom scrollbars — Swiss minimal ──────────────────── */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  }
+
+  .dark .scrollbar-thin {
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 2px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.25);
+  }
+
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  /* No scrollbar */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
 
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  /* ── Swiss grid helpers ─────────────────────────────────── */
+  .grid-swiss {
+    display: grid;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .grid-swiss > * {
+    background: var(--background);
+  }
+
+  /* ── Glow effects — Apple vibrancy ──────────────────────── */
+  .glow-primary {
+    box-shadow: 0 0 0 1px rgba(0, 122, 255, 0.2),
+                0 4px 20px rgba(0, 122, 255, 0.15);
+  }
+
+  .glow-success {
+    box-shadow: 0 0 0 1px rgba(52, 199, 89, 0.2),
+                0 4px 16px rgba(52, 199, 89, 0.15);
+  }
+
+  /* ── Noise texture overlay ──────────────────────────────── */
+  .noise::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  /* ── Swiss dot grid background ──────────────────────────── */
+  .dot-grid {
+    background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .dark .dot-grid {
+    background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  }
+
+  /* ── Reduced motion ─────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ============================================================
+   COMPONENT OVERRIDES — Shadcn polish
+   ============================================================ */
+@layer components {
+
+  /* Input — Swiss precision */
+  input[type="text"],
+  input[type="email"],
+  input[type="search"],
+  textarea,
+  select {
+    font-size: 0.9375rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* Placeholder — muted, not invisible */
+  ::placeholder {
+    color: var(--muted-foreground);
+    opacity: 0.7;
+  }
+
+  /* Table — Swiss grid clarity */
+  table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  /* kbd — Apple style */
+  kbd {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.02em;
   }
 }

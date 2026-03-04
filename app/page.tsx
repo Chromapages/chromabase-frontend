@@ -27,7 +27,7 @@ export default function DashboardPage() {
     const error = leadsError || clientsError || dealsError || tasksError || activitiesError || appointmentsError;
 
     return (
-        <div className="p-6 max-w-full mx-auto space-y-6">
+        <div className="p-6 pb-0 max-w-full mx-auto">
             <PageHeader
                 title="Dashboard"
                 description="Welcome back. Here's what's happening with your pipeline today."

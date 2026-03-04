@@ -1,166 +1,227 @@
 'use client';
 
+import { useState } from 'react';
 import { CardGridSkeleton } from '@/components/shared/loading-skeleton';
-import { format, formatDistanceToNow } from 'date-fns';
-import { Phone, Mail, User as UserIcon, ExternalLink, CheckCircle2, Building2, Briefcase, CalendarDays, CheckSquare } from 'lucide-react';
-import { Lead, Client, Activity, Deal, CRMTask, Appointment } from '@/types';
+import { formatDistanceToNow } from 'date-fns';
+import {
+    ExternalLink, CheckCircle2, CalendarDays, CheckSquare, Activity, Building2
+} from 'lucide-react';
+import { Lead, Client, Activity as ActivityType, Deal, CRMTask, Appointment } from '@/types';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { CalendarView } from '@/components/features/calendar/calendar-view';
 import { MobileVerticalFeed } from '@/components/features/dashboard/mobile-vertical-feed';
+import { KPICards } from './kpi-cards';
+import { ActivityFeed } from './activity-feed';
+import { PipelineStrip } from './pipeline-strip';
 
 interface DashboardViewProps {
     leads: Lead[] | undefined;
     clients: Client[] | undefined;
     deals: Deal[] | undefined;
     tasks: CRMTask[] | undefined;
-    activities: Activity[] | undefined;
+    activities?: ActivityType[] | undefined;
     appointments: Appointment[] | undefined;
     isLoading: boolean;
     error?: Error | null;
 }
 
-export function DashboardView({ leads, clients, deals, tasks, activities, appointments, isLoading, error }: DashboardViewProps) {
+/* ── Priority colour mapping — Swiss semantic colour system ── */
+const priorityConfig = {
+    high: { dot: 'bg-destructive/70', label: 'text-destructive/80' },
+    medium: { dot: 'bg-warning/70', label: 'text-warning/90' },
+    low: { dot: 'bg-primary/50', label: 'text-muted-foreground' },
+} as const;
+
+export function DashboardView({
+    leads, clients, deals, tasks, activities, appointments, isLoading, error,
+}: DashboardViewProps) {
+    const [taskFilter, setTaskFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
+
     if (isLoading) {
-        return <CardGridSkeleton count={3} />;
+        return (
+            <div className="p-6">
+                <CardGridSkeleton count={3} />
+            </div>
+        );
     }
 
     if (error) {
         return (
-            <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-lg text-destructive text-sm flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+            <div className="m-6 bg-destructive/8 border border-destructive/20 p-4 rounded-xl text-destructive text-[13px] flex items-center gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse shrink-0" />
                 Error loading data: {error.message}
             </div>
         );
     }
 
-    const priorityTasks = tasks?.filter(t => t.status !== 'completed')
+    // Filter and sort tasks
+    const priorityTasks = tasks
+        ?.filter(t => t.status !== 'completed')
+        ?.filter(t => taskFilter === 'all' ? true : t.priority === taskFilter)
         .sort((a, b) => {
             if (a.priority === 'high' && b.priority !== 'high') return -1;
             if (b.priority === 'high' && a.priority !== 'high') return 1;
             return (a.dueDate || 0) - (b.dueDate || 0);
-        }).slice(0, 10) || [];
-
-    const recentAccounts = clients?.sort((a, b) => b.createdAt - a.createdAt).slice(0, 8) || [];
+        })
+        .slice(0, 15) || [];
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-140px)] min-h-[600px] pt-2">
+        <div className="flex flex-col gap-4 p-6 min-h-[640px] h-[calc(100vh-3.5rem)] overflow-y-auto scrollbar-thin">
 
-            {/* LEFT PANEL: Active Clients & Activity */}
-            <div className="lg:col-span-3 flex flex-col bg-card/60 backdrop-blur-2xl border border-border/40 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow relative">
-                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none" />
+            {/* Phase 1: KPI Header Row */}
+            <KPICards leads={leads} clients={clients} deals={deals} tasks={tasks} />
 
-                <div className="px-6 py-5 border-b border-border/30 flex items-center justify-between z-10">
-                    <div className="flex items-center gap-2">
-                        <Building2 className="w-5 h-5 text-primary" />
-                        <h3 className="text-sm font-semibold tracking-wide text-foreground">Accounts</h3>
+            {/* 3-6-3 Grid Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 min-h-0">
+
+                {/* ── LEFT: Activity Feed (Replaces Accounts) ── */}
+                <section className="lg:col-span-3 flex flex-col bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
+                    <div className="px-4 py-3 border-b border-border/50 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <Activity className="w-4 h-4 text-primary/70" />
+                            <h2 className="text-[13px] font-semibold text-foreground tracking-[-0.02em]">
+                                Activity Feed
+                            </h2>
+                        </div>
                     </div>
-                </div>
-
-                <div className="flex flex-col gap-1 p-3 overflow-y-auto custom-scrollbar flex-1 z-10">
-                    {recentAccounts.map(client => {
-                        const clientTasks = tasks?.filter(t => t.accountId === client.id && t.status !== 'completed').length || 0;
-                        return (
-                            <Link href={`/clients/${client.id}`} key={client.id} className="px-4 py-3 rounded-2xl hover:bg-muted/50 transition-colors flex items-center justify-between group block">
-                                <div className="min-w-0 flex-1">
-                                    <p className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">{client.companyName}</p>
-                                    <div className="flex flex-col gap-1 mt-1">
-                                        <p className="text-[10px] text-muted-foreground truncate">{client.industry || 'General'}</p>
-                                        <div className="flex items-center gap-2">
-                                            {client.tier === 'Gold' && <span className="text-[9px] px-1.5 py-0.5 rounded-sm bg-yellow-500/20 text-yellow-600 font-bold uppercase">Gold Tier</span>}
-                                            {clientTasks > 0 && <span className="text-[9px] font-medium text-muted-foreground">{clientTasks} open tasks</span>}
-                                        </div>
-                                    </div>
-                                </div>
-                                <ExternalLink className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2" />
-                            </Link>
-                        )
-                    })}
-                </div>
-            </div>
-
-            {/* CENTER PANEL: Interactive Calendar & Mobile Feed */}
-            <div className="lg:col-span-6 flex flex-col bg-card/60 backdrop-blur-2xl border border-border/40 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow relative p-4 lg:p-6">
-                <div className="absolute top-0 left-0 -ml-20 -mt-20 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none opacity-50" />
-
-                <div className="flex items-center gap-2 mb-6 z-10 px-2 lg:px-0">
-                    <CalendarDays className="w-5 h-5 text-primary" />
-                    <h3 className="text-sm font-semibold tracking-wide text-foreground">
-                        <span className="hidden lg:inline">Unified Calendar</span>
-                        <span className="inline lg:hidden">Your Feed</span>
-                    </h3>
-                </div>
-
-                <div className="flex-1 min-h-0 z-10 overflow-y-auto lg:overflow-hidden custom-scrollbar">
-                    <div className="hidden lg:block h-full">
-                        <CalendarView tasks={tasks} appointments={appointments} isLoading={false} />
+                    <div className="flex-1 overflow-y-auto scrollbar-thin">
+                        <ActivityFeed activities={activities} appointments={appointments} leads={leads} />
                     </div>
-                    <div className="block lg:hidden">
-                        <MobileVerticalFeed
-                            appointments={appointments || []}
-                            tasks={tasks || []}
-                            clients={clients || []}
-                            leads={leads || []}
-                            deals={deals || []}
-                        />
+                </section>
+
+                {/* ── CENTER: Calendar / Mobile Feed ─────────────── */}
+                <section className="lg:col-span-6 flex flex-col bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
+                    <div className="px-4 py-3 border-b border-border/50 flex items-center gap-2">
+                        <CalendarDays className="w-4 h-4 text-primary/70" />
+                        <h2 className="text-[13px] font-semibold text-foreground tracking-[-0.02em]">
+                            <span className="hidden lg:inline">Unified Calendar</span>
+                            <span className="inline lg:hidden">Your Feed</span>
+                        </h2>
                     </div>
-                </div>
-            </div>
-
-            {/* RIGHT PANEL: Priority Task List */}
-            <div className="lg:col-span-3 flex flex-col bg-card/60 backdrop-blur-2xl border border-border/40 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow relative">
-
-                <div className="px-6 py-5 border-b border-border/30 flex items-center justify-between z-10">
-                    <div className="flex items-center gap-2">
-                        <CheckSquare className="w-5 h-5 text-primary" />
-                        <h3 className="text-sm font-semibold tracking-wide text-foreground">Priority Tasks</h3>
+                    <div className="flex-1 min-h-[400px] overflow-hidden">
+                        <div className="hidden lg:flex h-full overflow-y-auto scrollbar-thin">
+                            <CalendarView tasks={tasks} appointments={appointments} isLoading={false} />
+                        </div>
+                        <div className="block lg:hidden overflow-y-auto scrollbar-thin h-full">
+                            <MobileVerticalFeed
+                                appointments={appointments || []}
+                                tasks={tasks || []}
+                                clients={clients || []}
+                                leads={leads || []}
+                                deals={deals || []}
+                            />
+                        </div>
                     </div>
-                </div>
+                </section>
 
-                <div className="flex flex-col gap-1 p-3 overflow-y-auto custom-scrollbar flex-1 z-10">
-                    {priorityTasks.length === 0 ? (
-                        <div className="p-8 text-center text-muted-foreground text-xs italic">All caught up</div>
-                    ) : (
-                        priorityTasks.map(task => (
-                            <div key={task.id} className="px-4 py-3 rounded-2xl hover:bg-muted/50 transition-colors flex items-start gap-4 group cursor-pointer relative">
-                                <Button variant="ghost" size="icon" className="h-5 w-5 rounded-full border border-border/60 hover:bg-success hover:border-success shrink-0 mt-0.5 group-hover:bg-muted opacity-80 group-hover:opacity-100">
-                                    <CheckCircle2 className="h-4 w-4 text-transparent group-hover:text-success/80 transition-colors" />
-                                </Button>
-
-                                <div className="min-w-0 flex-1">
-                                    <p className="text-sm font-bold text-foreground leading-tight group-hover:text-primary transition-colors">{task.title}</p>
-
-                                    <div className="flex items-center justify-between mt-2">
-                                        <div className="flex items-center gap-1.5">
-                                            <div className={cn(
-                                                "w-1.5 h-1.5 rounded-full",
-                                                task.priority === 'high' ? "bg-destructive/60" :
-                                                    task.priority === 'medium' ? "bg-warning/60" : "bg-primary/60"
-                                            )} />
-                                            <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{task.priority}</span>
-                                        </div>
-                                        {task.dueDate && (
-                                            <span className={cn(
-                                                "text-[10px] font-medium",
-                                                task.dueDate < Date.now() ? "text-destructive" : "text-muted-foreground"
-                                            )}>
-                                                {formatDistanceToNow(task.dueDate, { addSuffix: true })}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    {task.accountId && clients?.some(c => c.id === task.accountId) && (
-                                        <p className="text-[10px] text-muted-foreground/60 mt-1 truncate">
-                                            {clients.find(c => c.id === task.accountId)?.companyName}
-                                        </p>
-                                    )}
-                                </div>
+                {/* ── RIGHT: Priority Tasks ───────────────────────── */}
+                <section className="lg:col-span-3 flex flex-col bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
+                    <div className="px-4 py-3 border-b border-border/50 flex flex-col gap-2">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <CheckSquare className="w-4 h-4 text-primary/70" />
+                                <h2 className="text-[13px] font-semibold text-foreground tracking-[-0.02em]">
+                                    Priority Tasks
+                                </h2>
                             </div>
-                        ))
-                    )}
-                </div>
+                        </div>
+                        {/* Task Filters */}
+                        <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-md">
+                            {(['all', 'high', 'medium', 'low'] as const).map(filter => (
+                                <button
+                                    key={filter}
+                                    onClick={() => setTaskFilter(filter)}
+                                    className={cn(
+                                        "flex-1 text-[10px] font-semibold uppercase tracking-wider py-1 rounded transition-colors",
+                                        taskFilter === filter
+                                            ? "bg-background shadow-sm text-foreground"
+                                            : "text-muted-foreground/60 hover:text-foreground/80 hover:bg-black/5 dark:hover:bg-white/5"
+                                    )}
+                                >
+                                    {filter}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto scrollbar-thin p-2">
+                        {priorityTasks.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center h-full py-8 text-center gap-1">
+                                <CheckCircle2 className="w-8 h-8 text-success/40 mb-1" />
+                                <p className="text-[12px] font-medium text-muted-foreground/60">
+                                    All caught up
+                                </p>
+                                <p className="text-[11px] text-muted-foreground/40">
+                                    No pending tasks for this filter
+                                </p>
+                            </div>
+                        ) : (
+                            priorityTasks.map(task => {
+                                const pCfg = priorityConfig[task.priority as keyof typeof priorityConfig]
+                                    ?? priorityConfig.low;
+                                const isOverdue = task.dueDate && task.dueDate < Date.now();
+                                const isToday = task.dueDate && new Date(task.dueDate).toDateString() === new Date().toDateString();
+
+                                return (
+                                    <div
+                                        key={task.id}
+                                        className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/60 transition-colors group cursor-pointer"
+                                    >
+                                        {/* Check button */}
+                                        <button
+                                            className="mt-0.5 w-4 h-4 rounded-full border border-border/60 hover:border-success hover:bg-success/10 shrink-0 flex items-center justify-center transition-all duration-150 cursor-pointer"
+                                            title="Mark as complete"
+                                        >
+                                            <CheckCircle2 className="h-3 w-3 text-transparent group-hover:text-success/70 transition-colors" />
+                                        </button>
+
+                                        {/* Task content */}
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[13px] font-medium text-foreground leading-snug group-hover:text-primary transition-colors truncate">
+                                                {task.title}
+                                            </p>
+
+                                            <div className="flex items-center justify-between mt-1 gap-1">
+                                                {/* Priority */}
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', pCfg.dot)} />
+                                                    <span className={cn('text-label-micro', pCfg.label)}>
+                                                        {task.priority}
+                                                    </span>
+                                                </div>
+
+                                                {/* Due date */}
+                                                {task.dueDate && (
+                                                    <span className={cn(
+                                                        'text-[10px] font-bold shrink-0 px-1.5 py-0.5 rounded-sm',
+                                                        isOverdue ? 'bg-destructive/10 text-destructive'
+                                                            : isToday ? 'bg-warning/10 text-warning-foreground'
+                                                                : 'text-muted-foreground/60'
+                                                    )}>
+                                                        {isOverdue ? 'Overdue' : isToday ? 'Today' : formatDistanceToNow(task.dueDate, { addSuffix: true })}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {/* Account name */}
+                                            {task.accountId && clients?.some(c => c.id === task.accountId) && (
+                                                <p className="text-[10px] text-muted-foreground/40 mt-1 truncate flex items-center gap-1">
+                                                    <Building2 className="w-3 h-3" />
+                                                    {clients.find(c => c.id === task.accountId)?.companyName}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
+                    </div>
+                </section>
             </div>
+
+            {/* Phase 3: Pipeline Strip */}
+            <PipelineStrip deals={deals} />
 
         </div>
     );

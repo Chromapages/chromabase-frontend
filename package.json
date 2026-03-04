@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "rm -rf tmp/cb-front-next && find . -name '._*' -not -path '*/node_modules/*' -not -path '*/.git/*' -delete",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
