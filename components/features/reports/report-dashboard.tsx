@@ -9,6 +9,9 @@ import { useDeals, useLeads, useActivities, useUsers } from '@/hooks';
 import { format, subMonths, isSameMonth } from 'date-fns';
 import { Loader2 } from 'lucide-react';
 
+const BASE_REVENUE_TARGET = 50000;
+const MONTHLY_TARGET_GROWTH = 5000;
+
 const revenueChartConfig = {
     revenue: { label: 'Revenue', color: 'hsl(var(--primary))' },
     target: { label: 'Target', color: 'hsl(var(--muted-foreground))' },
@@ -53,7 +56,7 @@ export function ReportDashboard() {
             return {
                 month: format(monthDate, 'MMM'),
                 revenue,
-                target: 50000 + (monthDate.getMonth() * 5000)
+                target: BASE_REVENUE_TARGET + (monthDate.getMonth() * MONTHLY_TARGET_GROWTH)
             };
         });
     }, [deals]);
@@ -172,7 +175,7 @@ export function ReportDashboard() {
                                 <div className="flex items-center space-x-4">
                                     <div className="font-bold text-muted-foreground w-4 text-center">{index + 1}</div>
                                     <Avatar>
-                                        <AvatarImage src={person.avatarUrl} />
+                                        <AvatarImage src={person.avatarUrl} alt="User avatar" />
                                         <AvatarFallback>{person.name.charAt(0)}{person.name.split(' ')[1]?.charAt(0)}</AvatarFallback>
                                     </Avatar>
                                     <div>

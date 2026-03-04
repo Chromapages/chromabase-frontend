@@ -97,7 +97,7 @@ export function MemberDetailPage({ id }: MemberDetailPageProps) {
                 <div className="h-32 bg-gradient-to-r from-primary/20 via-blue-500/10 to-transparent" />
                 <div className="px-8 pb-8 -mt-12 relative flex flex-col md:flex-row items-center md:items-end gap-6 text-center md:text-left">
                     <Avatar className="w-24 h-24 border-4 border-card rounded-2xl shadow-lg shrink-0">
-                        <AvatarImage src={user.avatarUrl || ''} />
+                        <AvatarImage src={user.avatarUrl || ''}  alt="User avatar" />
                         <AvatarFallback className="text-2xl bg-primary/10 text-primary">{initials}</AvatarFallback>
                     </Avatar>
 

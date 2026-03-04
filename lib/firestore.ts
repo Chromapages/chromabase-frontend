@@ -20,7 +20,13 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
     }
 
     const result = await response.json();
-    return result.data || result;
+
+    if (result && result.success === false) {
+        console.error(`[API Error] ${endpoint}:`, result.error);
+        throw new Error(result.error || `API returned success: false`);
+    }
+
+    return result.data !== undefined ? result.data : result;
 }
 
 // Map collection names to API endpoints
@@ -46,7 +52,13 @@ export const getDocument = async <T = any>(collectionName: string, id: string): 
 };
 
 export const getDocuments = async <T = any>(collectionName: string): Promise<T[]> => {
-    return apiRequest<T[]>(getEndpoint(collectionName));
+    try {
+        const data = await apiRequest<T[]>(getEndpoint(collectionName));
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.warn(`[Firestore] Failed to fetch collection ${collectionName}, falling back to empty array:`, error);
+        return [];
+    }
 };
 
 export const addDocument = async <T = any>(collectionName: string, data: Partial<T>): Promise<string> => {

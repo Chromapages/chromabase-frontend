@@ -120,7 +120,7 @@ export function TaskTable({ tasks, onUpdateStatus, selectedTasks, onToggleSelect
             cell: (task) => (
                 <div className="flex items-center gap-2">
                     <Avatar className="w-5 h-5 border border-background ring-1 ring-border/20">
-                        <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${task.assignedTo}`} />
+                        <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${task.assignedTo}`} alt="User avatar" />
                         <AvatarFallback className="text-[8px]">{task.assignedTo?.charAt(0)?.toUpperCase() || '?'}</AvatarFallback>
                     </Avatar>
                     <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">{task.assignedTo}</span>
@@ -169,7 +169,7 @@ export function TaskTable({ tasks, onUpdateStatus, selectedTasks, onToggleSelect
     ];
 
     return (
-        <div className="bg-card/40 backdrop-blur-md border border-border/40 rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-card/60 backdrop-blur-2xl border border-border/40 rounded-3xl overflow-hidden shadow-sm">
             <DataTable
                 data={paginatedTasks}
                 columns={columns}

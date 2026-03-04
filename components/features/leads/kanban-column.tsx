@@ -28,13 +28,13 @@ export function KanbanColumn({ column, leads }: KanbanColumnProps) {
         <div
             ref={setNodeRef}
             className={cn(
-                "flex flex-col bg-muted/20 border border-border/40 rounded-xl w-[260px] shrink-0 h-full max-h-full transition-all duration-200",
-                isOver ? "bg-primary/5 border-primary/30 ring-1 ring-primary/20 shadow-lg" : "shadow-sm"
+                "flex flex-col bg-muted/30 border border-border/30 rounded-3xl w-[280px] shrink-0 h-full max-h-full transition-all duration-300",
+                isOver ? "bg-primary/5 border-primary/30 ring-1 ring-primary/20 shadow-md" : "shadow-sm hover:shadow"
             )}
         >
-            <div className="p-3 flex items-center justify-between border-b border-border/40 bg-muted/10">
+            <div className="p-4 flex items-center justify-between border-b border-border/20 bg-muted/10 rounded-t-3xl">
                 <div className="flex flex-col gap-0.5">
-                    <h3 className="font-semibold text-[11px] uppercase tracking-wider text-foreground/80 leading-none">{column.label}</h3>
+                    <h3 className="font-semibold text-sm text-foreground/90 tracking-tight leading-none">{column.label}</h3>
                     <span className="text-[10px] font-bold text-primary/80">${totalValue.toLocaleString()}</span>
                 </div>
                 <Badge variant="secondary" className="h-4.5 px-1.5 min-w-[1.25rem] flex justify-center text-[10px] bg-background/50 border-border/40">

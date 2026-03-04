@@ -73,7 +73,7 @@ export function DealCard({ deal }: DealCardProps) {
             ref={setNodeRef}
             style={style}
             className={cn(
-                "group relative border-l-3 bg-card/60 backdrop-blur-sm border border-border/40 rounded-lg p-3 shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md cursor-grab active:cursor-grabbing",
+                "group relative border-l-4 bg-card/80 backdrop-blur-md border border-border/40 rounded-2xl p-4 shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md cursor-grab active:cursor-grabbing",
                 getStageColor(deal.stage),
                 isDragging && "opacity-50"
             )}

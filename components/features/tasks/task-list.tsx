@@ -214,7 +214,7 @@ export function TaskList({ tasks, isLoading, onUpdateStatus, onDeleteTask, onBul
                                             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Assignee</span>
                                             <div className="flex items-center gap-2 text-sm font-semibold">
                                                 <Avatar className="w-5 h-5 ring-1 ring-border/20">
-                                                    <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedTaskDetail.assignedTo}`} />
+                                                    <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedTaskDetail.assignedTo}`}  alt="User avatar" />
                                                     <AvatarFallback>{selectedTaskDetail.assignedTo?.[0]}</AvatarFallback>
                                                 </Avatar>
                                                 {selectedTaskDetail.assignedTo}

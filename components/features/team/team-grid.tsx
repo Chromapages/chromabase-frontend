@@ -118,7 +118,7 @@ export function TeamGrid({ users, isLoading }: TeamGridProps) {
                                         <div className="absolute -top-10 left-6">
                                             <div className="relative">
                                                 <Avatar className="w-20 h-20 border-4 border-card rounded-full shadow-sm">
-                                                    <AvatarImage src={user.avatarUrl || ''} />
+                                                    <AvatarImage src={user.avatarUrl || ''}  alt="User avatar" />
                                                     <AvatarFallback className="text-xl bg-primary/10 text-primary">{getInitials(user.firstName, user.lastName)}</AvatarFallback>
                                                 </Avatar>
                                                 <div className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-card ${metrics.isOnline ? 'bg-green-500' : 'bg-muted-foreground'}`}></div>

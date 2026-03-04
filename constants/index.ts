@@ -1,7 +1,7 @@
 // Routes configuration
 export const ROUTES = {
   HOME: '/',
-  DASHBOARD: '/dashboard',
+  DASHBOARD: '/',
   ACCOUNTS: '/accounts',
   ACCOUNT_DETAIL: (id: string) => `/accounts/${id}`,
   LEADS: '/leads',
@@ -13,6 +13,9 @@ export const ROUTES = {
   QUOTE_DETAIL: (id: string) => `/quotes/${id}`,
   API_DOCS: '/api-docs',
   PROPOSALS: '/proposals',
+  TEAM: '/team',
+  REPORTS: '/reports',
+  CONTACTS: '/contacts',
 } as const;
 
 // Deal stage options

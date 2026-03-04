@@ -33,23 +33,23 @@ export function LeadsList({ leads }: LeadsListProps) {
     }
 
     return (
-        <div className="bg-card/40 backdrop-blur-md border border-border/40 rounded-xl shadow-sm overflow-hidden">
+        <div className="bg-card/60 backdrop-blur-2xl border border-border/40 rounded-3xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <Table>
-                <TableHeader className="bg-muted/20">
-                    <TableRow className="hover:bg-transparent border-border/40">
-                        <TableHead className="w-[280px] font-semibold text-[11px] uppercase tracking-wider h-10">Company / Contact</TableHead>
-                        <TableHead className="font-semibold text-[11px] uppercase tracking-wider h-10">Status</TableHead>
-                        <TableHead className="font-semibold text-[11px] uppercase tracking-wider h-10 text-right">Value</TableHead>
-                        <TableHead className="font-semibold text-[11px] uppercase tracking-wider h-10">Assigned To</TableHead>
-                        <TableHead className="font-semibold text-[11px] uppercase tracking-wider h-10">Last Updated</TableHead>
-                        <TableHead className="w-[100px] text-right font-semibold text-[11px] uppercase tracking-wider h-10">Actions</TableHead>
+                <TableHeader className="bg-muted/30">
+                    <TableRow className="hover:bg-transparent border-b border-border/30">
+                        <TableHead className="w-[280px] font-semibold text-xs text-foreground/70 h-11">Company / Contact</TableHead>
+                        <TableHead className="font-semibold text-xs text-foreground/70 h-11">Status</TableHead>
+                        <TableHead className="font-semibold text-xs text-foreground/70 h-11 text-right">Value</TableHead>
+                        <TableHead className="font-semibold text-xs text-foreground/70 h-11">Assigned To</TableHead>
+                        <TableHead className="font-semibold text-xs text-foreground/70 h-11">Last Updated</TableHead>
+                        <TableHead className="w-[100px] text-right font-semibold text-xs text-foreground/70 h-11">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {leads.map((lead) => (
                         <TableRow
                             key={lead.id}
-                            className="group cursor-pointer hover:bg-primary/5 transition-colors border-border/40"
+                            className="group cursor-pointer hover:bg-muted/50 transition-colors border-b border-border/20 last:border-0"
                             onClick={() => router.push(`${ROUTES.LEADS}/${lead.id}`)}
                         >
                             <TableCell className="py-2.5">
@@ -58,9 +58,9 @@ export function LeadsList({ leads }: LeadsListProps) {
                                     <span className="text-[11px] text-muted-foreground">{lead.contactName}</span>
                                 </div>
                             </TableCell>
-                            <TableCell className="py-2.5">
+                            <TableCell className="py-3">
                                 <span className={cn(
-                                    "px-2 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wider border",
+                                    "px-2.5 py-1 rounded-full text-[11px] font-medium tracking-wide border",
                                     lead.status === 'new' ? "bg-blue-500/10 text-blue-500 border-blue-500/20" :
                                         lead.status === 'contacted' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
                                             lead.status === 'meeting_scheduled' ? "bg-indigo-500/10 text-indigo-500 border-indigo-500/20" :

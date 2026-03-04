@@ -42,7 +42,7 @@ export function KanbanItem({ lead }: KanbanItemProps) {
             <div
                 ref={setNodeRef}
                 style={style}
-                className="opacity-30 border-2 border-primary/50 border-dashed rounded-lg h-[84px] bg-muted/20"
+                className="opacity-40 border-2 border-primary/50 border-dashed rounded-2xl h-[90px] bg-muted/30"
             />
         );
     }
@@ -62,7 +62,7 @@ export function KanbanItem({ lead }: KanbanItemProps) {
             ref={setNodeRef}
             style={style}
             className={cn(
-                "group relative border-l-3 bg-card/60 backdrop-blur-sm border border-border/40 rounded-lg p-2.5 shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md cursor-grab active:cursor-grabbing",
+                "group relative border-l-4 bg-card/80 backdrop-blur-md border border-border/40 rounded-2xl p-3 shadow-sm transition-all duration-300 hover:border-primary/40 hover:shadow-md cursor-grab active:cursor-grabbing",
                 getStatusColor(lead.status),
                 isDragging && "opacity-50"
             )}
@@ -102,7 +102,7 @@ export function KanbanItem({ lead }: KanbanItemProps) {
             </div>
 
             {/* Quick Actions Hover Bar */}
-            <div className="absolute inset-0 bg-primary/5 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-all duration-200 rounded-lg flex items-center justify-center gap-2 pointer-events-none group-hover:pointer-events-auto">
+            <div className="absolute inset-0 bg-background/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-2xl flex items-center justify-center gap-3 pointer-events-none group-hover:pointer-events-auto">
                 <Button
                     variant="secondary"
                     size="icon"

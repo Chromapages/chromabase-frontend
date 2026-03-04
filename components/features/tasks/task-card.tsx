@@ -136,7 +136,7 @@ export function TaskCard({
 
                         <div className="flex -space-x-1.5 overflow-hidden">
                             <Avatar className="w-5 h-5 border border-background ring-1 ring-border/20">
-                                <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${task.assignedTo}`} />
+                                <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${task.assignedTo}`}  alt="User avatar" />
                                 <AvatarFallback className="text-[8px]">{task.assignedTo?.charAt(0)?.toUpperCase() || '?'}</AvatarFallback>
                             </Avatar>
                         </div>

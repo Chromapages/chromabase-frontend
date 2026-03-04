@@ -18,7 +18,7 @@ interface StatsCardProps {
 export function StatsCard({ title, value, description, trend, icon: Icon, className, isLoading }: StatsCardProps) {
     return (
         <div className={cn(
-            "bg-card/40 backdrop-blur-md border border-border/40 rounded-xl p-4 shadow-sm flex flex-col justify-between hover:bg-card/60 transition-colors group cursor-default",
+            "bg-card/40 backdrop-blur-md border border-border/40 rounded-xl p-4 shadow-sm flex flex-col justify-between hover:bg-card/60 transition-colors group cursor-pointer",
             className
         )}>
             <div className="flex items-center justify-between gap-2">

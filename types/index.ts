@@ -40,6 +40,7 @@ export interface Client {
   status: ClientStatus;
   totalRevenue: number;
   onboardingProgress: number;
+  tier?: 'Gold' | 'Silver' | 'Bronze' | 'Standard';
   createdAt: number;
   updatedAt: number;
 }
@@ -100,6 +101,7 @@ export interface CRMTask {
   type?: 'call' | 'meeting' | 'email' | 'todo';
   dueDate: number;
   assignedTo: string;
+  accountId?: string;
   relatedTo: {
     type: 'lead' | 'client' | 'deal' | 'task';
     id: string;

@@ -42,9 +42,9 @@ export default function SettingsPage() {
     const currentUser = users?.[0] || { firstName: 'Demo', lastName: 'User', email: 'demo@example.com', role: 'admin' };
 
     const [profileData, setProfileData] = useState({
-        firstName: currentUser.firstName,
-        lastName: currentUser.lastName,
-        email: currentUser.email
+        firstName: currentUser?.firstName || '',
+        lastName: currentUser?.lastName || '',
+        email: currentUser?.email || ''
     });
 
     const [isSaving, setIsSaving] = useState(false);
@@ -180,9 +180,9 @@ export default function SettingsPage() {
 
                             <div className="flex items-center gap-6 py-4">
                                 <Avatar className="w-20 h-20 border-2 border-border">
-                                    <AvatarImage src="" />
+                                    <AvatarImage src="" alt="User avatar" />
                                     <AvatarFallback className="text-2xl bg-primary/10 text-primary">
-                                        {profileData.firstName[0]}{profileData.lastName[0]}
+                                        {(profileData.firstName?.[0] || 'U').toUpperCase()}{(profileData.lastName?.[0] || '').toUpperCase()}
                                     </AvatarFallback>
                                 </Avatar>
                                 <div>

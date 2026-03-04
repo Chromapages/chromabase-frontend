@@ -5,3 +5,4 @@ service-account.json
 .env
 *.log
 .next/
+service-account.json

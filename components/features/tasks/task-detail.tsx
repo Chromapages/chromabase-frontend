@@ -322,7 +322,7 @@ export function TaskDetail({ task, onUpdate }: TaskDetailProps) {
                                                 <PopoverTrigger asChild>
                                                     <div className="flex items-center gap-2 cursor-pointer hover:bg-white/5 p-1 -mr-1 rounded transition-colors ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                                                         <Avatar className="w-6 h-6 border-2 border-background ring-1 ring-border">
-                                                            <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${task.assignedTo}`} />
+                                                            <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${task.assignedTo}`}  alt="User avatar" />
                                                             <AvatarFallback>{task.assignedTo?.charAt(0)}</AvatarFallback>
                                                         </Avatar>
                                                         <span className="text-sm font-medium">{assignee ? `${assignee.firstName} ${assignee.lastName}` : (task.assignedTo || 'Unassigned')}</span>
@@ -354,7 +354,7 @@ export function TaskDetail({ task, onUpdate }: TaskDetailProps) {
                                                                         className="flex items-center gap-2"
                                                                     >
                                                                         <Avatar className="w-5 h-5">
-                                                                            <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${u.id}`} />
+                                                                            <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${u.id}`}  alt="User avatar" />
                                                                             <AvatarFallback>{u.firstName?.charAt(0)}</AvatarFallback>
                                                                         </Avatar>
                                                                         <span className="text-sm">{u.firstName} {u.lastName}</span>
@@ -723,7 +723,7 @@ export function TaskDetail({ task, onUpdate }: TaskDetailProps) {
                             }} className="flex gap-3 items-start relative before:absolute before:inset-0 before:ml-5 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border/50 before:to-border">
                                 <div className="absolute left-0 mt-1 flex h-10 w-10 items-center justify-center rounded-full border bg-background shadow-sm ring-1 ring-border z-10 overflow-hidden">
                                     <Avatar className="w-full h-full">
-                                        <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${task.assignedTo || 'currentUser'}`} />
+                                        <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${task.assignedTo || 'currentUser'}`}  alt="User avatar" />
                                         <AvatarFallback>Me</AvatarFallback>
                                     </Avatar>
                                 </div>

@@ -24,25 +24,25 @@ export function ContactsTable({ contacts, onEdit, onDelete }: ContactsTableProps
     }
 
     return (
-        <div className="bg-card rounded-lg border border-border overflow-hidden">
+        <div className="bg-card/60 backdrop-blur-2xl rounded-3xl border border-border/50 shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
                 <table className="w-full">
-                    <thead className="bg-muted/50 border-b border-border">
+                    <thead className="border-b border-border/30">
                         <tr>
-                            <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Name</th>
-                            <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Client</th>
-                            <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Job Title</th>
-                            <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Contact</th>
-                            <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Last Contacted</th>
-                            <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Primary</th>
-                            <th className="text-right px-4 py-3 text-sm font-medium text-muted-foreground">Actions</th>
+                            <th className="text-left px-5 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Name</th>
+                            <th className="text-left px-5 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Client</th>
+                            <th className="text-left px-5 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Job Title</th>
+                            <th className="text-left px-5 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Contact</th>
+                            <th className="text-left px-5 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Last Contacted</th>
+                            <th className="text-left px-5 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Primary</th>
+                            <th className="text-right px-5 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-border">
+                    <tbody className="divide-y divide-border/30">
                         {contacts.map((contact) => (
-                            <tr 
-                                key={contact.id} 
-                                className="hover:bg-muted/50 transition-colors"
+                            <tr
+                                key={contact.id}
+                                className="hover:bg-muted/40 transition-colors group"
                             >
                                 <td className="px-4 py-3">
                                     <div className="flex items-center gap-3">

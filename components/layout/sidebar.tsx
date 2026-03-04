@@ -14,7 +14,8 @@ import {
     PieChart,
     CheckSquare,
     Terminal,
-    TrendingUp
+    TrendingUp,
+    UsersRound
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -28,7 +29,7 @@ export const NAVIGATION_ITEMS = [
     { name: 'Tasks', href: ROUTES.TASKS, icon: CheckSquare },
     { name: 'Proposals', href: ROUTES.PROPOSALS, icon: FileText },
     { name: 'Calendar', href: ROUTES.CALENDAR, icon: Calendar },
-    { name: 'Team Hub', href: ROUTES.TEAM, icon: Users },
+    { name: 'Team Hub', href: ROUTES.TEAM, icon: UsersRound },
     { name: 'Reports', href: ROUTES.REPORTS, icon: PieChart },
 ];
 
@@ -36,11 +37,13 @@ export function Sidebar({ className }: { className?: string }) {
     const pathname = usePathname();
 
     return (
-        <div className={cn("flex flex-col h-full bg-sidebar", className)}>
+        <div className={cn("flex flex-col h-full bg-sidebar/80 backdrop-blur-xl border-r border-sidebar-border transition-colors duration-300", className)}>
             <div className="h-16 flex items-center px-6 border-b border-border/50 shrink-0">
                 <Link href={ROUTES.DASHBOARD} className="flex items-center gap-2 font-bold text-xl tracking-tight text-primary">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <span className="text-primary text-xl">C</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                            <path d="M12 2L2 12l10 10 10-10L12 2zm0 14.5L7.5 12 12 7.5 16.5 12 12 16.5z" />
+                        </svg>
                     </div>
                     ChromaBase
                 </Link>
@@ -49,7 +52,7 @@ export function Sidebar({ className }: { className?: string }) {
             <ScrollArea className="flex-1 w-full p-4">
                 <div className="space-y-1">
                     {NAVIGATION_ITEMS.map((item) => {
-                        const isActive = pathname === item.href;
+                        const isActive = pathname === item.href || (pathname.startsWith(`${item.href}/`));
                         const Icon = item.icon;
 
                         return (
@@ -57,10 +60,10 @@ export function Sidebar({ className }: { className?: string }) {
                                 key={item.href}
                                 href={item.href}
                                 className={cn(
-                                    "flex items-center gap-3 px-3 py-2 rounded-md transition-all text-sm font-medium",
+                                    "flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 text-sm font-medium",
                                     isActive
-                                        ? "bg-primary/10 text-primary"
-                                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                        ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
+                                        : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                                 )}
                             >
                                 <Icon className="w-4 h-4" />

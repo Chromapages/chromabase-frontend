@@ -82,7 +82,22 @@ export function useEntity<T extends { id: string }>(collectionName: string, mock
             await deleteDocument(collectionName, id);
             return id;
         },
-        onSuccess: () => {
+        onMutate: async (id: string) => {
+            await queryClient.cancelQueries({ queryKey });
+            const previousItems = queryClient.getQueryData<T[]>(queryKey);
+            queryClient.setQueryData<T[]>(queryKey, (old) => {
+                if (!old) return old;
+                return old.filter(item => item.id !== id);
+            });
+            return { previousItems };
+        },
+        onError: (err, id, context) => {
+            if (context?.previousItems) {
+                queryClient.setQueryData(queryKey, context.previousItems);
+            }
+            console.error(`[useEntity] Error deleting from ${collectionName}:`, err);
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey });
         },
     });
@@ -92,7 +107,22 @@ export function useEntity<T extends { id: string }>(collectionName: string, mock
             await bulkDeleteDocuments(collectionName, ids);
             return ids;
         },
-        onSuccess: () => {
+        onMutate: async (ids: string[]) => {
+            await queryClient.cancelQueries({ queryKey });
+            const previousItems = queryClient.getQueryData<T[]>(queryKey);
+            queryClient.setQueryData<T[]>(queryKey, (old) => {
+                if (!old) return old;
+                return old.filter(item => !ids.includes(item.id));
+            });
+            return { previousItems };
+        },
+        onError: (err, ids, context) => {
+            if (context?.previousItems) {
+                queryClient.setQueryData(queryKey, context.previousItems);
+            }
+            console.error(`[useEntity] Error bulk deleting from ${collectionName}:`, err);
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey });
         },
     });

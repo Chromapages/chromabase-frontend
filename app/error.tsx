@@ -10,12 +10,20 @@ export default function GlobalError({
     reset,
 }: {
     error: Error & { digest?: string };
-    reset: () => void;
+    reset?: () => void;
 }) {
     useEffect(() => {
         // Log the error to an error reporting service
         console.error(error);
     }, [error]);
+
+    const handleReset = () => {
+        try {
+            reset?.();
+        } catch (e) {
+            window.location.reload();
+        }
+    };
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 text-center">
@@ -32,7 +40,7 @@ export default function GlobalError({
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                    <Button onClick={() => reset()} className="w-full sm:w-auto">
+                    <Button onClick={handleReset} className="w-full sm:w-auto">
                         <RefreshCcw className="mr-2 h-4 w-4" /> Try again
                     </Button>
                     <Button variant="outline" asChild className="w-full sm:w-auto">
