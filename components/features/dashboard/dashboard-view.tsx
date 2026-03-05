@@ -1,13 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { CardGridSkeleton } from '@/components/shared/loading-skeleton';
+import { CalendarSkeleton } from '@/components/shared/loading-skeleton';
 import { formatDistanceToNow } from 'date-fns';
 import {
-    ExternalLink, CheckCircle2, CalendarDays, CheckSquare, Activity, Building2
+    CheckCircle2, CalendarDays, CheckSquare, Activity, Building2
 } from 'lucide-react';
 import { Lead, Client, Activity as ActivityType, Deal, CRMTask, Appointment } from '@/types';
-import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { CalendarView } from '@/components/features/calendar/calendar-view';
 import { MobileVerticalFeed } from '@/components/features/dashboard/mobile-vertical-feed';
@@ -37,11 +36,33 @@ export function DashboardView({
     leads, clients, deals, tasks, activities, appointments, isLoading, error,
 }: DashboardViewProps) {
     const [taskFilter, setTaskFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
+    const [nowTimestamp] = useState(() => Date.now());
+    const [todayDateString] = useState(() => new Date().toDateString());
 
     if (isLoading) {
         return (
-            <div className="p-6">
-                <CardGridSkeleton count={3} />
+            <div className="flex flex-col gap-6 p-6 animate-pulse">
+                {/* KPI Skeletons */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                        <div key={i} className="aspect-square rounded-2xl bg-muted/20 border border-border/40" />
+                    ))}
+                </div>
+                {/* Main Grid Skeleton */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-0">
+                    <div className="lg:col-span-3 rounded-2xl bg-muted/10 border border-border/40" />
+                    <div className="lg:col-span-6 rounded-3xl bg-card border border-border/50 overflow-hidden shadow-sm">
+                        <div className="p-5 border-b border-border/40 flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-muted/30" />
+                                <div className="h-6 w-40 rounded-md bg-muted/20" />
+                            </div>
+                            <div className="h-9 w-32 rounded-xl bg-muted/20" />
+                        </div>
+                        <CalendarSkeleton />
+                    </div>
+                    <div className="lg:col-span-3 rounded-2xl bg-muted/10 border border-border/40" />
+                </div>
             </div>
         );
     }
@@ -91,16 +112,17 @@ export function DashboardView({
                 </section>
 
                 {/* ── CENTER: Calendar / Mobile Feed ─────────────── */}
-                <section className="lg:col-span-6 flex flex-col bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
-                    <div className="px-4 py-3 border-b border-border/50 flex items-center gap-2">
+                <section className="lg:col-span-6 flex flex-col bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.07),0_0_0_1px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.04)] transition-shadow duration-200">
+                    {/* Mobile Only Header */}
+                    <div className="lg:hidden px-4 py-3 border-b border-border/40 flex items-center gap-2">
                         <CalendarDays className="w-4 h-4 text-primary/70" />
                         <h2 className="text-[13px] font-semibold text-foreground tracking-[-0.02em]">
-                            <span className="hidden lg:inline">Unified Calendar</span>
-                            <span className="inline lg:hidden">Your Feed</span>
+                            Your Feed
                         </h2>
                     </div>
-                    <div className="flex-1 min-h-[400px] overflow-hidden">
-                        <div className="hidden lg:flex h-full overflow-y-auto scrollbar-thin">
+
+                    <div className="flex-1 min-h-[760px] lg:min-h-[860px] overflow-hidden">
+                        <div className="hidden lg:flex h-full">
                             <CalendarView tasks={tasks} appointments={appointments} isLoading={false} />
                         </div>
                         <div className="block lg:hidden overflow-y-auto scrollbar-thin h-full">
@@ -160,8 +182,8 @@ export function DashboardView({
                             priorityTasks.map(task => {
                                 const pCfg = priorityConfig[task.priority as keyof typeof priorityConfig]
                                     ?? priorityConfig.low;
-                                const isOverdue = task.dueDate && task.dueDate < Date.now();
-                                const isToday = task.dueDate && new Date(task.dueDate).toDateString() === new Date().toDateString();
+                                const isOverdue = task.dueDate && task.dueDate < nowTimestamp;
+                                const isToday = task.dueDate && new Date(task.dueDate).toDateString() === todayDateString;
 
                                 return (
                                     <div

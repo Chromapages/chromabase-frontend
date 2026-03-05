@@ -1,8 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
-import { Card } from '@/components/ui/card';
-import { Users, DollarSign, Building2, CheckSquare, TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, Users, DollarSign, Building2, CheckSquare } from 'lucide-react';
 import { Lead, Client, Deal, CRMTask } from '@/types';
 import { cn } from '@/lib/utils';
 
@@ -13,106 +11,167 @@ interface KPICardsProps {
     tasks: CRMTask[] | undefined;
 }
 
-
-
 function formatCurrency(value: number) {
-    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
-    if (value >= 1000) return `$${(value / 1000).toFixed(1)}K`;
+    if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
+    if (value >= 1_000)     return `$${(value / 1_000).toFixed(1)}K`;
     return `$${value}`;
 }
 
+/*
+ * KPICards — Swiss Modernism 2.0 × Apple HIG
+ *
+ * Layout (per card):
+ *  ┌─────────────────────────────────┐
+ *  │  [Icon]            [↑ +12%]     │  ← top row: icon + trend pill
+ *  │                                 │
+ *  │                                 │
+ *  │  42                             │  ← center: large display value
+ *  │  Total Leads                    │  ← bottom: label
+ *  └─────────────────────────────────┘
+ *
+ *  aspect-square  ·  rounded-3xl  ·  glassmorphism border
+ */
 export function KPICards({ leads = [], clients = [], deals = [], tasks = [] }: KPICardsProps) {
-    // 1. Leads KPI
-    const totalLeads = leads.length;
-
-    // 2. Pipeline KPI
-    const pipelineValue = deals.reduce((sum, deal) => sum + (deal.value || 0), 0);
-
-    // 3. Active Clients KPI
+    const totalLeads    = leads.length;
+    const pipelineValue = deals.reduce((sum, d) => sum + (d.value || 0), 0);
     const activeClients = clients.filter(c => c.status === 'active').length;
-
-    // 4. Tasks Due KPI
-    const tasksDue = tasks.filter(t => t.status !== 'completed').length;
+    const tasksDue      = tasks.filter(t => t.status !== 'completed').length;
+    const openDeals     = deals.filter(d => d.stage !== 'closed_won' && d.stage !== 'closed_lost').length;
+    const wonDeals      = deals.filter(d => d.stage === 'closed_won').length;
+    const winRate       = deals.length > 0 ? Math.round((wonDeals / deals.length) * 100) : 0;
 
     const cards = [
         {
-            title: 'Total Leads',
-            value: totalLeads.toString(),
-            delta: '+12%',
-            trend: 'up',
-            icon: Users,
-            color: 'var(--color-primary)', // Apple Blue
-            colorHex: '#007AFF',
-            badgeBg: 'bg-success/10',
-            badgeText: 'text-success/90',
+            label:    'Total Leads',
+            value:    totalLeads.toString(),
+            delta:    '+12%',
+            positive: true,
+            icon:     Users,
+            iconColor: '#007AFF',
+            accent:   'rgba(0,122,255,0.08)',
         },
         {
-            title: 'Pipeline Value',
-            value: formatCurrency(pipelineValue),
-            delta: '+24%',
-            trend: 'up',
-            icon: DollarSign,
-            color: 'var(--color-warning)', // Orange/Amber
-            colorHex: '#FF9500',
-            badgeBg: 'bg-warning/10',
-            badgeText: 'text-warning/90',
+            label:    'Pipeline Value',
+            value:    formatCurrency(pipelineValue),
+            delta:    '+24%',
+            positive: true,
+            icon:     DollarSign,
+            iconColor: '#34C759',
+            accent:   'rgba(52,199,89,0.08)',
         },
         {
-            title: 'Active Clients',
-            value: activeClients.toString(),
-            delta: '-4%',
-            trend: 'down',
-            icon: Building2,
-            color: 'var(--color-destructive)', // Red
-            colorHex: '#FF3B30',
-            badgeBg: 'bg-destructive/10',
-            badgeText: 'text-destructive/90',
+            label:    'Active Clients',
+            value:    activeClients.toString(),
+            delta:    '-4%',
+            positive: false,
+            icon:     Building2,
+            iconColor: '#FF9500',
+            accent:   'rgba(255,149,0,0.08)',
         },
         {
-            title: 'Tasks Due',
-            value: tasksDue.toString(),
-            delta: '-18%',
-            trend: 'down',
-            icon: CheckSquare,
-            color: 'var(--color-sidebar-accent-foreground)', // Purple/Indigo
-            colorHex: '#5856D6',
-            badgeBg: 'bg-destructive/10',
-            badgeText: 'text-destructive/90',
-        }
-    ];
+            label:    'Tasks Due',
+            value:    tasksDue.toString(),
+            delta:    '-18%',
+            positive: false,
+            icon:     CheckSquare,
+            iconColor: '#5856D6',
+            accent:   'rgba(88,86,214,0.08)',
+        },
+        {
+            label:    'Open Deals',
+            value:    openDeals.toString(),
+            delta:    '+8%',
+            positive: true,
+            icon:     TrendingUp,
+            iconColor: '#FF2D55',
+            accent:   'rgba(255,45,85,0.08)',
+        },
+        {
+            label:    'Win Rate',
+            value:    `${winRate}%`,
+            delta:    '+3%',
+            positive: true,
+            icon:     TrendingUp,
+            iconColor: '#30D158',
+            accent:   'rgba(48,209,88,0.08)',
+        },
+    ] as const;
 
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            {cards.map((card, index) => {
-                const Icon = card.icon;
-                const TrendIcon = card.trend === 'up' ? TrendingUp : TrendingDown;
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {cards.map((card) => {
+                const Icon      = card.icon;
+                const TrendIcon = card.positive ? TrendingUp : TrendingDown;
 
                 return (
-                    <Card
-                        key={index}
-                        className="relative overflow-hidden border-border/60 bg-card/80 backdrop-blur-xl shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300 rounded-xl"
+                    <div
+                        key={card.label}
+                        className={cn(
+                            'group relative aspect-square flex flex-col justify-between',
+                            'rounded-2xl p-4 overflow-hidden',
+                            /* Glassmorphism surface */
+                            'bg-card/80 backdrop-blur-xl',
+                            'border border-border/60',
+                            /* Swiss shadow scale */
+                            'shadow-[0_2px_8px_rgba(0,0,0,0.05),0_0_0_1px_rgba(0,0,0,0.03)]',
+                            'hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.04)]',
+                            'transition-shadow duration-200',
+                            'cursor-default',
+                        )}
                     >
-                        <div className="p-4 z-10">
-                            <div className="flex items-center justify-between mb-2">
-                                <h3 className="text-[13px] font-medium text-foreground/80 tracking-[-0.01em]">
-                                    {card.title}
-                                </h3>
-                                <div className="p-1.5 rounded-md bg-muted/50 border border-border/50">
-                                    <Icon className="w-4 h-4 text-foreground/70" style={{ color: card.colorHex }} />
-                                </div>
+                        {/* Accent radial glow — colour-matched to card icon */}
+                        <div
+                            className="absolute inset-0 rounded-3xl opacity-60 pointer-events-none transition-opacity duration-300 group-hover:opacity-100"
+                            style={{
+                                background: `radial-gradient(ellipse 80% 70% at 10% 10%, ${card.accent} 0%, transparent 70%)`,
+                            }}
+                            aria-hidden
+                        />
+
+                        {/* ── Top row: icon + trend pill ────────────── */}
+                        <div className="relative flex items-start justify-between">
+                            {/* Icon container */}
+                            <div
+                                className="w-9 h-9 rounded-xl flex items-center justify-center"
+                                style={{ background: card.accent }}
+                            >
+                                <Icon
+                                    className="w-4.5 h-4.5"
+                                    style={{ color: card.iconColor, width: 18, height: 18 }}
+                                />
                             </div>
 
-                            <div className="flex items-baseline gap-2">
-                                <span className="text-3xl font-semibold tracking-[-0.03em] text-foreground">
-                                    {card.value}
-                                </span>
-                                <div className={cn("flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-medium", card.badgeBg, card.badgeText)}>
-                                    <TrendIcon className="w-3 h-3" />
-                                    {card.delta}
-                                </div>
-                            </div>
+                            {/* Trend pill */}
+                            <span
+                                className={cn(
+                                    'inline-flex items-center gap-0.5',
+                                    'px-2 py-0.5 rounded-full',
+                                    'text-[10px] font-bold tabular-nums',
+                                    card.positive
+                                        ? 'bg-success/10 text-success'
+                                        : 'bg-destructive/10 text-destructive',
+                                )}
+                            >
+                                <TrendIcon className="shrink-0" style={{ width: 9, height: 9 }} />
+                                {card.delta}
+                            </span>
                         </div>
-                    </Card>
+
+                        {/* ── Bottom: value + label ─────────────────── */}
+                        <div className="relative mt-3">
+                            {/* Large display value — Swiss bold numerics */}
+                            <p
+                                className="text-[1.625rem] leading-none font-bold tracking-[-0.05em] text-foreground tabular-nums"
+                                style={{ fontFeatureSettings: '"tnum"' }}
+                            >
+                                {card.value}
+                            </p>
+                            {/* Descriptive label */}
+                            <p className="mt-1 text-[11px] font-medium text-muted-foreground/70 tracking-[0.01em]">
+                                {card.label}
+                            </p>
+                        </div>
+                    </div>
                 );
             })}
         </div>

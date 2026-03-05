@@ -23,9 +23,11 @@ import {
     ChevronRight,
     Zap,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/use-auth';
 
 /* ── Navigation schema — Swiss section discipline ─────────── */
 const MAIN_NAV = [
@@ -57,7 +59,7 @@ function NavSection({
     isCollapsed,
 }: {
     label?: string;
-    items: Array<{ name: string; href: string; icon: any }>;
+    items: Array<{ name: string; href: string; icon: LucideIcon }>;
     pathname: string;
     isCollapsed: boolean;
 }) {
@@ -110,6 +112,17 @@ function NavSection({
 export function Sidebar({ className, isMobile = false }: { className?: string; isMobile?: boolean }) {
     const pathname = usePathname();
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const { user } = useAuth();
+
+    const displayName = user?.displayName || user?.email?.split('@')[0] || 'User';
+    const userSubtext = user?.email || 'Administrator';
+    const initials = displayName
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part.charAt(0))
+        .join('')
+        .toUpperCase() || 'U';
 
     // Force expanded state on mobile
     const effectiveCollapsed = isMobile ? false : isCollapsed;
@@ -195,12 +208,12 @@ export function Sidebar({ className, isMobile = false }: { className?: string; i
                     effectiveCollapsed ? "justify-center px-0 bg-transparent" : "hover:bg-secondary/50 cursor-pointer"
                 )}>
                     <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center text-[13px] font-bold text-primary-foreground shadow-sm">
-                        JD
+                        {initials}
                     </div>
                     {!effectiveCollapsed && (
                         <div className="flex flex-col min-w-0 pr-2">
-                            <span className="text-[13px] font-bold truncate text-foreground">John Doe</span>
-                            <span className="text-[11px] text-muted-foreground truncate leading-none">Administrator</span>
+                            <span className="text-[13px] font-bold truncate text-foreground">{displayName}</span>
+                            <span className="text-[11px] text-muted-foreground truncate leading-none">{userSubtext}</span>
                         </div>
                     )}
                 </div>
@@ -252,4 +265,3 @@ export function Sidebar({ className, isMobile = false }: { className?: string; i
         </div>
     );
 }
-

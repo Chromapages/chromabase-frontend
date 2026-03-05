@@ -1,7 +1,8 @@
-import { formatDistanceToNow, isToday, isYesterday, startOfDay } from 'date-fns';
+import { formatDistanceToNow, isToday, isYesterday } from 'date-fns';
 import { Activity as ActivityRecord, Appointment, Lead } from '@/types';
-import { User, Phone, Mail, Calendar, FileText, CheckCircle2, MessageSquare, Plus, Activity } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Phone, Mail, Calendar, FileText, CheckCircle2, MessageSquare, Plus, Activity } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface ActivityFeedProps {
@@ -15,7 +16,7 @@ type TimelineItem = {
     timestamp: number;
     title: string;
     subtitle?: string;
-    icon: any;
+    icon: LucideIcon;
     color: string;
     isHighPriority?: boolean;
 };
@@ -85,7 +86,7 @@ function groupTimeline(items: TimelineItem[]) {
         else groups['Earlier'].push(item);
     });
 
-    return Object.entries(groups).filter(([_, items]) => items.length > 0);
+    return Object.entries(groups).filter(([, items]) => items.length > 0);
 }
 
 const containerVariants = {
@@ -130,12 +131,12 @@ export function ActivityFeed({ activities = [], appointments = [], leads = [] }:
     }
 
     return (
-        <div className="px-4 py-2 h-full overflow-hidden flex flex-col">
+        <div className="px-4 py-2 h-full min-h-0 flex flex-col">
             <motion.div
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="relative flex-1"
+                className="relative flex-1 min-h-0 overflow-y-auto pr-1 scrollbar-thin"
             >
                 {/* Visual Timeline Connector Line */}
                 <div className="absolute left-4 top-4 bottom-4 w-[1px] bg-linear-to-b from-primary/30 via-border/40 to-transparent" />
@@ -202,4 +203,3 @@ export function ActivityFeed({ activities = [], appointments = [], leads = [] }:
         </div>
     );
 }
-
