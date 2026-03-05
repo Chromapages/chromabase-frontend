@@ -94,10 +94,10 @@ export function DashboardView({
             <KPICards leads={leads} clients={clients} deals={deals} tasks={tasks} />
 
             {/* 3-6-3 Grid Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 min-h-0">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1">
 
-                {/* ── LEFT: Activity Feed (Replaces Accounts) ── */}
-                <section className="lg:col-span-3 flex flex-col bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
+                {/* ── LEFT: Activity Feed ── */}
+                <section className="lg:col-span-3 flex flex-col h-fit max-h-[700px] bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
                     <div className="px-4 py-3 border-b border-border/50 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <Activity className="w-4 h-4 text-primary/70" />
@@ -106,13 +106,13 @@ export function DashboardView({
                             </h2>
                         </div>
                     </div>
-                    <div className="flex-1 overflow-y-auto scrollbar-thin">
+                    <div className="overflow-y-auto scrollbar-thin">
                         <ActivityFeed activities={activities} appointments={appointments} leads={leads} />
                     </div>
                 </section>
 
                 {/* ── CENTER: Calendar / Mobile Feed ─────────────── */}
-                <section className="lg:col-span-6 flex flex-col bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.07),0_0_0_1px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.04)] transition-shadow duration-200">
+                <section className="lg:col-span-6 flex flex-col h-fit bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.07),0_0_0_1px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.04)] transition-shadow duration-200">
                     {/* Mobile Only Header */}
                     <div className="lg:hidden px-4 py-3 border-b border-border/40 flex items-center gap-2">
                         <CalendarDays className="w-4 h-4 text-primary/70" />
@@ -121,11 +121,11 @@ export function DashboardView({
                         </h2>
                     </div>
 
-                    <div className="flex-1 min-h-[760px] lg:min-h-[860px] overflow-hidden">
-                        <div className="hidden lg:flex h-full">
+                    <div className="overflow-hidden">
+                        <div className="hidden lg:block">
                             <CalendarView tasks={tasks} appointments={appointments} isLoading={false} />
                         </div>
-                        <div className="block lg:hidden overflow-y-auto scrollbar-thin h-full">
+                        <div className="block lg:hidden max-h-[600px] overflow-y-auto scrollbar-thin">
                             <MobileVerticalFeed
                                 appointments={appointments || []}
                                 tasks={tasks || []}
@@ -138,8 +138,8 @@ export function DashboardView({
                 </section>
 
                 {/* ── RIGHT: Priority Tasks ───────────────────────── */}
-                <section className="lg:col-span-3 flex flex-col bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
-                    <div className="px-4 py-3 border-b border-border/50 flex flex-col gap-2">
+                <section className="lg:col-span-3 flex flex-col h-fit max-h-[700px] bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
+                    <div className="px-4 py-3 border-b border-border/50 flex flex-col gap-2 shrink-0">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <CheckSquare className="w-4 h-4 text-primary/70" />
@@ -167,9 +167,9 @@ export function DashboardView({
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto scrollbar-thin p-2">
+                    <div className="overflow-y-auto scrollbar-thin p-2">
                         {priorityTasks.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-full py-8 text-center gap-1">
+                            <div className="flex flex-col items-center justify-center py-8 text-center gap-1">
                                 <CheckCircle2 className="w-8 h-8 text-success/40 mb-1" />
                                 <p className="text-[12px] font-medium text-muted-foreground/60">
                                     All caught up

@@ -51,11 +51,11 @@ function getEndpoint(collectionName: string): string {
     return ENDPOINT_MAP[collectionName] || `/api/${collectionName}`;
 }
 
-export const getDocument = async <T = any>(collectionName: string, id: string): Promise<T | null> => {
+export const getDocument = async <T = unknown>(collectionName: string, id: string): Promise<T | null> => {
     return apiRequest<T>(`${getEndpoint(collectionName)}/${id}`);
 };
 
-export const getDocuments = async <T = any>(collectionName: string): Promise<T[]> => {
+export const getDocuments = async <T = unknown>(collectionName: string): Promise<T[]> => {
     try {
         const data = await apiRequest<T[]>(getEndpoint(collectionName));
         return Array.isArray(data) ? data : [];
@@ -65,7 +65,7 @@ export const getDocuments = async <T = any>(collectionName: string): Promise<T[]
     }
 };
 
-export const addDocument = async <T = any>(collectionName: string, data: Partial<T>): Promise<string> => {
+export const addDocument = async <T = unknown>(collectionName: string, data: Partial<T>): Promise<string> => {
     const result = await apiRequest<{ id: string }>(getEndpoint(collectionName), {
         method: 'POST',
         body: JSON.stringify(data),
@@ -73,7 +73,7 @@ export const addDocument = async <T = any>(collectionName: string, data: Partial
     return result.id;
 };
 
-export const updateDocument = async <T = any>(collectionName: string, id: string, data: Partial<T>): Promise<void> => {
+export const updateDocument = async <T = unknown>(collectionName: string, id: string, data: Partial<T>): Promise<void> => {
     await apiRequest(`${getEndpoint(collectionName)}/${id}`, {
         method: 'PUT',
         body: JSON.stringify(data),
@@ -93,11 +93,35 @@ export const bulkDeleteDocuments = async (collectionName: string, ids: string[])
     });
 };
 
-export const bulkUpdateDocuments = async <T = any>(collectionName: string, ids: string[], data: Partial<T>): Promise<void> => {
-    await apiRequest(`${getEndpoint(collectionName)}/bulk-update`, {
-        method: 'PUT',
-        body: JSON.stringify({ ids, data }),
-    });
+export const bulkUpdateDocuments = async <T = unknown>(collectionName: string, ids: string[], data: Partial<T>): Promise<void> => {
+    const endpoint = `${getEndpoint(collectionName)}/bulk-update`;
+    const payload = JSON.stringify({ ids, data });
+
+    try {
+        await apiRequest(endpoint, {
+            method: 'PUT',
+            body: payload,
+        });
+        return;
+    } catch (error) {
+        const message = error instanceof Error ? error.message.toLowerCase() : '';
+        if (!message.includes('not found')) {
+            throw error;
+        }
+    }
+
+    try {
+        await apiRequest(endpoint, {
+            method: 'POST',
+            body: payload,
+        });
+        return;
+    } catch (error) {
+        const message = error instanceof Error ? error.message.toLowerCase() : '';
+        if (!message.includes('not found')) {
+            throw error;
+        }
+    }
+
+    await Promise.all(ids.map((id) => updateDocument<T>(collectionName, id, data)));
 };
-
-

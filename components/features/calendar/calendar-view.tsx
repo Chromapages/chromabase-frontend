@@ -47,7 +47,7 @@ export function CalendarView({ tasks, appointments, isLoading }: CalendarViewPro
     const days = eachDayOfInterval({ start: startDate, end: endDate });
 
     return (
-        <div className="flex flex-col h-full gap-4 p-5">
+        <div className="flex flex-col gap-4 p-5 w-full">
 
             {/* ── Header Toolbar ────────────────────────────────── */}
             <div className="flex items-center justify-between flex-wrap gap-4">
@@ -100,7 +100,7 @@ export function CalendarView({ tasks, appointments, isLoading }: CalendarViewPro
             </div>
 
             {/* ── Calendar Grid ─────────────────────────────────── */}
-            <div className="flex-1 min-h-[450px] rounded-2xl overflow-hidden border border-border/40 bg-card/40 backdrop-blur-xl flex flex-col shadow-2xl shadow-primary/5">
+            <div className="rounded-2xl overflow-hidden border border-border/40 bg-card/40 backdrop-blur-xl flex flex-col shadow-2xl shadow-primary/5">
                 {isLoading ? (
                     <CalendarSkeleton weeks={view === 'month' ? 6 : 1} />
                 ) : (
@@ -108,18 +108,22 @@ export function CalendarView({ tasks, appointments, isLoading }: CalendarViewPro
                         {/* Day Labels */}
                         <div className="grid grid-cols-7 border-b border-border/10 bg-muted/5">
                             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                                <div key={day} className="py-3 text-center text-[10px] font-bold tracking-widest uppercase text-muted-foreground/40">
+                                <div key={day} className="py-2 text-center text-[10px] font-bold tracking-widest uppercase text-muted-foreground/40">
                                     {day}
                                 </div>
                             ))}
                         </div>
 
                         {/* Grid Body */}
-                        <div className={cn(
-                            'flex-1 grid grid-cols-7',
-                            view === 'month' ? 'grid-rows-6' : 'grid-rows-1',
-                        )}>
-                            {days.map((day) => {
+                        <div
+                            className="grid grid-cols-7"
+                            style={{
+                                gridTemplateRows: view === 'month'
+                                    ? 'repeat(6, minmax(78px, auto))'
+                                    : 'minmax(120px, auto)',
+                            }}
+                        >
+                            {days.map((day, cellIndex) => {
                                 const dayTasks = tasks?.filter(t => t.dueDate && isSameDay(new Date(t.dueDate), day)) || [];
                                 const dayAppointments = (appointments ?? [])
                                     .filter(a => isSameDay(new Date(a.startTime), day))
@@ -141,15 +145,15 @@ export function CalendarView({ tasks, appointments, isLoading }: CalendarViewPro
                                         key={day.toString()}
                                         className={cn(
                                             'border-r border-b border-border/10 last:border-r-0',
-                                            'flex flex-col gap-1 p-1.5 transition-all duration-300 group',
+                                            'flex flex-col gap-0.5 p-1 transition-all duration-300 group',
                                             !isCurrentMonth && 'bg-muted/5 opacity-40',
                                             todayDay && 'bg-primary/[0.03]',
                                             'hover:bg-muted/20'
                                         )}
                                     >
-                                        <div className="flex items-center justify-between mb-0.5">
+                                        <div className="flex items-center justify-between">
                                             <span className={cn(
-                                                'w-7 h-7 flex items-center justify-center rounded-full text-sm font-bold tabular-nums transition-all duration-300',
+                                                'w-5 h-5 flex items-center justify-center rounded-full text-[10px] font-bold tabular-nums transition-all duration-300',
                                                 todayDay
                                                     ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/30 scale-110'
                                                     : 'text-foreground/80 group-hover:text-primary group-hover:scale-105'
