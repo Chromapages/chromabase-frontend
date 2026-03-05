@@ -1,5 +1,5 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
+import { getAuth, type Auth } from 'firebase/auth';
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -10,8 +10,23 @@ const firebaseConfig = {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase only on the client or safely on the server if needed
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-export const auth = getAuth(app);
+/*
+ * Guard Firebase initialization to browser environments only.
+ *
+ * Next.js SSR / static prerender runs module-level code on the server where
+ * NEXT_PUBLIC_* env vars may be undefined (build-time) or browser APIs
+ * unavailable. All actual auth usage (onAuthStateChanged, signInWithPopup,
+ * signOut) lives inside useEffect / event handlers that only run in the
+ * browser, so null server-side values are safe.
+ */
+const isClient = typeof window !== 'undefined';
+
+const app: FirebaseApp = isClient
+    ? (!getApps().length ? initializeApp(firebaseConfig) : getApp())
+    : (null as unknown as FirebaseApp);
+
+export const auth: Auth = isClient
+    ? getAuth(app)
+    : (null as unknown as Auth);
 
 export default app;
