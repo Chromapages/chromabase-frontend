@@ -241,3 +241,33 @@ export interface Notification {
   readAt?: number;
   createdAt: number;
 }
+
+export interface WorkflowTrigger {
+  type: 'task_completed' | 'client_created' | 'task_overdue' | 'task_status_changed';
+  conditions?: Record<string, unknown>;
+}
+
+export interface WorkflowAction {
+  type: 'create_task' | 'send_notification' | 'update_task';
+  payload?: Record<string, unknown>;
+}
+
+export interface WorkflowLog {
+  id: string;
+  workflowId: string;
+  triggeredAt: number;
+  status: 'success' | 'failed';
+  details?: string;
+}
+
+export interface Workflow {
+  id: string;
+  name: string;
+  description: string;
+  isActive: boolean;
+  trigger: WorkflowTrigger;
+  action: WorkflowAction;
+  lastTriggeredAt?: number;
+  createdAt: number;
+  updatedAt: number;
+}

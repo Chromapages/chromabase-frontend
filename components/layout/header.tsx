@@ -1,6 +1,7 @@
 'use client';
 
-import { Bell, Search, Menu, Moon, Sun } from 'lucide-react';
+import { Bell, Search, Menu, Moon, Sun, HelpCircle } from 'lucide-react';
+import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { NotificationCenter } from '@/components/features/notifications/notification-center';
 import { useAuth } from '@/hooks/use-auth';
@@ -22,6 +23,7 @@ import {
 } from '@/components/ui/sheet';
 import { Sidebar } from './sidebar';
 import { cn } from '@/lib/utils';
+import { ROUTES } from '@/constants';
 
 export function Header() {
     const { theme, setTheme } = useTheme();
@@ -93,6 +95,19 @@ export function Header() {
                 >
                     <Search className="w-4 h-4" />
                     <span className="sr-only">Search</span>
+                </Button>
+
+                {/* Help button */}
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                    asChild
+                >
+                    <Link href={ROUTES.GUIDE}>
+                        <HelpCircle className="h-4 w-4" />
+                        <span className="sr-only">Help Guide</span>
+                    </Link>
                 </Button>
 
                 {/* Theme toggle */}

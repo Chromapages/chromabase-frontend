@@ -17,6 +17,8 @@ export const ROUTES = {
   REPORTS: '/reports',
   CONTACTS: '/contacts',
   CAMPAIGNS: '/campaigns',
+  WORKFLOWS: '/workflows',
+  GUIDE: '/guide',
 } as const;
 
 // Deal stage options
@@ -31,10 +33,11 @@ export const DEAL_STAGE_OPTIONS = [
 
 // Lead status options
 export const LEAD_STATUS_OPTIONS = [
-  { value: 'new', label: 'New' },
+  { value: 'new', label: 'New Lead' },
   { value: 'contacted', label: 'Contacted' },
-  { value: 'qualified', label: 'Qualified' },
-  { value: 'converted', label: 'Converted' },
+  { value: 'meeting_scheduled', label: 'Meeting Scheduled' },
+  { value: 'proposal_sent', label: 'Proposal Sent' },
+  { value: 'won', label: 'Won' },
   { value: 'lost', label: 'Lost' },
 ] as const;
 

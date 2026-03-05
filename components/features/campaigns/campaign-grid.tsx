@@ -28,6 +28,8 @@ export function CampaignGrid({ campaigns, isLoading }: CampaignGridProps) {
     const { useDelete } = useCampaigns();
     const deleteMutation = useDelete();
 
+    const [searchQuery, setSearchQuery] = useState('');
+
     const handleEdit = (campaign: Campaign) => {
         setSelectedCampaign(campaign);
         setIsDialogOpen(true);
@@ -42,7 +44,6 @@ export function CampaignGrid({ campaigns, isLoading }: CampaignGridProps) {
             </div>
         );
     }
-    const [searchQuery, setSearchQuery] = useState('');
 
     const filtered = campaigns.filter(c =>
         c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

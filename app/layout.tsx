@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import { Providers } from './providers';
 import { AppShell } from '@/components/layout/app-shell';
+import { Toaster } from 'sonner';
 import { Fira_Code, Inter } from 'next/font/google';
 
 /*
@@ -32,7 +33,7 @@ export const viewport: Viewport = {
     initialScale: 1,
     themeColor: [
         { media: '(prefers-color-scheme: light)', color: '#f5f5f7' },
-        { media: '(prefers-color-scheme: dark)',  color: '#000000' },
+        { media: '(prefers-color-scheme: dark)', color: '#000000' },
     ],
 };
 
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <AppShell>
                         {children}
                     </AppShell>
+                    <Toaster position="bottom-right" theme="system" />
                 </Providers>
             </body>
         </html>

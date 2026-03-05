@@ -5,24 +5,27 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { useTasks, useUsers } from '@/hooks';
+import { useTasks, useUsers, useClients } from '@/hooks';
 import { TaskStatus, TaskPriority, CRMTask } from '@/types';
 import { cn } from '@/lib/utils';
-import { Calendar, Tag, AlertCircle, User as UserIcon } from 'lucide-react';
+import { Calendar, Tag, AlertCircle, User as UserIcon, Building } from 'lucide-react';
 
 interface TaskDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     initialStatus?: TaskStatus;
     task?: CRMTask | null;
+    defaultAccountId?: string;
 }
 
-export function TaskDialog({ open, onOpenChange, initialStatus, task }: TaskDialogProps) {
+export function TaskDialog({ open, onOpenChange, initialStatus, task, defaultAccountId }: TaskDialogProps) {
     const { useCreate, useUpdate } = useTasks();
     const createTask = useCreate();
     const updateTask = useUpdate();
     const { useList: useUsersList } = useUsers();
     const { data: users } = useUsersList();
+    const { useList: useClientsList } = useClients();
+    const { data: clients } = useClientsList();
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -31,6 +34,7 @@ export function TaskDialog({ open, onOpenChange, initialStatus, task }: TaskDial
     const [status, setStatus] = useState<TaskStatus>('todo');
     const [dueDate, setDueDate] = useState('');
     const [assignedTo, setAssignedTo] = useState('');
+    const [accountId, setAccountId] = useState('');
     const [error, setError] = useState('');
 
     useEffect(() => {
@@ -42,6 +46,7 @@ export function TaskDialog({ open, onOpenChange, initialStatus, task }: TaskDial
             setStatus(task.status);
             setDueDate(new Date(task.dueDate).toISOString().split('T')[0]);
             setAssignedTo(task.assignedTo);
+            setAccountId(task.accountId || '');
         } else {
             setTitle('');
             setDescription('');
@@ -50,9 +55,10 @@ export function TaskDialog({ open, onOpenChange, initialStatus, task }: TaskDial
             setStatus(initialStatus || 'todo');
             setDueDate(new Date().toISOString().split('T')[0]);
             setAssignedTo('');
+            setAccountId(defaultAccountId || '');
         }
         setError('');
-    }, [task, initialStatus, open]);
+    }, [task, initialStatus, open, defaultAccountId]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -79,6 +85,7 @@ export function TaskDialog({ open, onOpenChange, initialStatus, task }: TaskDial
             priority,
             dueDate: dueDateTimestamp,
             assignedTo,
+            accountId: accountId || undefined,
             status,
             updatedAt: Date.now(),
         };
@@ -86,7 +93,7 @@ export function TaskDialog({ open, onOpenChange, initialStatus, task }: TaskDial
         if (task) {
             updateTask.mutate({ id: task.id, data: taskData }, {
                 onSuccess: () => onOpenChange(false),
-                onError: (err) => setError(err instanceof Error ? err.message : 'Failed to update task')
+                onError: (err: Error) => setError(err instanceof Error ? err.message : 'Failed to update task')
             });
         } else {
             createTask.mutate({
@@ -95,7 +102,7 @@ export function TaskDialog({ open, onOpenChange, initialStatus, task }: TaskDial
                 createdAt: Date.now(),
             }, {
                 onSuccess: () => onOpenChange(false),
-                onError: (err) => setError(err instanceof Error ? err.message : 'Failed to create task')
+                onError: (err: Error) => setError(err instanceof Error ? err.message : 'Failed to create task')
             });
         }
     };
@@ -210,28 +217,48 @@ export function TaskDialog({ open, onOpenChange, initialStatus, task }: TaskDial
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="assignedTo" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 flex items-center gap-1.5">
-                                <UserIcon className="w-3 h-3" /> Assign To
-                            </Label>
-                            <Select value={assignedTo} onValueChange={setAssignedTo}>
-                                <SelectTrigger id="assignedTo" className="h-10 bg-muted/20 border-border/40 text-sm font-medium">
-                                    <SelectValue placeholder="Select team member" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {users?.map((user: any) => {
-                                        const displayName = user.displayName ||
-                                            (user.firstName || user.lastName ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : null) ||
-                                            user.name ||
-                                            (user.email ? user.email.split('@')[0] : 'Unknown User');
-                                        return (
-                                            <SelectItem key={user.id} value={user.id}>
-                                                {displayName}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="assignedTo" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 flex items-center gap-1.5">
+                                    <UserIcon className="w-3 h-3" /> Assign To
+                                </Label>
+                                <Select value={assignedTo} onValueChange={setAssignedTo}>
+                                    <SelectTrigger id="assignedTo" className="h-10 bg-muted/20 border-border/40 text-sm font-medium">
+                                        <SelectValue placeholder="Select team member" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {users?.map((user: any) => {
+                                            const displayName = user.displayName ||
+                                                (user.firstName || user.lastName ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : null) ||
+                                                user.name ||
+                                                (user.email ? user.email.split('@')[0] : 'Unknown User');
+                                            return (
+                                                <SelectItem key={user.id} value={user.id}>
+                                                    {displayName}
+                                                </SelectItem>
+                                            );
+                                        })}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="accountId" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80 flex items-center gap-1.5">
+                                    <Building className="w-3 h-3" /> Related Account
+                                </Label>
+                                <Select value={accountId || 'none'} onValueChange={(v) => setAccountId(v === 'none' ? '' : v)}>
+                                    <SelectTrigger id="accountId" className="h-10 bg-muted/20 border-border/40 text-sm font-medium">
+                                        <SelectValue placeholder="Select account..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="none" className="text-muted-foreground italic">None</SelectItem>
+                                        {clients?.map((client: any) => (
+                                            <SelectItem key={client.id} value={client.id}>
+                                                {client.companyName}
                                             </SelectItem>
-                                        );
-                                    })}
-                                </SelectContent>
-                            </Select>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                     </div>
 

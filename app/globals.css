@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
 
 /* Exclude macOS AppleDouble resource fork files from Tailwind scanning */
 @source not "../**/._*";
@@ -56,13 +57,20 @@
   --color-sidebar-ring: var(--sidebar-ring);
 
   /* Radius — 8pt grid, Swiss proportion system */
-  --radius-sm: calc(var(--radius) - 4px);   /* 8px  — inputs, small chips */
-  --radius-md: calc(var(--radius) - 2px);   /* 10px — buttons */
-  --radius-lg: var(--radius);               /* 12px — cards */
-  --radius-xl: calc(var(--radius) + 4px);   /* 16px — panels */
-  --radius-2xl: calc(var(--radius) + 8px);  /* 20px — sheets */
-  --radius-3xl: calc(var(--radius) + 12px); /* 24px — modals */
-  --radius-4xl: calc(var(--radius) + 16px); /* 28px — hero cards */
+  --radius-sm: calc(var(--radius) - 4px);
+  /* 8px  — inputs, small chips */
+  --radius-md: calc(var(--radius) - 2px);
+  /* 10px — buttons */
+  --radius-lg: var(--radius);
+  /* 12px — cards */
+  --radius-xl: calc(var(--radius) + 4px);
+  /* 16px — panels */
+  --radius-2xl: calc(var(--radius) + 8px);
+  /* 20px — sheets */
+  --radius-3xl: calc(var(--radius) + 12px);
+  /* 24px — modals */
+  --radius-4xl: calc(var(--radius) + 16px);
+  /* 28px — hero cards */
 }
 
 /* ============================================================
@@ -73,8 +81,10 @@
   --radius: 0.75rem;
 
   /* Backgrounds */
-  --background: #f5f5f7;         /* Apple off-white — not pure white */
-  --foreground: #1d1d1f;         /* Apple near-black */
+  --background: #f5f5f7;
+  /* Apple off-white — not pure white */
+  --foreground: #1d1d1f;
+  /* Apple near-black */
 
   /* Surfaces */
   --card: #ffffff;
@@ -83,23 +93,28 @@
   --popover-foreground: #1d1d1f;
 
   /* Brand */
-  --primary: #007AFF;            /* Apple Blue */
+  --primary: #007AFF;
+  /* Apple Blue */
   --primary-foreground: #ffffff;
 
   /* Neutral surfaces */
   --secondary: #e8e8ed;
   --secondary-foreground: #1d1d1f;
   --muted: #f2f2f7;
-  --muted-foreground: #6e6e73;   /* Apple secondary label */
+  --muted-foreground: #6e6e73;
+  /* Apple secondary label */
   --accent: #e5e5ea;
   --accent-foreground: #1d1d1f;
 
   /* Semantic */
-  --destructive: #ff3b30;        /* Apple Red */
+  --destructive: #ff3b30;
+  /* Apple Red */
   --destructive-foreground: #ffffff;
-  --success: #34c759;            /* Apple Green */
+  --success: #34c759;
+  /* Apple Green */
   --success-foreground: #ffffff;
-  --warning: #ff9500;            /* Apple Orange */
+  --warning: #ff9500;
+  /* Apple Orange */
   --warning-foreground: #ffffff;
 
   /* Structure */
@@ -132,33 +147,37 @@
   --glass-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.04);
 
   /* Timing — Apple spring physics */
-  --duration-instant:  50ms;
-  --duration-fast:    150ms;
-  --duration-normal:  250ms;
-  --duration-slow:    400ms;
+  --duration-instant: 50ms;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* ============================================================
    DARK MODE — Apple macOS Midnight / visionOS
    ============================================================ */
 .dark {
-  --background: #000000;         /* Pure Apple black */
+  --background: #000000;
+  /* Pure Apple black */
   --foreground: #f5f5f7;
 
-  --card: #1c1c1e;               /* Apple elevated surface */
+  --card: #1c1c1e;
+  /* Apple elevated surface */
   --card-foreground: #f5f5f7;
   --popover: rgba(28, 28, 30, 0.94);
   --popover-foreground: #f5f5f7;
 
-  --primary: #0a84ff;            /* Apple Blue dark */
+  --primary: #0a84ff;
+  /* Apple Blue dark */
   --primary-foreground: #ffffff;
 
   --secondary: #2c2c2e;
   --secondary-foreground: #f5f5f7;
   --muted: #1c1c1e;
-  --muted-foreground: #8e8e93;   /* Apple tertiary label */
+  --muted-foreground: #8e8e93;
+  /* Apple tertiary label */
   --accent: #3a3a3c;
   --accent-foreground: #f5f5f7;
 
@@ -201,6 +220,7 @@
    BASE — Global resets, typography, Swiss rhythm
    ============================================================ */
 @layer base {
+
   *,
   *::before,
   *::after {
@@ -229,30 +249,56 @@
 
   body {
     @apply bg-background text-foreground;
-    font-size: 15px;             /* Apple standard body = 15–17px */
+    font-size: 15px;
+    /* Apple standard body = 15–17px */
     line-height: 1.6;
-    letter-spacing: -0.01em;    /* Swiss tightness */
+    letter-spacing: -0.01em;
+    /* Swiss tightness */
     font-variant-numeric: tabular-nums;
     transition: background-color var(--duration-normal) ease,
-                color var(--duration-fast) ease;
+      color var(--duration-fast) ease;
   }
 
   /* Swiss headings — bold, tight, left-aligned */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-weight: 600;
     line-height: 1.2;
-    letter-spacing: -0.03em;    /* Swiss compression */
+    letter-spacing: -0.03em;
+    /* Swiss compression */
     text-wrap: balance;
   }
 
-  h1 { font-size: 2.125rem; font-weight: 700; letter-spacing: -0.04em; }
-  h2 { font-size: 1.5rem;   font-weight: 700; letter-spacing: -0.03em; }
-  h3 { font-size: 1.125rem; font-weight: 600; }
-  h4 { font-size: 0.9375rem; font-weight: 600; }
+  h1 {
+    font-size: 2.125rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  h4 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
 
   p {
     line-height: 1.65;
-    max-width: 68ch; /* Swiss line-length discipline */
+    max-width: 68ch;
+    /* Swiss line-length discipline */
   }
 
   /* Selection — Apple blue tint */
@@ -269,7 +315,9 @@
   }
 
   /* Images */
-  img, svg, video {
+  img,
+  svg,
+  video {
     display: block;
     max-width: 100%;
   }
@@ -311,7 +359,7 @@
     border: 1px solid var(--border);
     box-shadow: var(--glass-shadow-sm);
     transition: box-shadow var(--duration-fast) ease,
-                border-color var(--duration-fast) ease;
+      border-color var(--duration-fast) ease;
   }
 
   .card-surface:hover {
@@ -321,7 +369,8 @@
 
   /* ── Swiss type utilities ───────────────────────────────── */
   .text-label-micro {
-    font-size: 0.6875rem; /* 11px */
+    font-size: 0.6875rem;
+    /* 11px */
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -329,31 +378,36 @@
   }
 
   .text-label {
-    font-size: 0.75rem; /* 12px */
+    font-size: 0.75rem;
+    /* 12px */
     font-weight: 500;
     letter-spacing: 0.02em;
     line-height: 1.4;
   }
 
   .text-body-sm {
-    font-size: 0.8125rem; /* 13px */
+    font-size: 0.8125rem;
+    /* 13px */
     line-height: 1.55;
   }
 
   .text-body {
-    font-size: 0.9375rem; /* 15px */
+    font-size: 0.9375rem;
+    /* 15px */
     line-height: 1.6;
   }
 
   .text-headline {
-    font-size: 1.375rem; /* 22px */
+    font-size: 1.375rem;
+    /* 22px */
     font-weight: 700;
     letter-spacing: -0.03em;
     line-height: 1.2;
   }
 
   .text-display {
-    font-size: 2.125rem; /* 34px */
+    font-size: 2.125rem;
+    /* 34px */
     font-weight: 700;
     letter-spacing: -0.04em;
     line-height: 1.1;
@@ -376,7 +430,7 @@
 
   .transition-spring {
     transition: transform var(--duration-normal) var(--ease-spring),
-                opacity var(--duration-fast) ease;
+      opacity var(--duration-fast) ease;
   }
 
   /* ── Custom scrollbars — Swiss minimal ──────────────────── */
@@ -432,19 +486,19 @@
     background: var(--border);
   }
 
-  .grid-swiss > * {
+  .grid-swiss>* {
     background: var(--background);
   }
 
   /* ── Glow effects — Apple vibrancy ──────────────────────── */
   .glow-primary {
     box-shadow: 0 0 0 1px rgba(0, 122, 255, 0.2),
-                0 4px 20px rgba(0, 122, 255, 0.15);
+      0 4px 20px rgba(0, 122, 255, 0.15);
   }
 
   .glow-success {
     box-shadow: 0 0 0 1px rgba(52, 199, 89, 0.2),
-                0 4px 16px rgba(52, 199, 89, 0.15);
+      0 4px 16px rgba(52, 199, 89, 0.15);
   }
 
   /* ── Noise texture overlay ──────────────────────────────── */
@@ -461,16 +515,17 @@
 
   /* ── Swiss dot grid background ──────────────────────────── */
   .dot-grid {
-    background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
     background-size: 24px 24px;
   }
 
   .dark .dot-grid {
-    background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   }
 
   /* ── Reduced motion ─────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {

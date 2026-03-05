@@ -21,6 +21,7 @@ import {
     Quote,
     ChevronLeft,
     ChevronRight,
+    Zap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -41,6 +42,7 @@ const WORK_NAV = [
     { name: 'Campaigns', href: ROUTES.CAMPAIGNS, icon: Megaphone },
     { name: 'Proposals', href: ROUTES.PROPOSALS, icon: FileText },
     { name: 'Quotes', href: ROUTES.QUOTES, icon: Quote },
+    { name: 'Workflows', href: ROUTES.WORKFLOWS, icon: Zap },
 ];
 
 const TEAM_NAV = [

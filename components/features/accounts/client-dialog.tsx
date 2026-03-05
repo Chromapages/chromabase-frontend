@@ -79,7 +79,7 @@ export function ClientDialog({ open, onOpenChange, client }: ClientDialogProps) 
                 onSuccess: () => {
                     onOpenChange(false);
                 },
-                onError: (err) => {
+                onError: (err: Error) => {
                     setError(err instanceof Error ? err.message : 'Failed to update account');
                 }
             });
@@ -105,7 +105,7 @@ export function ClientDialog({ open, onOpenChange, client }: ClientDialogProps) 
                     setTotalRevenue('');
                     onOpenChange(false);
                 },
-                onError: (err) => {
+                onError: (err: Error) => {
                     setError(err instanceof Error ? err.message : 'Failed to create account');
                 }
             });
@@ -121,7 +121,7 @@ export function ClientDialog({ open, onOpenChange, client }: ClientDialogProps) 
                 onOpenChange(false);
                 router.push(ROUTES.ACCOUNTS);
             },
-            onError: (err) => {
+            onError: (err: Error) => {
                 setError(err instanceof Error ? err.message : 'Failed to delete account');
                 setIsDeleting(false);
             }

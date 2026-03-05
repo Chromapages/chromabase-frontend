@@ -17,6 +17,7 @@ import { Progress } from '@/components/ui/progress';
 import { ClientDialog } from '@/components/features/accounts/client-dialog';
 import { ProposalList } from '@/components/features/proposals/proposal-list';
 import { ContactCard } from '@/components/features/accounts/contact-card';
+import { AccountTasksPanel } from '@/components/features/accounts/account-tasks-panel';
 
 export default function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -42,7 +43,7 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
     const clientDeals = useMemo(() => deals?.filter(d => d.clientId === id) || [], [deals, id]);
     const clientProposals = useMemo(() => proposals?.filter(p => p.clientId === id) || [], [proposals, id]);
     const clientActivities = useMemo(() => activities?.filter(a => a.relatedTo?.id === id && a.relatedTo?.type === 'client') || [], [activities, id]);
-    const clientTasks = useMemo(() => tasks?.filter(t => t.relatedTo?.id === id && t.relatedTo?.type === 'client') || [], [tasks, id]);
+    const clientTasks = useMemo(() => tasks?.filter(t => t.accountId === id || (t.relatedTo?.id === id && t.relatedTo?.type === 'client')) || [], [tasks, id]);
 
     const accountManager = useMemo(() => {
         if (!client?.accountManagerId || !users) return null;
@@ -207,6 +208,7 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                             <TabsTrigger value="contacts" className="rounded-md">Contacts ({clientContacts.length})</TabsTrigger>
                             <TabsTrigger value="deals" className="rounded-md">Deals ({clientDeals.length})</TabsTrigger>
                             <TabsTrigger value="proposals" className="rounded-md">Proposals ({clientProposals.length})</TabsTrigger>
+                            <TabsTrigger value="tasks" className="rounded-md">Tasks ({clientTasks.length})</TabsTrigger>
                             <TabsTrigger value="activity" className="rounded-md">Activity</TabsTrigger>
                         </TabsList>
 
@@ -274,6 +276,10 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                             />
                         </TabsContent>
 
+                        <TabsContent value="tasks">
+                            <AccountTasksPanel clientId={id} tasks={clientTasks} />
+                        </TabsContent>
+
                         <TabsContent value="activity" className="space-y-4">
                             <Card className="shadow-sm border-border/50">
                                 <CardHeader className="pb-3 bg-muted/20 border-b border-border/50">
@@ -305,26 +311,6 @@ export default function ClientDetailPage({ params }: { params: Promise<{ id: str
                                     )}
                                 </CardContent>
                             </Card>
-
-                            {clientTasks.length > 0 && (
-                                <Card className="shadow-sm border-border/50">
-                                    <CardHeader className="pb-3 bg-muted/20 border-b border-border/50">
-                                        <CardTitle className="text-base flex items-center gap-2"><CheckSquare className="w-4 h-4" /> Related Tasks</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="p-0">
-                                        <DataTable
-                                            data={clientTasks}
-                                            keyExtractor={t => t.id}
-                                            columns={[
-                                                { header: 'Task', cell: t => <span className="font-medium">{t.title}</span> },
-                                                { header: 'Priority', cell: t => <Badge variant={getTaskPriorityColor(t.priority)} className="capitalize text-xs">{t.priority}</Badge> },
-                                                { header: 'Status', cell: t => <Badge variant={t.status === 'completed' ? 'default' : 'outline'} className="capitalize text-xs">{t.status.replace('_', ' ')}</Badge> },
-                                                { header: 'Due', cell: t => <span className="text-muted-foreground text-sm">{formatDate(t.dueDate, 'MMM d')}</span> }
-                                            ]}
-                                        />
-                                    </CardContent>
-                                </Card>
-                            )}
                         </TabsContent>
                     </Tabs>
                 </div>

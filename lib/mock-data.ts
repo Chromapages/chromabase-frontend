@@ -1,5 +1,5 @@
 import type {
-  Lead, Client, Deal, CRMTask, Activity, Contact, User, Quote, Proposal, Appointment, Campaign, Notification, Comment
+  Lead, Client, Deal, CRMTask, Activity, Contact, User, Quote, Proposal, Appointment, Campaign, Notification, Comment, Workflow
 } from '@/types';
 
 export const mockUsers: User[] = [
@@ -54,3 +54,10 @@ export const mockProposals: Proposal[] = [];
 export const mockCampaigns: Campaign[] = [];
 export const mockNotifications: Notification[] = [];
 export const mockComments: Comment[] = [];
+
+export const mockWorkflows: Workflow[] = [
+  { id: 'wf-1', name: 'Post-Meeting Follow-Up', description: 'Auto-creates a follow-up task when a meeting task is completed.', isActive: true, trigger: { type: 'task_completed', conditions: { taskType: 'meeting' } }, action: { type: 'create_task', payload: { title: 'Follow up after meeting', delayDays: 1 } }, createdAt: Date.now(), updatedAt: Date.now() },
+  { id: 'wf-2', name: 'Gold Account Escalation', description: 'Flags overdue tasks on Gold-tier accounts as urgent.', isActive: true, trigger: { type: 'task_overdue', conditions: { accountTier: 'Gold' } }, action: { type: 'update_task', payload: { priority: 'urgent' } }, createdAt: Date.now(), updatedAt: Date.now() },
+  { id: 'wf-3', name: 'Onboarding Template', description: 'Auto-generates onboarding tasks when a new client starts onboarding.', isActive: true, trigger: { type: 'client_created', conditions: { status: 'onboarding' } }, action: { type: 'create_task', payload: { template: 'onboarding' } }, createdAt: Date.now(), updatedAt: Date.now() },
+  { id: 'wf-4', name: 'Priority × Tier Alert', description: 'Fires a UI alert when a high-priority task on a Gold account changes state.', isActive: true, trigger: { type: 'task_status_changed', conditions: { priority: 'high', accountTier: 'Gold' } }, action: { type: 'send_notification', payload: { message: 'High priority task changed status on Gold account.' } }, createdAt: Date.now(), updatedAt: Date.now() }
+];

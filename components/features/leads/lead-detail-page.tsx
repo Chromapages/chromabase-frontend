@@ -72,7 +72,7 @@ export function LeadDetailPage({ id }: LeadDetailPageProps) {
             industry: 'CRM Lead',
             addedDate: Date.now()
         } as any, {
-            onSuccess: (newClient) => {
+            onSuccess: (newClient: any) => {
                 updateLeadMutation.mutate({ id: lead.id, data: { status: 'won' } });
                 router.push(`${ROUTES.ACCOUNTS}/${newClient.id}`);
             }
