@@ -47,10 +47,10 @@ export function CalendarView({ tasks, appointments, isLoading }: CalendarViewPro
     const days = eachDayOfInterval({ start: startDate, end: endDate });
 
     return (
-        <div className="flex flex-col gap-4 p-5 w-full">
+        <div className="flex flex-col gap-4 p-5 w-full h-full">
 
             {/* ── Header Toolbar ────────────────────────────────── */}
-            <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center justify-between flex-wrap gap-4 shrink-0">
                 <div className="flex items-center gap-4">
                     <div className="p-2.5 bg-primary/10 rounded-xl text-primary shrink-0 shadow-inner">
                         <CalendarDays className="w-5 h-5" />
@@ -100,13 +100,13 @@ export function CalendarView({ tasks, appointments, isLoading }: CalendarViewPro
             </div>
 
             {/* ── Calendar Grid ─────────────────────────────────── */}
-            <div className="rounded-2xl overflow-hidden border border-border/40 bg-card/40 backdrop-blur-xl flex flex-col shadow-2xl shadow-primary/5">
+            <div className="flex-1 rounded-2xl overflow-hidden border border-border/40 bg-card/40 backdrop-blur-xl flex flex-col shadow-2xl shadow-primary/5">
                 {isLoading ? (
                     <CalendarSkeleton weeks={view === 'month' ? 6 : 1} />
                 ) : (
                     <TooltipProvider delayDuration={200}>
                         {/* Day Labels */}
-                        <div className="grid grid-cols-7 border-b border-border/10 bg-muted/5">
+                        <div className="grid grid-cols-7 border-b border-border/10 bg-muted/5 shrink-0">
                             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
                                 <div key={day} className="py-2 text-center text-[10px] font-bold tracking-widest uppercase text-muted-foreground/40">
                                     {day}
@@ -116,11 +116,11 @@ export function CalendarView({ tasks, appointments, isLoading }: CalendarViewPro
 
                         {/* Grid Body */}
                         <div
-                            className="grid grid-cols-7"
+                            className="flex-1 grid grid-cols-7"
                             style={{
                                 gridTemplateRows: view === 'month'
-                                    ? 'repeat(6, minmax(78px, auto))'
-                                    : 'minmax(120px, auto)',
+                                    ? 'repeat(6, 1fr)'
+                                    : '1fr',
                             }}
                         >
                             {days.map((day, cellIndex) => {
