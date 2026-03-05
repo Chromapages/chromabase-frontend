@@ -20,12 +20,17 @@ const firebaseConfig = {
  * browser, so null server-side values are safe.
  */
 const isClient = typeof window !== 'undefined';
+const hasValidConfig = !!firebaseConfig.apiKey;
 
-const app: FirebaseApp = isClient
+if (isClient && !hasValidConfig) {
+    console.warn('[Firebase] NEXT_PUBLIC_FIREBASE_API_KEY is missing. Auth features will be disabled.');
+}
+
+const app: FirebaseApp = (isClient && hasValidConfig)
     ? (!getApps().length ? initializeApp(firebaseConfig) : getApp())
     : (null as unknown as FirebaseApp);
 
-export const auth: Auth = isClient
+export const auth: Auth = (isClient && hasValidConfig)
     ? getAuth(app)
     : (null as unknown as Auth);
 
