@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ReactNode } from "react"
+import { ContextMenu, ContextMenuTrigger, ContextMenuContent } from "@/components/ui/context-menu"
 
 export interface Column<T> {
     header: string;
@@ -27,6 +28,7 @@ interface DataTableProps<T> {
     totalPages?: number;
     onPageChange?: (page: number) => void;
     dense?: boolean;
+    contextMenuItems?: (item: T) => ReactNode;
 }
 
 export function DataTable<T>({
@@ -38,6 +40,7 @@ export function DataTable<T>({
     totalPages,
     onPageChange,
     dense = false,
+    contextMenuItems,
 }: DataTableProps<T>) {
     const cellPadding = dense ? "px-2 py-1.5" : "px-3 py-2";
     const textSize = dense ? "text-sm" : "text-base";
@@ -62,19 +65,37 @@ export function DataTable<T>({
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            data.map((item) => (
-                                <TableRow
-                                    key={keyExtractor(item)}
-                                    onClick={() => onRowClick?.(item)}
-                                    className={`group ${onRowClick ? "cursor-pointer hover:bg-muted/50 transition-colors" : ""}`}
-                                >
-                                    {columns.map((col, i) => (
-                                        <TableCell key={i} className={`${col.className} ${cellPadding} ${textSize}`}>
-                                            {col.cell ? col.cell(item) : col.accessorKey ? String(item[col.accessorKey] ?? '') : null}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
+                            data.map((item) => {
+                                const key = keyExtractor(item);
+                                const row = (
+                                    <TableRow
+                                        key={contextMenuItems ? undefined : key}
+                                        onClick={() => onRowClick?.(item)}
+                                        className={`group ${onRowClick ? "cursor-pointer hover:bg-muted/50 transition-colors" : ""}`}
+                                    >
+                                        {columns.map((col, i) => (
+                                            <TableCell key={i} className={`${col.className} ${cellPadding} ${textSize}`}>
+                                                {col.cell ? col.cell(item) : col.accessorKey ? String(item[col.accessorKey] ?? '') : null}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                );
+
+                                if (contextMenuItems) {
+                                    return (
+                                        <ContextMenu key={key}>
+                                            <ContextMenuTrigger asChild>
+                                                {row}
+                                            </ContextMenuTrigger>
+                                            <ContextMenuContent className="w-48">
+                                                {contextMenuItems(item)}
+                                            </ContextMenuContent>
+                                        </ContextMenu>
+                                    );
+                                }
+
+                                return row;
+                            })
                         )}
                     </TableBody>
                 </Table>

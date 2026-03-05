@@ -11,6 +11,12 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+    ContextMenuItem,
+    ContextMenuLabel,
+    ContextMenuSeparator,
+    ContextMenuShortcut,
+} from '@/components/ui/context-menu';
 
 interface TaskTableProps {
     tasks: CRMTask[];
@@ -178,6 +184,23 @@ export function TaskTable({ tasks, onUpdateStatus, selectedTasks, onToggleSelect
                 totalPages={totalPages}
                 onPageChange={setPage}
                 onRowClick={onTaskClick}
+                contextMenuItems={(task) => (
+                    <>
+                        <ContextMenuLabel className="text-xs text-muted-foreground font-normal">Actions for Task</ContextMenuLabel>
+                        <ContextMenuSeparator />
+                        <ContextMenuItem onClick={() => onTaskClick?.(task)}>
+                            View Task
+                        </ContextMenuItem>
+                        <ContextMenuItem onClick={() => toggleTaskStatus(task)}>
+                            Mark as {task.status === 'completed' ? 'To Do' : 'Completed'}
+                        </ContextMenuItem>
+                        <ContextMenuSeparator />
+                        <ContextMenuItem variant="destructive">
+                            Delete Task
+                            <ContextMenuShortcut>⌘⌫</ContextMenuShortcut>
+                        </ContextMenuItem>
+                    </>
+                )}
             />
         </div>
     );

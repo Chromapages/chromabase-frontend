@@ -13,6 +13,12 @@ import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants';
 import { ClientDialog } from '@/components/features/accounts/client-dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+    ContextMenuItem,
+    ContextMenuLabel,
+    ContextMenuSeparator,
+    ContextMenuShortcut,
+} from '@/components/ui/context-menu';
 
 interface ClientListProps {
     clients: Client[] | undefined;
@@ -25,6 +31,7 @@ export function ClientList({ clients, isLoading }: ClientListProps) {
     const [page, setPage] = useState(1);
     const itemsPerPage = 10;
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [editingClient, setEditingClient] = useState<Client | null>(null);
 
     const filteredClients = clients?.filter(c => {
         const companyMatch = c.companyName?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false;
@@ -77,20 +84,20 @@ export function ClientList({ clients, isLoading }: ClientListProps) {
                 const [isEditOpen, setIsEditOpen] = useState(false);
                 return (
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                        <Button 
-                            variant="ghost" 
-                            size="sm" 
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             className="h-8 px-2 text-muted-foreground hover:text-foreground"
                             onClick={() => router.push(`${ROUTES.ACCOUNTS}/${client.id}`)}
                         >
                             <Eye className="h-3.5 w-3.5 mr-1" />
                             View
                         </Button>
-                        <Button 
-                            variant="ghost" 
-                            size="sm" 
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             className="h-8 px-2 text-muted-foreground hover:text-foreground"
-                            onClick={() => setIsEditOpen(true)}
+                            onClick={() => setEditingClient(client)}
                         >
                             <Edit className="h-3.5 w-3.5 mr-1" />
                             Edit
@@ -106,7 +113,7 @@ export function ClientList({ clients, isLoading }: ClientListProps) {
                                 <DropdownMenuItem onClick={() => router.push(`${ROUTES.ACCOUNTS}/${client.id}`)}>
                                     <Eye className="mr-2 h-4 w-4" /> View Details
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
+                                <DropdownMenuItem onClick={() => setEditingClient(client)}>
                                     <Edit className="mr-2 h-4 w-4" /> Edit Account
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
@@ -115,11 +122,6 @@ export function ClientList({ clients, isLoading }: ClientListProps) {
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        <ClientDialog
-                            open={isEditOpen}
-                            onOpenChange={setIsEditOpen}
-                            client={client}
-                        />
                     </div>
                 );
             }
@@ -162,10 +164,28 @@ export function ClientList({ clients, isLoading }: ClientListProps) {
                     onPageChange={setPage}
                     onRowClick={(client) => router.push(`${ROUTES.ACCOUNTS}/${client.id}`)}
                     dense={true}
+                    contextMenuItems={(client) => (
+                        <>
+                            <ContextMenuLabel className="text-xs text-muted-foreground font-normal">Actions for {client.companyName}</ContextMenuLabel>
+                            <ContextMenuSeparator />
+                            <ContextMenuItem onClick={() => router.push(`${ROUTES.ACCOUNTS}/${client.id}`)}>
+                                View Details
+                            </ContextMenuItem>
+                            <ContextMenuItem onClick={() => setEditingClient(client)}>
+                                Edit Account
+                            </ContextMenuItem>
+                            <ContextMenuSeparator />
+                            <ContextMenuItem variant="destructive">
+                                Delete Account
+                                <ContextMenuShortcut>⌘⌫</ContextMenuShortcut>
+                            </ContextMenuItem>
+                        </>
+                    )}
                 />
             )}
 
             <ClientDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+            <ClientDialog open={!!editingClient} onOpenChange={(open) => !open && setEditingClient(null)} client={editingClient || undefined} />
         </div>
     );
 }

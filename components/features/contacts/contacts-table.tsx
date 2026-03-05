@@ -3,6 +3,15 @@
 import { Contact } from '@/types';
 import { Pencil, Trash2, User, Mail, Phone, Building2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import {
+    ContextMenu,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuLabel,
+    ContextMenuSeparator,
+    ContextMenuShortcut,
+    ContextMenuTrigger,
+} from '@/components/ui/context-menu';
 
 interface ContactsTableProps {
     contacts: (Contact & { clientName?: string })[];
@@ -40,86 +49,108 @@ export function ContactsTable({ contacts, onEdit, onDelete }: ContactsTableProps
                     </thead>
                     <tbody className="divide-y divide-border/30">
                         {contacts.map((contact) => (
-                            <tr
-                                key={contact.id}
-                                className="hover:bg-muted/40 transition-colors group"
-                            >
-                                <td className="px-4 py-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                            <span className="text-sm font-medium text-primary">
-                                                {contact.firstName[0]}{contact.lastName[0]}
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <div className="font-medium">
-                                                {contact.firstName} {contact.lastName}
+                            <ContextMenu key={contact.id}>
+                                <ContextMenuTrigger asChild>
+                                    <tr className="hover:bg-muted/40 transition-colors group">
+                                        <td className="px-4 py-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                                    <span className="text-sm font-medium text-primary">
+                                                        {contact.firstName[0]}{contact.lastName[0]}
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <div className="font-medium">
+                                                        {contact.firstName} {contact.lastName}
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="px-4 py-3">
-                                    <div className="flex items-center gap-2 text-sm">
-                                        <Building2 className="w-4 h-4 text-muted-foreground" />
-                                        {contact.clientName || 'Unknown'}
-                                    </div>
-                                </td>
-                                <td className="px-4 py-3 text-sm text-muted-foreground">
-                                    {contact.jobTitle}
-                                </td>
-                                <td className="px-4 py-3">
-                                    <div className="space-y-1">
-                                        <div className="flex items-center gap-2 text-sm">
-                                            <Mail className="w-3 h-3 text-muted-foreground" />
-                                            <span className="text-muted-foreground">{contact.email}</span>
-                                        </div>
-                                        {contact.phone && (
+                                        </td>
+                                        <td className="px-4 py-3">
                                             <div className="flex items-center gap-2 text-sm">
-                                                <Phone className="w-3 h-3 text-muted-foreground" />
-                                                <span className="text-muted-foreground">{contact.phone}</span>
+                                                <Building2 className="w-4 h-4 text-muted-foreground" />
+                                                {contact.clientName || 'Unknown'}
                                             </div>
-                                        )}
-                                    </div>
-                                </td>
-                                <td className="px-4 py-3 text-sm">
-                                    {contact.lastContactedAt ? (
-                                        <span className={
-                                            Date.now() - contact.lastContactedAt > 30 * 24 * 60 * 60 * 1000
-                                                ? 'text-amber-500'
-                                                : 'text-muted-foreground'
-                                        }>
-                                            {formatDistanceToNow(contact.lastContactedAt, { addSuffix: true })}
-                                        </span>
-                                    ) : (
-                                        <span className="text-muted-foreground">Never</span>
+                                        </td>
+                                        <td className="px-4 py-3 text-sm text-muted-foreground">
+                                            {contact.jobTitle}
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            <div className="space-y-1">
+                                                <div className="flex items-center gap-2 text-sm">
+                                                    <Mail className="w-3 h-3 text-muted-foreground" />
+                                                    <span className="text-muted-foreground">{contact.email}</span>
+                                                </div>
+                                                {contact.phone && (
+                                                    <div className="flex items-center gap-2 text-sm">
+                                                        <Phone className="w-3 h-3 text-muted-foreground" />
+                                                        <span className="text-muted-foreground">{contact.phone}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-3 text-sm">
+                                            {contact.lastContactedAt ? (
+                                                <span className={
+                                                    Date.now() - contact.lastContactedAt > 30 * 24 * 60 * 60 * 1000
+                                                        ? 'text-amber-500'
+                                                        : 'text-muted-foreground'
+                                                }>
+                                                    {formatDistanceToNow(contact.lastContactedAt, { addSuffix: true })}
+                                                </span>
+                                            ) : (
+                                                <span className="text-muted-foreground">Never</span>
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            {contact.isPrimary && (
+                                                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                                                    Primary
+                                                </span>
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <button
+                                                    onClick={() => onEdit(contact.id)}
+                                                    className="p-1.5 rounded-md hover:bg-muted transition-colors"
+                                                    title="Edit contact"
+                                                >
+                                                    <Pencil className="w-4 h-4 text-muted-foreground" />
+                                                </button>
+                                                <button
+                                                    onClick={() => onDelete(contact.id)}
+                                                    className="p-1.5 rounded-md hover:bg-destructive/10 transition-colors"
+                                                    title="Delete contact"
+                                                >
+                                                    <Trash2 className="w-4 h-4 text-destructive" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ContextMenuTrigger>
+                                <ContextMenuContent className="w-48">
+                                    <ContextMenuLabel className="text-xs text-muted-foreground font-normal">Actions for {contact.firstName}</ContextMenuLabel>
+                                    <ContextMenuSeparator />
+                                    <ContextMenuItem onClick={() => onEdit(contact.id)}>
+                                        Edit Contact
+                                    </ContextMenuItem>
+                                    <ContextMenuSeparator />
+                                    <ContextMenuItem onClick={() => window.location.href = `mailto:${contact.email}`}>
+                                        Send Email
+                                    </ContextMenuItem>
+                                    {contact.phone && (
+                                        <ContextMenuItem onClick={() => window.location.href = `tel:${contact.phone}`}>
+                                            Call Contact
+                                        </ContextMenuItem>
                                     )}
-                                </td>
-                                <td className="px-4 py-3">
-                                    {contact.isPrimary && (
-                                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                                            Primary
-                                        </span>
-                                    )}
-                                </td>
-                                <td className="px-4 py-3">
-                                    <div className="flex items-center justify-end gap-2">
-                                        <button
-                                            onClick={() => onEdit(contact.id)}
-                                            className="p-1.5 rounded-md hover:bg-muted transition-colors"
-                                            title="Edit contact"
-                                        >
-                                            <Pencil className="w-4 h-4 text-muted-foreground" />
-                                        </button>
-                                        <button
-                                            onClick={() => onDelete(contact.id)}
-                                            className="p-1.5 rounded-md hover:bg-destructive/10 transition-colors"
-                                            title="Delete contact"
-                                        >
-                                            <Trash2 className="w-4 h-4 text-destructive" />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                                    <ContextMenuSeparator />
+                                    <ContextMenuItem variant="destructive" onClick={() => onDelete(contact.id)}>
+                                        Delete Contact
+                                        <ContextMenuShortcut>⌘⌫</ContextMenuShortcut>
+                                    </ContextMenuItem>
+                                </ContextMenuContent>
+                            </ContextMenu>
                         ))}
                     </tbody>
                 </table>
