@@ -1,10 +1,14 @@
 import type { NextConfig } from "next";
 
+const isVercel = process.env.VERCEL === '1';
+
 const nextConfig: NextConfig = {
-  distDir: '/tmp/cb-front-next',
-  turbopack: {
-    root: '/Volumes/MiDRIVE/Chroma-Team/chromabase-frontend',
-  },
+  distDir: isVercel ? '.next' : '/tmp/cb-front-next',
+  ...(isVercel ? {} : {
+    turbopack: {
+      root: '/Volumes/MiDRIVE/Chroma-Team/chromabase-frontend',
+    }
+  }),
   images: {
     remotePatterns: [
       {
