@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useUsers } from '@/hooks';
 import { ROUTES } from '@/constants';
+import { apiRequest } from '@/lib/firestore';
 
 // Local mock for missing useToast
 const useToast = () => ({
@@ -62,11 +63,10 @@ export default function SettingsPage() {
     useEffect(() => {
         const fetchDiscordSettings = async () => {
             try {
-                const res = await fetch('http://localhost:3001/api/settings/discord');
-                const json = await res.json();
-                if (json.status === 'success' && json.data) {
-                    setDiscordWebhookUrl(json.data.webhookUrl || '');
-                    if (json.data.options) setDiscordOptions(json.data.options);
+                const data = await apiRequest<any>('/api/settings/discord');
+                if (data) {
+                    setDiscordWebhookUrl(data.webhookUrl || '');
+                    if (data.options) setDiscordOptions(data.options);
                 }
             } catch (e) { console.error("Failed to load discord settings", e); }
         };
@@ -75,12 +75,11 @@ export default function SettingsPage() {
 
     const handleSaveDiscordOptions = async () => {
         try {
-            const res = await fetch('http://localhost:3001/api/settings/discord', {
+            await apiRequest('/api/settings/discord', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ webhookUrl: discordWebhookUrl, options: discordOptions })
             });
-            if (res.ok) toast({ title: 'Integration Saved', description: 'Your Discord settings have been updated.' });
+            toast({ title: 'Integration Saved', description: 'Your Discord settings have been updated.' });
         } catch (e) { toast({ title: 'Error', description: 'Failed to save settings.', variant: 'destructive' }); }
     };
 
@@ -88,24 +87,14 @@ export default function SettingsPage() {
         if (!discordWebhookUrl) return;
         setIsTestingDiscord(true);
         try {
-            const res = await fetch('http://localhost:3001/api/discord/test', {
+            await apiRequest('/api/discord/test', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ webhookUrl: discordWebhookUrl })
             });
-            const json = await res.json();
-            if (json.status === 'success') {
-                toast({
-                    title: "Integration Successful",
-                    description: "A test message was sent to your Discord channel.",
-                });
-            } else {
-                toast({
-                    variant: "destructive",
-                    title: "Integration Failed",
-                    description: json.message || "Could not connect to Discord.",
-                });
-            }
+            toast({
+                title: "Integration Successful",
+                description: "A test message was sent to your Discord channel.",
+            });
         } catch (e: any) {
             toast({
                 variant: "destructive",

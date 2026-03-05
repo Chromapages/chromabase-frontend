@@ -3,8 +3,12 @@
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
-async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${API_BASE}${endpoint}`;
+if (!API_BASE && typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
+    console.warn('[ChromaBase] NEXT_PUBLIC_API_URL is not set. API calls will likely fail.');
+}
+
+export async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
     console.log(`[API] ${options.method || 'GET'} ${endpoint}`);
 
     const response = await fetch(url, {
@@ -21,9 +25,9 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
 
     const result = await response.json();
 
-    if (result && result.success === false) {
-        console.error(`[API Error] ${endpoint}:`, result.error);
-        throw new Error(result.error || `API returned success: false`);
+    if (result && result.status === 'error') {
+        console.error(`[API Error] ${endpoint}:`, result.message);
+        throw new Error(result.message || `API returned error status`);
     }
 
     return result.data !== undefined ? result.data : result;
