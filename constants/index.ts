@@ -23,8 +23,7 @@ export const ROUTES = {
 
 // Deal stage options
 export const DEAL_STAGE_OPTIONS = [
-  { value: 'lead', label: 'Lead' },
-  { value: 'qualified', label: 'Qualified' },
+  { value: 'discovery', label: 'Discovery' },
   { value: 'proposal', label: 'Proposal' },
   { value: 'negotiation', label: 'Negotiation' },
   { value: 'closed_won', label: 'Closed Won' },
