@@ -9,6 +9,7 @@ interface AuthContextType {
     loading: boolean;
     signInWithGoogle: () => Promise<void>;
     logout: () => Promise<void>;
+    getToken: () => Promise<string | null>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -16,6 +17,7 @@ const AuthContext = createContext<AuthContextType>({
     loading: true,
     signInWithGoogle: async () => { },
     logout: async () => { },
+    getToken: async () => null,
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -57,8 +59,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    const getToken = async () => {
+        if (!auth.currentUser) return null;
+        return await auth.currentUser.getIdToken();
+    };
+
     return (
-        <AuthContext.Provider value={{ user, loading, signInWithGoogle, logout }}>
+        <AuthContext.Provider value={{ user, loading, signInWithGoogle, logout, getToken }}>
             {children}
         </AuthContext.Provider>
     );

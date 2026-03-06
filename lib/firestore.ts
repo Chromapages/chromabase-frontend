@@ -1,5 +1,5 @@
-// Chromabase API Client - connects to Express API at localhost:3010
 // Originally Firebase, now uses custom API
+import { auth } from './firebase';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -11,10 +11,20 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
     const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
     console.log(`[API] ${options.method || 'GET'} ${endpoint}`);
 
+    const token = await auth.currentUser?.getIdToken();
+    if (!token && endpoint !== '/api/health') {
+        console.warn('[API] No auth token available for request:', endpoint);
+        // We throw if trying to access protected routes without a token
+        if (!endpoint.includes('/api/health')) {
+            throw new Error('Authentication required');
+        }
+    }
+
     const response = await fetch(url, {
         ...options,
         headers: {
             'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
             ...options.headers,
         },
     });
