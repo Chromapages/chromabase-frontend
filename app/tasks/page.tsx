@@ -3,7 +3,7 @@
 import { PageHeader } from '@/components/layout/page-header';
 import { useTasks, useClients } from '@/hooks';
 import { TaskList } from '@/components/features/tasks/task-list';
-import { MobileTasksTab } from '@/components/features/dashboard/mobile-tasks-tab';
+import { MobileTasksPage } from '@/components/features/tasks/mobile-tasks-page';
 import { CRMTask, TaskStatus } from '@/types';
 
 export default function TasksPage() {
@@ -53,7 +53,12 @@ export default function TasksPage() {
 
             {/* Mobile View */}
             <div className="lg:hidden flex-1 overflow-hidden">
-                <MobileTasksTab tasks={tasks} clients={clients} />
+                <MobileTasksPage
+                    tasks={tasks}
+                    clients={clients}
+                    onUpdateStatus={handleUpdateStatus}
+                    onDeleteTask={handleDeleteTask}
+                />
             </div>
         </div>
     );

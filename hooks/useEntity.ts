@@ -1,9 +1,23 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getDocuments, addDocument, updateDocument, deleteDocument, getDocument, bulkDeleteDocuments, bulkUpdateDocuments } from '@/lib/firestore';
+import { useSocket } from './useSocket';
+import { useAuth } from './use-auth';
 
 export function useEntity<T extends { id: string }>(collectionName: string, mockData: T[] = []) {
     const queryClient = useQueryClient();
     const queryKey = [collectionName];
+    const { user } = useAuth();
+
+    // Real-time Sync Integration
+    useSocket(user?.uid, (payload: any) => {
+        if (payload.collection === collectionName) {
+            console.log(`[useEntity] Real-time invalidating ${collectionName} due to ${payload.type}`);
+            queryClient.invalidateQueries({ queryKey });
+            if (payload.entityId) {
+                queryClient.invalidateQueries({ queryKey: [...queryKey, payload.entityId] });
+            }
+        }
+    });
 
     const useList = () => useQuery({
         queryKey,
