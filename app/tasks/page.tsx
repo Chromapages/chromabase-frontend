@@ -1,13 +1,16 @@
 'use client';
 
 import { PageHeader } from '@/components/layout/page-header';
-import { useTasks } from '@/hooks';
+import { useTasks, useClients } from '@/hooks';
 import { TaskList } from '@/components/features/tasks/task-list';
-import { CRMTask, TaskStatus, TaskPriority } from '@/types';
+import { MobileTasksTab } from '@/components/features/dashboard/mobile-tasks-tab';
+import { CRMTask, TaskStatus } from '@/types';
 
 export default function TasksPage() {
     const { useList, useUpdate, useDelete, useBulkDelete, useBulkUpdate } = useTasks();
+    const { useList: useClientsList } = useClients();
     const { data: tasks, isLoading } = useList();
+    const { data: clients } = useClientsList();
     const updateTask = useUpdate();
     const deleteTask = useDelete();
     const bulkDelete = useBulkDelete();
@@ -30,20 +33,28 @@ export default function TasksPage() {
     };
 
     return (
-        <div className="p-6 max-w-[1700px] mx-auto space-y-6">
-            <PageHeader
-                title="Tasks"
-                description="Manage your to-dos, calls, meetings, and follow-ups."
-            />
+        <div className="h-full flex flex-col">
+            {/* Desktop View */}
+            <div className="hidden lg:block p-6 max-w-[1700px] mx-auto space-y-6 flex-1">
+                <PageHeader
+                    title="Tasks"
+                    description="Manage your to-dos, calls, meetings, and follow-ups."
+                />
 
-            <TaskList
-                tasks={tasks}
-                isLoading={isLoading}
-                onUpdateStatus={handleUpdateStatus}
-                onDeleteTask={handleDeleteTask}
-                onBulkDelete={handleBulkDelete}
-                onBulkUpdate={handleBulkUpdate}
-            />
+                <TaskList
+                    tasks={tasks}
+                    isLoading={isLoading}
+                    onUpdateStatus={handleUpdateStatus}
+                    onDeleteTask={handleDeleteTask}
+                    onBulkDelete={handleBulkDelete}
+                    onBulkUpdate={handleBulkUpdate}
+                />
+            </div>
+
+            {/* Mobile View */}
+            <div className="lg:hidden flex-1 overflow-hidden">
+                <MobileTasksTab tasks={tasks} clients={clients} />
+            </div>
         </div>
     );
 }

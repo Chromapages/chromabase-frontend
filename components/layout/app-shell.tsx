@@ -2,6 +2,7 @@
 
 import { Sidebar } from './sidebar';
 import { Header } from './header';
+import { MobileNav } from './mobile-nav';
 import { CommandPalette } from '@/components/global/command-palette';
 
 /*
@@ -13,6 +14,8 @@ import { CommandPalette } from '@/components/global/command-palette';
  *  │                   │──────────────────────│
  *  │                   │  <page content>      │
  *  │                   │  dot-grid bg         │
+ *  │                   │──────────────────────│
+ *  │                   │  MobileNav (lg:hide) │
  *  └──────────────────────────────────────────┘
  *
  * Background: subtle dot-grid texture — Swiss graph paper aesthetic
@@ -22,7 +25,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return (
         <div className="flex h-screen overflow-hidden bg-background">
             {/* Sidebar — Dynamic Swiss Precision Width */}
-            <aside className="hidden md:flex flex-col shrink-0 transition-all duration-400 ease-spring">
+            <aside className="hidden lg:flex flex-col shrink-0 transition-all duration-400 ease-spring">
                 <Sidebar />
             </aside>
 
@@ -31,7 +34,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Header />
 
                 {/* Scrollable content — dot grid provides Swiss graph-paper depth */}
-                <main className="flex-1 overflow-auto scrollbar-thin relative dot-grid">
+                <main className="flex-1 overflow-auto scrollbar-thin relative dot-grid pb-20 lg:pb-0">
                     {/* Subtle radial vignette — Apple vibrancy depth */}
                     <div
                         className="absolute inset-0 pointer-events-none"
@@ -43,12 +46,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     />
 
                     {/* Page content with consistent padding */}
-                    <div className="relative z-10 min-h-full">
+                    <div className="relative min-h-full">
                         {children}
                     </div>
                 </main>
             </div>
 
+            <MobileNav />
             <CommandPalette />
         </div>
     );

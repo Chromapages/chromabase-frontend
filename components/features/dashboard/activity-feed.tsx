@@ -9,6 +9,7 @@ interface ActivityFeedProps {
     activities?: ActivityRecord[];
     appointments?: Appointment[];
     leads?: Lead[];
+    compact?: boolean;
 }
 
 type TimelineItem = {
@@ -108,24 +109,57 @@ const itemVariants = {
     }
 };
 
-export function ActivityFeed({ activities = [], appointments = [], leads = [] }: ActivityFeedProps) {
+export function ActivityFeed({
+    activities = [],
+    appointments = [],
+    leads = [],
+    compact = false
+}: ActivityFeedProps) {
     const timeline = generateTimeline(activities, appointments, leads);
     const groups = groupTimeline(timeline);
 
     if (timeline.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center p-8 text-center gap-2">
+            <div className={cn(
+                "flex flex-col items-center justify-center text-center gap-2",
+                compact ? "p-4" : "p-8"
+            )}>
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-2"
+                    className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-1"
                 >
-                    <Activity className="w-6 h-6 text-muted-foreground/30" />
+                    <Activity className="w-5 h-5 text-muted-foreground/30" />
                 </motion.div>
-                <p className="text-[13px] font-medium text-foreground/70">No recent activity</p>
-                <p className="text-[11px] text-muted-foreground/60 max-w-[150px]">
-                    Activities, leads, and events will appear here.
-                </p>
+                <p className="text-[12px] font-medium text-foreground/70">No activity</p>
+            </div>
+        );
+    }
+
+    if (compact) {
+        return (
+            <div className="flex flex-col gap-4">
+                {timeline.slice(0, 5).map((item) => {
+                    const Icon = item.icon;
+                    return (
+                        <div key={item.id} className="flex gap-4 group cursor-pointer">
+                            <div className={cn(
+                                "w-10 h-10 rounded-2xl flex shrink-0 items-center justify-center border shadow-sm transition-transform duration-300 group-hover:scale-110",
+                                item.color
+                            )}>
+                                <Icon className="w-5 h-5" />
+                            </div>
+                            <div className="flex flex-col justify-center min-w-0">
+                                <p className="text-[13px] font-bold text-foreground leading-tight truncate group-hover:text-primary transition-colors">
+                                    {item.title}
+                                </p>
+                                <p className="text-[11px] text-muted-foreground/60 mt-0.5">
+                                    {formatDistanceToNow(item.timestamp, { addSuffix: true })}
+                                </p>
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         );
     }

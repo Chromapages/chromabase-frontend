@@ -9,6 +9,8 @@ import { LeadsList } from '@/components/features/leads/leads-list';
 import { TableSkeleton } from '@/components/shared/loading-skeleton';
 import { LeadDialog } from '@/components/features/leads/lead-dialog';
 import { LEAD_STATUS_OPTIONS } from '@/constants';
+import { useMobile } from '@/hooks/use-mobile';
+import { MobileLeadsPage } from '@/components/features/leads/mobile-leads-page';
 
 export default function LeadsPage() {
     const { useList, useUpdate } = useLeads();
@@ -21,6 +23,8 @@ export default function LeadsPage() {
     const [selectedStatuses, setSelectedStatuses] = useState<string[]>(
         LEAD_STATUS_OPTIONS.map(s => s.value)
     );
+
+    const isMobile = useMobile();
 
     const filteredLeads = useMemo(() => {
         return leads.filter(lead => {
@@ -43,6 +47,17 @@ export default function LeadsPage() {
                 : [...prev, status]
         );
     };
+
+    if (isMobile) {
+        return (
+            <MobileLeadsPage
+                leads={leads}
+                onNewLead={() => setIsDialogOpen(true)}
+                totalValue={totalValue}
+                leadCount={filteredLeads.length}
+            />
+        );
+    }
 
     return (
         <div className="p-4 md:p-6 lg:p-8 max-w-[1700px] mx-auto space-y-4 md:space-y-6 flex flex-col h-[calc(100vh-4rem)]">

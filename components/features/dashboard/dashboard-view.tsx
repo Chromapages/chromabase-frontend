@@ -9,7 +9,7 @@ import {
 import { Lead, Client, Activity as ActivityType, Deal, CRMTask, Appointment } from '@/types';
 import { cn } from '@/lib/utils';
 import { CalendarView } from '@/components/features/calendar/calendar-view';
-import { MobileVerticalFeed } from '@/components/features/dashboard/mobile-vertical-feed';
+import { MobileDashboard } from './mobile-dashboard';
 import { KPICards } from './kpi-cards';
 import { ActivityFeed } from './activity-feed';
 import { PipelineStrip } from './pipeline-strip';
@@ -88,163 +88,154 @@ export function DashboardView({
         .slice(0, 15) || [];
 
     return (
-        <div className="flex flex-col gap-4 p-6 min-h-[640px] h-[calc(100vh-3.5rem)] overflow-y-auto scrollbar-thin">
+        <div className="flex flex-col min-h-screen lg:min-h-0 lg:h-[calc(100vh-3.5rem)] overflow-hidden">
 
-            {/* Phase 1: KPI Header Row */}
-            <KPICards leads={leads} clients={clients} deals={deals} tasks={tasks} />
+            {/* MOBILE (< lg) — Full Independent Experience */}
+            <div className="flex lg:hidden flex-1 relative">
+                <MobileDashboard
+                    leads={leads}
+                    clients={clients}
+                    deals={deals}
+                    tasks={tasks}
+                    activities={activities}
+                    appointments={appointments}
+                />
+            </div>
 
-            {/* 3-6-3 Grid Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 lg:min-h-[580px] lg:max-h-[640px]">
+            {/* DESKTOP (>= lg) — Existing Grid Layout */}
+            <div className="hidden lg:flex flex-col gap-4 p-6 flex-1 overflow-y-auto scrollbar-thin">
 
-                {/* ── LEFT: Activity Feed ── */}
-                <section className="lg:col-span-3 flex flex-col h-full bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
-                    <div className="px-4 py-3 border-b border-border/50 flex items-center justify-between shrink-0">
-                        <div className="flex items-center gap-2">
-                            <Activity className="w-4 h-4 text-primary/70" />
-                            <h2 className="text-[13px] font-semibold text-foreground tracking-[-0.02em]">
-                                Activity Feed
-                            </h2>
-                        </div>
-                    </div>
-                    <div className="flex-1 overflow-y-auto scrollbar-thin">
-                        <ActivityFeed activities={activities} appointments={appointments} leads={leads} />
-                    </div>
-                </section>
+                {/* KPI Header Row */}
+                <KPICards leads={leads} clients={clients} deals={deals} tasks={tasks} />
 
-                {/* ── CENTER: Calendar / Mobile Feed ─────────────── */}
-                <section className="lg:col-span-6 flex flex-col h-full bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.07),0_0_0_1px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.04)] transition-shadow duration-200">
-                    {/* Mobile Only Header */}
-                    <div className="lg:hidden px-4 py-3 border-b border-border/40 flex items-center gap-2 shrink-0">
-                        <CalendarDays className="w-4 h-4 text-primary/70" />
-                        <h2 className="text-[13px] font-semibold text-foreground tracking-[-0.02em]">
-                            Your Feed
-                        </h2>
-                    </div>
+                {/* 3-6-3 Grid Layout */}
+                <div className="grid grid-cols-12 gap-4 flex-1 min-h-[580px] max-h-[640px]">
 
-                    <div className="flex-1 overflow-hidden">
-                        <div className="hidden lg:block h-full">
-                            <CalendarView tasks={tasks} appointments={appointments} isLoading={false} />
-                        </div>
-                        <div className="block lg:hidden h-[600px] overflow-y-auto scrollbar-thin">
-                            <MobileVerticalFeed
-                                appointments={appointments || []}
-                                tasks={tasks || []}
-                                clients={clients || []}
-                                leads={leads || []}
-                                deals={deals || []}
-                            />
-                        </div>
-                    </div>
-                </section>
-
-                {/* ── RIGHT: Priority Tasks ───────────────────────── */}
-                <section className="lg:col-span-3 flex flex-col h-full bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
-                    <div className="px-4 py-3 border-b border-border/50 flex flex-col gap-2 shrink-0">
-                        <div className="flex items-center justify-between">
+                    {/* ── LEFT: Activity Feed ── */}
+                    <section className="col-span-3 flex flex-col h-full bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
+                        <div className="px-4 py-3 border-b border-border/50 flex items-center justify-between shrink-0">
                             <div className="flex items-center gap-2">
-                                <CheckSquare className="w-4 h-4 text-primary/70" />
+                                <Activity className="w-4 h-4 text-primary/70" />
                                 <h2 className="text-[13px] font-semibold text-foreground tracking-[-0.02em]">
-                                    Priority Tasks
+                                    Activity Feed
                                 </h2>
                             </div>
                         </div>
-                        {/* Task Filters */}
-                        <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-md">
-                            {(['all', 'high', 'medium', 'low'] as const).map(filter => (
-                                <button
-                                    key={filter}
-                                    onClick={() => setTaskFilter(filter)}
-                                    className={cn(
-                                        "flex-1 text-[10px] font-semibold uppercase tracking-wider py-1 rounded transition-colors",
-                                        taskFilter === filter
-                                            ? "bg-background shadow-sm text-foreground"
-                                            : "text-muted-foreground/60 hover:text-foreground/80 hover:bg-black/5 dark:hover:bg-white/5"
-                                    )}
-                                >
-                                    {filter}
-                                </button>
-                            ))}
+                        <div className="flex-1 overflow-y-auto scrollbar-thin">
+                            <ActivityFeed activities={activities} appointments={appointments} leads={leads} />
                         </div>
-                    </div>
+                    </section>
 
-                    <div className="overflow-y-auto scrollbar-thin p-2">
-                        {priorityTasks.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-8 text-center gap-1">
-                                <CheckCircle2 className="w-8 h-8 text-success/40 mb-1" />
-                                <p className="text-[12px] font-medium text-muted-foreground/60">
-                                    All caught up
-                                </p>
-                                <p className="text-[11px] text-muted-foreground/40">
-                                    No pending tasks for this filter
-                                </p>
+                    {/* ── CENTER: Calendar ── */}
+                    <section className="col-span-6 flex flex-col h-full bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.07),0_0_0_1px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.04)] transition-shadow duration-200">
+                        <div className="flex-1 overflow-hidden">
+                            <CalendarView tasks={tasks} appointments={appointments} isLoading={false} />
+                        </div>
+                    </section>
+
+                    {/* ── RIGHT: Priority Tasks ── */}
+                    <section className="col-span-3 flex flex-col h-full bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
+                        <div className="px-4 py-3 border-b border-border/50 flex flex-col gap-2 shrink-0">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <CheckSquare className="w-4 h-4 text-primary/70" />
+                                    <h2 className="text-[13px] font-semibold text-foreground tracking-[-0.02em]">
+                                        Priority Tasks
+                                    </h2>
+                                </div>
                             </div>
-                        ) : (
-                            priorityTasks.map(task => {
-                                const pCfg = priorityConfig[task.priority as keyof typeof priorityConfig]
-                                    ?? priorityConfig.low;
-                                const isOverdue = task.dueDate && task.dueDate < nowTimestamp;
-                                const isToday = task.dueDate && new Date(task.dueDate).toDateString() === todayDateString;
-
-                                return (
-                                    <div
-                                        key={task.id}
-                                        className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/60 transition-colors group cursor-pointer"
+                            {/* Task Filters */}
+                            <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-md">
+                                {(['all', 'high', 'medium', 'low'] as const).map(filter => (
+                                    <button
+                                        key={filter}
+                                        onClick={() => setTaskFilter(filter)}
+                                        className={cn(
+                                            "flex-1 text-[10px] font-semibold uppercase tracking-wider py-1 rounded transition-colors",
+                                            taskFilter === filter
+                                                ? "bg-background shadow-sm text-foreground"
+                                                : "text-muted-foreground/60 hover:text-foreground/80 hover:bg-black/5 dark:hover:bg-white/5"
+                                        )}
                                     >
-                                        {/* Check button */}
-                                        <button
-                                            className="mt-0.5 w-4 h-4 rounded-full border border-border/60 hover:border-success hover:bg-success/10 shrink-0 flex items-center justify-center transition-all duration-150 cursor-pointer"
-                                            title="Mark as complete"
+                                        {filter}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="overflow-y-auto scrollbar-thin p-2">
+                            {priorityTasks.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center py-8 text-center gap-1">
+                                    <CheckCircle2 className="w-8 h-8 text-success/40 mb-1" />
+                                    <p className="text-[12px] font-medium text-muted-foreground/60">
+                                        All caught up
+                                    </p>
+                                    <p className="text-[11px] text-muted-foreground/40">
+                                        No pending tasks for this filter
+                                    </p>
+                                </div>
+                            ) : (
+                                priorityTasks.map(task => {
+                                    const pCfg = priorityConfig[task.priority as keyof typeof priorityConfig]
+                                        ?? priorityConfig.low;
+                                    const isOverdue = task.dueDate && task.dueDate < nowTimestamp;
+                                    const isToday = task.dueDate && new Date(task.dueDate).toDateString() === todayDateString;
+
+                                    return (
+                                        <div
+                                            key={task.id}
+                                            className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/60 transition-colors group cursor-pointer"
                                         >
-                                            <CheckCircle2 className="h-3 w-3 text-transparent group-hover:text-success/70 transition-colors" />
-                                        </button>
+                                            <button
+                                                className="mt-0.5 w-4 h-4 rounded-full border border-border/60 hover:border-success hover:bg-success/10 shrink-0 flex items-center justify-center transition-all duration-150 cursor-pointer"
+                                                title="Mark as complete"
+                                            >
+                                                <CheckCircle2 className="h-3 w-3 text-transparent group-hover:text-success/70 transition-colors" />
+                                            </button>
 
-                                        {/* Task content */}
-                                        <div className="min-w-0 flex-1">
-                                            <p className="text-[13px] font-medium text-foreground leading-snug group-hover:text-primary transition-colors truncate">
-                                                {task.title}
-                                            </p>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="text-[13px] font-medium text-foreground leading-snug group-hover:text-primary transition-colors truncate">
+                                                    {task.title}
+                                                </p>
 
-                                            <div className="flex items-center justify-between mt-1 gap-1">
-                                                {/* Priority */}
-                                                <div className="flex items-center gap-1.5">
-                                                    <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', pCfg.dot)} />
-                                                    <span className={cn('text-label-micro', pCfg.label)}>
-                                                        {task.priority}
-                                                    </span>
+                                                <div className="flex items-center justify-between mt-1 gap-1">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', pCfg.dot)} />
+                                                        <span className={cn('text-label-micro', pCfg.label)}>
+                                                            {task.priority}
+                                                        </span>
+                                                    </div>
+
+                                                    {task.dueDate && (
+                                                        <span className={cn(
+                                                            'text-[10px] font-bold shrink-0 px-1.5 py-0.5 rounded-sm',
+                                                            isOverdue ? 'bg-destructive/10 text-destructive'
+                                                                : isToday ? 'bg-warning/10 text-warning-foreground'
+                                                                    : 'text-muted-foreground/60'
+                                                        )}>
+                                                            {isOverdue ? 'Overdue' : isToday ? 'Today' : formatDistanceToNow(task.dueDate, { addSuffix: true })}
+                                                        </span>
+                                                    )}
                                                 </div>
 
-                                                {/* Due date */}
-                                                {task.dueDate && (
-                                                    <span className={cn(
-                                                        'text-[10px] font-bold shrink-0 px-1.5 py-0.5 rounded-sm',
-                                                        isOverdue ? 'bg-destructive/10 text-destructive'
-                                                            : isToday ? 'bg-warning/10 text-warning-foreground'
-                                                                : 'text-muted-foreground/60'
-                                                    )}>
-                                                        {isOverdue ? 'Overdue' : isToday ? 'Today' : formatDistanceToNow(task.dueDate, { addSuffix: true })}
-                                                    </span>
+                                                {task.accountId && clients?.some(c => c.id === task.accountId) && (
+                                                    <p className="text-[10px] text-muted-foreground/40 mt-1 truncate flex items-center gap-1">
+                                                        <Building2 className="w-3 h-3" />
+                                                        {clients.find(c => c.id === task.accountId)?.companyName}
+                                                    </p>
                                                 )}
                                             </div>
-
-                                            {/* Account name */}
-                                            {task.accountId && clients?.some(c => c.id === task.accountId) && (
-                                                <p className="text-[10px] text-muted-foreground/40 mt-1 truncate flex items-center gap-1">
-                                                    <Building2 className="w-3 h-3" />
-                                                    {clients.find(c => c.id === task.accountId)?.companyName}
-                                                </p>
-                                            )}
                                         </div>
-                                    </div>
-                                );
-                            })
-                        )}
-                    </div>
-                </section>
+                                    );
+                                })
+                            )}
+                        </div>
+                    </section>
+                </div>
+
+                {/* Phase 3: Pipeline Strip */}
+                <PipelineStrip deals={deals} />
             </div>
-
-            {/* Phase 3: Pipeline Strip */}
-            <PipelineStrip deals={deals} />
-
         </div>
     );
 }

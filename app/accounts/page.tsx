@@ -3,10 +3,16 @@
 import { PageHeader } from '@/components/layout/page-header';
 import { useClients } from '@/hooks';
 import { ClientList } from '@/components/features/accounts/client-list';
+import { useMobile } from '@/hooks/use-mobile';
+import { MobileAccountsPage } from '@/components/features/accounts/mobile-accounts-page';
+import { useState } from 'react';
+import { ClientDialog } from '@/components/features/accounts/client-dialog';
 
 export default function AccountsPage() {
     const { useList } = useClients();
     const { data: clients, isLoading, error } = useList();
+    const isMobile = useMobile();
+    const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
     if (error) {
         return (
@@ -16,6 +22,22 @@ export default function AccountsPage() {
                     Error loading accounts: {(error as Error).message}
                 </div>
             </div>
+        );
+    }
+
+    if (isMobile) {
+        return (
+            <>
+                <MobileAccountsPage
+                    accounts={clients}
+                    isLoading={isLoading}
+                    onNewAccount={() => setIsAddDialogOpen(true)}
+                />
+                <ClientDialog
+                    open={isAddDialogOpen}
+                    onOpenChange={setIsAddDialogOpen}
+                />
+            </>
         );
     }
 
