@@ -108,20 +108,22 @@ export function KPICards({ leads = [], clients = [], deals = [], tasks = [] }: K
                         key={card.label}
                         className={cn(
                             'group relative aspect-square flex flex-col justify-between',
-                            'rounded-sm p-4 overflow-hidden',
+                            'rounded-2xl p-4 overflow-hidden',
                             /* Glassmorphism surface */
-                            'glass-sm hover:glass-md',
-                            'border border-white/10',
+                            'bg-card/80 backdrop-blur-xl',
+                            'border border-border/60',
                             /* Swiss shadow scale */
-                            'shadow-2xl transition-all duration-300',
-                            'cursor-default active:scale-[0.98]',
+                            'shadow-[0_2px_8px_rgba(0,0,0,0.05),0_0_0_1px_rgba(0,0,0,0.03)]',
+                            'hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.04)]',
+                            'transition-shadow duration-200',
+                            'cursor-default',
                         )}
                     >
                         {/* Accent radial glow — colour-matched to card icon */}
                         <div
-                            className="absolute inset-0 opacity-20 pointer-events-none transition-opacity duration-500 group-hover:opacity-40"
+                            className="absolute inset-0 rounded-3xl opacity-60 pointer-events-none transition-opacity duration-300 group-hover:opacity-100"
                             style={{
-                                background: `radial-gradient(circle at 0% 0%, ${card.accent} 0%, transparent 60%)`,
+                                background: `radial-gradient(ellipse 80% 70% at 10% 10%, ${card.accent} 0%, transparent 70%)`,
                             }}
                             aria-hidden
                         />
@@ -130,12 +132,12 @@ export function KPICards({ leads = [], clients = [], deals = [], tasks = [] }: K
                         <div className="relative flex items-start justify-between">
                             {/* Icon container */}
                             <div
-                                className="w-10 h-10 rounded-sm flex items-center justify-center bg-white/5 border border-white/10"
-                                style={{ boxShadow: `0 0 20px ${card.accent}` }}
+                                className="w-9 h-9 rounded-xl flex items-center justify-center"
+                                style={{ background: card.accent }}
                             >
                                 <Icon
-                                    className="w-5 h-5"
-                                    style={{ color: card.iconColor }}
+                                    className="w-4.5 h-4.5"
+                                    style={{ color: card.iconColor, width: 18, height: 18 }}
                                 />
                             </div>
 
@@ -144,27 +146,28 @@ export function KPICards({ leads = [], clients = [], deals = [], tasks = [] }: K
                                 className={cn(
                                     'inline-flex items-center gap-0.5',
                                     'px-2 py-0.5 rounded-full',
-                                    'text-[10px] font-bold tabular-nums font-sans uppercase tracking-tighter',
+                                    'text-[10px] font-bold tabular-nums',
                                     card.positive
-                                        ? 'bg-emerald-500/10 text-emerald-400'
-                                        : 'bg-rose-500/10 text-rose-400',
+                                        ? 'bg-success/10 text-success'
+                                        : 'bg-destructive/10 text-destructive',
                                 )}
                             >
-                                <TrendIcon className="shrink-0" style={{ width: 10, height: 10 }} />
+                                <TrendIcon className="shrink-0" style={{ width: 9, height: 9 }} />
                                 {card.delta}
                             </span>
                         </div>
 
                         {/* ── Bottom: value + label ─────────────────── */}
-                        <div className="relative mt-4">
+                        <div className="relative mt-3">
                             {/* Large display value — Swiss bold numerics */}
                             <p
-                                className="text-3xl leading-none font-bold tracking-[-0.07em] text-foreground tabular-nums font-display"
+                                className="text-[1.625rem] leading-none font-bold tracking-[-0.05em] text-foreground tabular-nums"
+                                style={{ fontFeatureSettings: '"tnum"' }}
                             >
                                 {card.value}
                             </p>
                             {/* Descriptive label */}
-                            <p className="mt-1.5 text-[10px] font-bold text-muted-foreground/50 uppercase tracking-[0.2em] font-sans">
+                            <p className="mt-1 text-[11px] font-medium text-muted-foreground/70 tracking-[0.01em]">
                                 {card.label}
                             </p>
                         </div>

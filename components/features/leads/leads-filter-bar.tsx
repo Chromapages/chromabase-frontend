@@ -31,47 +31,47 @@ export function LeadsFilterBar({
     leadCount,
 }: LeadsFilterBarProps) {
     return (
-        <div className="flex flex-col gap-4 glass-md border border-white/10 p-4 rounded-sm shadow-2xl">
+        <div className="flex flex-col gap-4 bg-card/40 backdrop-blur-md border border-border/40 p-3 rounded-xl shadow-sm">
             <div className="flex items-center justify-between gap-4">
                 <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground/40" />
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
-                        placeholder="SEARCH LEADS..."
-                        className="pl-9 h-9 bg-black/20 border-white/5 focus-visible:ring-primary/20 transition-all rounded-sm uppercase text-[10px] font-bold tracking-[0.1em]"
+                        placeholder="Search leads..."
+                        className="pl-9 h-9 bg-background/50 border-border/40 focus-visible:ring-primary/20 transition-all"
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
                     />
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <div className="flex items-center bg-black/40 p-1 rounded-sm border border-white/5">
+                <div className="flex items-center gap-2">
+                    <div className="flex items-center bg-muted/50 p-1 rounded-lg border border-border/40">
                         <Button
                             variant={view === 'kanban' ? 'secondary' : 'ghost'}
                             size="icon"
-                            className="h-7 w-7 rounded-sm transition-all grayscale hover:grayscale-0"
+                            className="h-7 w-7 rounded-sm"
                             onClick={() => onViewChange('kanban')}
                         >
-                            <LayoutGrid className="h-3.5 w-3.5" />
+                            <LayoutGrid className="h-4 w-4" />
                         </Button>
                         <Button
                             variant={view === 'list' ? 'secondary' : 'ghost'}
                             size="icon"
-                            className="h-7 w-7 rounded-sm transition-all grayscale hover:grayscale-0"
+                            className="h-7 w-7 rounded-sm"
                             onClick={() => onViewChange('list')}
                         >
-                            <List className="h-3.5 w-3.5" />
+                            <List className="h-4 w-4" />
                         </Button>
                     </div>
 
-                    <Button onClick={onNewLead} size="sm" className="h-9 gap-2 font-bold uppercase tracking-[0.1em] text-[10px] rounded-sm">
+                    <Button onClick={onNewLead} size="sm" className="h-9 gap-2">
                         <Plus className="h-4 w-4" />
                         New Lead
                     </Button>
                 </div>
             </div>
 
-            <div className="flex items-center justify-between border-t border-white/5 pt-4">
-                <div className="flex flex-wrap gap-2">
+            <div className="flex items-center justify-between">
+                <div className="flex flex-wrap gap-1.5">
                     {LEAD_STATUS_OPTIONS.map((status) => {
                         const isSelected = selectedStatuses.includes(status.value);
                         return (
@@ -79,10 +79,10 @@ export function LeadsFilterBar({
                                 key={status.value}
                                 onClick={() => onStatusToggle(status.value)}
                                 className={cn(
-                                    "px-3 py-1 rounded-sm text-[10px] font-bold uppercase tracking-[0.2em] transition-all border",
+                                    "px-2.5 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all border",
                                     isSelected
-                                        ? "bg-primary/20 border-primary text-primary shadow-[0_0_15px_rgba(249,115,22,0.2)]"
-                                        : "bg-white/5 border-white/10 text-muted-foreground/60 hover:bg-white/10 hover:text-foreground"
+                                        ? "bg-primary/20 border-primary text-primary"
+                                        : "bg-muted/30 border-border/40 text-muted-foreground hover:bg-muted/50"
                                 )}
                             >
                                 {status.label}
@@ -91,18 +91,14 @@ export function LeadsFilterBar({
                     })}
                 </div>
 
-                <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-2">
-                        <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground/40">Value:</span>
-                        <span className="text-[14px] font-bold text-foreground font-display tabular-nums tracking-tight">
-                            ${totalValue.toLocaleString()}
-                        </span>
+                <div className="flex items-center gap-4 text-xs">
+                    <div className="flex items-center gap-1.5 px-3 py-1 bg-muted/30 border border-border/40 rounded-full">
+                        <span className="text-muted-foreground">Total Value:</span>
+                        <span className="font-semibold text-foreground">${totalValue.toLocaleString()}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground/40">Total:</span>
-                        <span className="text-[14px] font-bold text-foreground font-display tabular-nums tracking-tight">
-                            {leadCount}
-                        </span>
+                    <div className="flex items-center gap-1.5 px-3 py-1 bg-muted/30 border border-border/40 rounded-full">
+                        <span className="text-muted-foreground">Total Leads:</span>
+                        <span className="font-semibold text-foreground">{leadCount}</span>
                     </div>
                 </div>
             </div>

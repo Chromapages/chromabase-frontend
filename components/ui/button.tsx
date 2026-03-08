@@ -14,35 +14,39 @@ import { cn } from "@/lib/utils"
  */
 const buttonVariants = cva(
     [
-        "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all duration-200 cursor-pointer disabled:pointer-events-none disabled:opacity-40 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-[15px] shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-1 aria-invalid:ring-destructive/20 aria-invalid:border-destructive select-none",
+        "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium",
+        "transition-all duration-150 cursor-pointer",
+        "disabled:pointer-events-none disabled:opacity-40",
+        "[&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-[15px] shrink-0 [&_svg]:shrink-0",
+        "outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-1",
+        "aria-invalid:ring-destructive/20 aria-invalid:border-destructive",
+        "select-none",
     ].join(" "),
     {
         variants: {
             variant: {
                 default:
-                    "bg-primary text-primary-foreground hover:brightness-110 active:scale-[0.98] shadow-[0_2px_10px_-3px_rgba(249,115,22,0.3)] font-display",
+                    "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80 shadow-[0_1px_3px_rgba(0,122,255,0.3)]",
                 destructive:
-                    "bg-destructive text-white hover:bg-destructive/90 active:scale-[0.98] shadow-[0_2px_10px_-3px_rgba(255,59,48,0.25)]",
+                    "bg-destructive text-white hover:bg-destructive/90 active:bg-destructive/80 shadow-[0_1px_3px_rgba(255,59,48,0.25)] focus-visible:ring-destructive/40",
                 outline:
-                    "border border-border bg-transparent hover:bg-secondary active:scale-[0.98] text-foreground font-display",
+                    "border border-border bg-background hover:bg-muted/70 hover:border-border/80 active:bg-muted text-foreground shadow-xs",
                 secondary:
-                    "bg-secondary text-secondary-foreground hover:bg-muted active:scale-[0.98] font-display",
+                    "bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/70",
                 ghost:
-                    "text-foreground/80 hover:bg-muted/70 hover:text-foreground active:scale-[0.98]",
+                    "text-foreground/80 hover:bg-muted/70 hover:text-foreground active:bg-muted",
                 link:
                     "text-primary underline-offset-4 hover:underline p-0 h-auto",
-                glass:
-                    "glass-sm text-foreground hover:bg-white/30 active:scale-[0.98] border-white/20",
             },
             size: {
-                default: "h-10 px-5 py-2 text-[14px] rounded-[10px]",
-                xs: "h-7 gap-1 rounded-lg px-2 text-[11px] [&_svg:not([class*='size-'])]:size-3",
-                sm: "h-8 rounded-[9px] gap-1.5 px-3 text-[13px]",
-                lg: "h-12 rounded-xl px-6 text-[16px] font-semibold",
-                icon: "size-10 rounded-[10px]",
-                "icon-xs": "size-7 rounded-md [&_svg:not([class*='size-'])]:size-3",
+                default: "h-9 px-4 py-2 text-[13px] rounded-[10px] has-[>svg]:px-3",
+                xs: "h-6 gap-1 rounded-lg px-2 text-[11px] has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
+                sm: "h-8 rounded-[9px] gap-1.5 px-3 text-[13px] has-[>svg]:px-2.5",
+                lg: "h-10 rounded-xl px-5 text-[15px] has-[>svg]:px-4",
+                icon: "size-9 rounded-[10px]",
+                "icon-xs": "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
                 "icon-sm": "size-8 rounded-[9px]",
-                "icon-lg": "size-12 rounded-xl",
+                "icon-lg": "size-10 rounded-xl",
             },
         },
         defaultVariants: {

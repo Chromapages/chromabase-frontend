@@ -49,11 +49,11 @@ export function KanbanItem({ lead }: KanbanItemProps) {
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case 'new': return 'border-l-blue-500/50';
-            case 'contacted': return 'border-l-amber-500/50';
-            case 'proposal_sent': return 'border-l-purple-500/50';
-            case 'won': return 'border-l-emerald-500/50';
-            default: return 'border-l-white/10';
+            case 'new': return 'border-l-blue-500';
+            case 'contacted': return 'border-l-amber-500';
+            case 'proposal_sent': return 'border-l-purple-500';
+            case 'won': return 'border-l-emerald-500';
+            default: return 'border-l-muted-foreground/30';
         }
     };
 
@@ -62,7 +62,7 @@ export function KanbanItem({ lead }: KanbanItemProps) {
             ref={setNodeRef}
             style={style}
             className={cn(
-                "group relative border-l-4 card-surface border border-white/5 rounded-sm p-4 shadow-lg transition-all duration-300 hover:border-primary/40 hover:glass-sm hover:translate-x-1 cursor-grab active:cursor-grabbing",
+                "group relative border-l-4 bg-card/80 backdrop-blur-md border border-border/40 rounded-2xl p-3 shadow-sm transition-all duration-300 hover:border-primary/40 hover:shadow-md cursor-grab active:cursor-grabbing",
                 getStatusColor(lead.status),
                 isDragging && "opacity-50"
             )}
@@ -71,42 +71,42 @@ export function KanbanItem({ lead }: KanbanItemProps) {
                 router.push(`${ROUTES.LEADS}/${lead.id}`);
             }}
         >
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1.5">
                 <div className="flex items-start justify-between gap-2">
                     <div className="flex flex-col min-w-0 flex-1">
-                        <span className="font-bold text-[14px] text-foreground font-display tracking-tight leading-none group-hover:text-primary transition-colors">
+                        <span className="font-semibold text-[13px] text-foreground leading-tight truncate">
                             {lead.companyName}
                         </span>
-                        <span className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-[0.1em] mt-1 pr-6 font-sans">
+                        <span className="text-[10px] text-muted-foreground font-medium truncate">
                             {lead.contactName}
                         </span>
                     </div>
                     <div
                         {...attributes}
                         {...listeners}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:bg-white/5 rounded-sm text-muted-foreground/40 absolute top-4 right-2"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:bg-muted rounded text-muted-foreground/50"
                     >
                         <GripVertical className="h-3.5 w-3.5" />
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/5">
-                    <span className="text-[15px] font-bold text-foreground font-display tabular-nums tracking-tighter">
+                <div className="flex items-center justify-between mt-0.5">
+                    <span className="text-[12px] font-bold text-foreground/90">
                         ${lead.value.toLocaleString()}
                     </span>
-                    <div className="flex items-center text-[9px] uppercase tracking-[0.1em] font-bold text-muted-foreground/40 font-sans">
-                        <Clock className="w-2.5 h-2.5 mr-1" />
+                    <div className="flex items-center text-[10px] text-muted-foreground font-medium">
+                        <Clock className="w-2.5 h-2.5 mr-1 opacity-60" />
                         {formatDistanceToNow(lead.updatedAt, { addSuffix: true })}
                     </div>
                 </div>
             </div>
 
             {/* Quick Actions Hover Bar */}
-            <div className="absolute inset-x-0 bottom-0 top-0 bg-black/60 backdrop-blur-[4px] opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-sm flex items-center justify-center gap-4 pointer-events-none group-hover:pointer-events-auto border border-primary/20">
+            <div className="absolute inset-0 bg-background/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-2xl flex items-center justify-center gap-3 pointer-events-none group-hover:pointer-events-auto">
                 <Button
-                    variant="glass"
+                    variant="secondary"
                     size="icon"
-                    className="h-9 w-9 rounded-sm shadow-2xl border border-white/10 action-button hover:bg-primary hover:text-white transition-all transform hover:scale-110"
+                    className="h-8 w-8 rounded-full shadow-lg border border-border/40 action-button"
                     onClick={(e) => {
                         e.stopPropagation();
                         window.location.href = `mailto:${lead.contactEmail}`;
@@ -115,9 +115,9 @@ export function KanbanItem({ lead }: KanbanItemProps) {
                     <Mail className="h-4 w-4" />
                 </Button>
                 <Button
-                    variant="glass"
+                    variant="secondary"
                     size="icon"
-                    className="h-9 w-9 rounded-sm shadow-2xl border border-white/10 action-button hover:bg-primary hover:text-white transition-all transform hover:scale-110"
+                    className="h-8 w-8 rounded-full shadow-lg border border-border/40 action-button"
                     onClick={(e) => {
                         e.stopPropagation();
                         router.push(`${ROUTES.CALENDAR}?leadId=${lead.id}`);
@@ -126,9 +126,9 @@ export function KanbanItem({ lead }: KanbanItemProps) {
                     <Calendar className="h-4 w-4" />
                 </Button>
                 <Button
-                    variant="glass"
+                    variant="secondary"
                     size="icon"
-                    className="h-9 w-9 rounded-sm shadow-2xl border border-white/10 action-button hover:bg-primary hover:text-white transition-all transform hover:scale-110"
+                    className="h-8 w-8 rounded-full shadow-lg border border-border/40 action-button"
                     onClick={(e) => {
                         e.stopPropagation();
                         router.push(`${ROUTES.LEADS}/${lead.id}`);

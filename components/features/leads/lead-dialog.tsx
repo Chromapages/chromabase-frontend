@@ -121,98 +121,75 @@ export function LeadDialog({ open, onOpenChange, lead }: LeadDialogProps) {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden glass-md border-white/10 shadow-2xl border-0">
-                <DialogHeader className="p-6 pb-4 border-b border-white/5 bg-white/5">
-                    <DialogTitle className="text-[18px] font-bold text-foreground font-display tracking-tight uppercase">
-                        {isEdit ? 'Edit Lead' : 'Add New Lead'}
-                    </DialogTitle>
-                    <DialogDescription className="text-[11px] font-bold text-muted-foreground/40 font-sans tracking-wide uppercase mt-1">
+            <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                    <DialogTitle>{isEdit ? 'Edit Lead' : 'Add New Lead'}</DialogTitle>
+                    <DialogDescription>
                         {isEdit ? 'Update lead information and stage.' : 'Create a new sales lead to track in the pipeline.'}
                     </DialogDescription>
                 </DialogHeader>
-
-                <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                    <div className="grid grid-cols-2 gap-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="companyName" className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground/60">
-                                Company Name
-                            </Label>
+                            <Label htmlFor="companyName">Company Name</Label>
                             <Input
                                 id="companyName"
-                                placeholder="CHROMA INC."
+                                placeholder="Enter company"
                                 value={companyName}
                                 onChange={(e) => setCompanyName(e.target.value)}
-                                className="h-11 bg-white/5 border-white/10 focus:border-chroma-orange/50 transition-all font-medium placeholder:text-white/10"
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="contactName" className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground/60">
-                                Contact Name
-                            </Label>
+                            <Label htmlFor="contactName">Contact Name</Label>
                             <Input
                                 id="contactName"
                                 placeholder="Enter name"
                                 value={contactName}
                                 onChange={(e) => setContactName(e.target.value)}
-                                className="h-11 bg-white/5 border-white/10 focus:border-chroma-orange/50 transition-all font-medium placeholder:text-white/10"
                             />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="contactEmail" className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground/60">
-                                Email Address
-                            </Label>
+                            <Label htmlFor="contactEmail">Email</Label>
                             <Input
                                 id="contactEmail"
                                 type="email"
                                 placeholder="john@example.com"
                                 value={contactEmail}
                                 onChange={(e) => setContactEmail(e.target.value)}
-                                className="h-11 bg-white/5 border-white/10 focus:border-chroma-orange/50 transition-all font-medium placeholder:text-white/10"
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="contactPhone" className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground/60">
-                                Phone Number
-                            </Label>
+                            <Label htmlFor="contactPhone">Phone</Label>
                             <Input
                                 id="contactPhone"
                                 placeholder="+1 (555) 000-0000"
                                 value={contactPhone}
                                 onChange={(e) => setContactPhone(e.target.value)}
-                                className="h-11 bg-white/5 border-white/10 focus:border-chroma-orange/50 transition-all font-medium placeholder:text-white/10"
                             />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="value" className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground/60">
-                                Estimated Value
-                            </Label>
-                            <div className="relative">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/40 text-[14px] font-bold">$</span>
-                                <Input
-                                    id="value"
-                                    type="number"
-                                    placeholder="0"
-                                    value={value}
-                                    onChange={(e) => setValue(e.target.value)}
-                                    className="h-11 pl-7 bg-white/5 border-white/10 focus:border-chroma-orange/50 transition-all font-medium placeholder:text-white/10"
-                                />
-                            </div>
+                            <Label htmlFor="value">Estimated Value</Label>
+                            <Input
+                                id="value"
+                                type="number"
+                                placeholder="0"
+                                value={value}
+                                onChange={(e) => setValue(e.target.value)}
+                            />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="status" className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground/60">
-                                Current Stage
-                            </Label>
+                            <Label htmlFor="status">Stage</Label>
                             <Select value={status} onValueChange={(v: any) => setStatus(v)}>
-                                <SelectTrigger id="status" className="h-11 bg-white/5 border-white/10 focus:border-chroma-orange/50 transition-all font-medium">
+                                <SelectTrigger id="status">
                                     <SelectValue placeholder="Select stage" />
                                 </SelectTrigger>
-                                <SelectContent className="glass-md border-white/10 shadow-xl">
+                                <SelectContent>
                                     <SelectItem value="new">New Lead</SelectItem>
                                     <SelectItem value="contacted">Contacted</SelectItem>
                                     <SelectItem value="meeting_scheduled">Meeting Scheduled</SelectItem>
@@ -225,14 +202,12 @@ export function LeadDialog({ open, onOpenChange, lead }: LeadDialogProps) {
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="assignedTo" className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground/60">
-                            Assigned Member
-                        </Label>
+                        <Label htmlFor="assignedTo">Assigned To</Label>
                         <Select value={assignedTo} onValueChange={setAssignedTo}>
-                            <SelectTrigger id="assignedTo" className="h-11 bg-white/5 border-white/10 focus:border-chroma-orange/50 transition-all font-medium">
+                            <SelectTrigger id="assignedTo">
                                 <SelectValue placeholder="Select member" />
                             </SelectTrigger>
-                            <SelectContent className="glass-md border-white/10 shadow-xl">
+                            <SelectContent>
                                 <SelectItem value="unassigned">Unassigned</SelectItem>
                                 {users?.map((user: any) => {
                                     const displayName = user.displayName ||
@@ -250,12 +225,10 @@ export function LeadDialog({ open, onOpenChange, lead }: LeadDialogProps) {
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="notes" className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground/60">
-                            Additional Notes
-                        </Label>
+                        <Label htmlFor="notes">Notes</Label>
                         <textarea
                             id="notes"
-                            className="flex min-h-[100px] w-full rounded-sm border border-white/10 bg-white/5 px-3 py-2 text-sm ring-offset-background placeholder:text-white/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-chroma-orange/50 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+                            className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             placeholder="Add lead notes..."
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
@@ -263,53 +236,44 @@ export function LeadDialog({ open, onOpenChange, lead }: LeadDialogProps) {
                     </div>
 
                     {error && (
-                        <div className="p-3 rounded-sm bg-destructive/10 border border-destructive/20 text-[11px] font-bold text-destructive uppercase tracking-wider">
+                        <div className="text-sm text-destructive font-medium">
                             {error}
                         </div>
                     )}
 
-                    <DialogFooter className="flex items-center justify-between pt-6 border-t border-white/5 sm:justify-between">
+                    <DialogFooter className="flex items-center justify-between pt-4">
                         <div className="flex-1">
                             {isEdit && (
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                        <Button type="button" variant="ghost" className="h-11 px-6 text-destructive hover:text-destructive hover:bg-destructive/10 uppercase text-[10px] tracking-[0.2em] font-bold rounded-sm">
-                                            <Trash2 className="h-3.5 w-3.5 mr-2" />
-                                            Delete Lead
+                                        <Button type="button" variant="ghost" className="text-destructive hover:text-destructive hover:bg-destructive/10">
+                                            <Trash2 className="h-4 w-4 mr-2" />
+                                            Delete
                                         </Button>
                                     </AlertDialogTrigger>
-                                    <AlertDialogContent className="glass-md border-white/10">
+                                    <AlertDialogContent>
                                         <AlertDialogHeader>
-                                            <AlertDialogTitle className="text-[16px] font-bold uppercase tracking-tight">Are you absolutely sure?</AlertDialogTitle>
-                                            <AlertDialogDescription className="text-xs text-muted-foreground/60 uppercase font-bold tracking-wider">
-                                                This action will permanently delete this lead record. This is irreversible.
+                                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This will permanently delete the lead. This action cannot be undone.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
-                                            <AlertDialogCancel className="rounded-sm uppercase text-[10px] tracking-widest font-bold h-11 border-white/10 bg-white/5">Cancel</AlertDialogCancel>
-                                            <AlertDialogAction onClick={handleDelete} className="rounded-sm uppercase text-[10px] tracking-widest font-bold h-11 bg-destructive text-white hover:bg-destructive/90 transition-all shadow-lg shadow-destructive/20">
-                                                Delete Permanent
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                                Delete
                                             </AlertDialogAction>
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
                             )}
                         </div>
-                        <div className="flex gap-3">
-                            <Button
-                                type="button"
-                                variant="glass"
-                                className="h-11 px-6 rounded-sm uppercase text-[10px] tracking-[0.2em] font-bold"
-                                onClick={() => onOpenChange(false)}
-                            >
+                        <div className="flex gap-2">
+                            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                                 Cancel
                             </Button>
-                            <Button
-                                type="submit"
-                                disabled={createLead.isPending || updateLead.isPending}
-                                className="h-11 px-8 rounded-sm bg-chroma-orange text-white hover:bg-chroma-orange/90 uppercase text-[10px] tracking-[0.2em] font-bold shadow-lg shadow-chroma-orange/20 transition-all"
-                            >
-                                {isEdit ? (updateLead.isPending ? 'SAVING...' : 'SAVE CHANGES') : (createLead.isPending ? 'CREATING...' : 'CREATE LEAD')}
+                            <Button type="submit" disabled={createLead.isPending || updateLead.isPending}>
+                                {isEdit ? (updateLead.isPending ? 'Saving...' : 'Save Changes') : (createLead.isPending ? 'Creating...' : 'Create Lead')}
                             </Button>
                         </div>
                     </DialogFooter>

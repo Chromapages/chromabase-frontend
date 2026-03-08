@@ -28,41 +28,41 @@ export function PipelineStrip({ deals = [] }: PipelineStripProps) {
     });
 
     return (
-        <div className="w-full glass-md border border-white/10 rounded-sm overflow-hidden shadow-2xl mt-4 h-[84px] shrink-0">
+        <div className="w-full bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200 mt-4 h-[84px] shrink-0">
             <div className="flex items-stretch h-full overflow-x-auto scrollbar-none snap-x snap-mandatory">
 
                 {/* Header Label */}
-                <div className="px-6 py-4 flex flex-col justify-center border-r border-white/5 shrink-0 bg-white/5">
-                    <h3 className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground/40 font-sans">Pipeline</h3>
-                    <p className="text-[14px] font-bold text-foreground mt-0.5 font-display tracking-tight">Active Pulse</p>
+                <div className="px-6 py-4 flex flex-col justify-center border-r border-border/50 shrink-0 bg-muted/20">
+                    <h3 className="text-[12px] uppercase tracking-wider font-bold text-muted-foreground/50">Deal Pipeline</h3>
+                    <p className="text-[13px] font-medium text-foreground mt-0.5">Summary</p>
                 </div>
 
                 {/* Pipeline Stages */}
-                <div className="flex-1 flex items-center px-6 gap-3 min-w-max pb-1 bg-black/20">
+                <div className="flex-1 flex items-center px-6 gap-2 min-w-max pb-1">
                     {stageData.map((stage, idx) => (
-                        <div key={stage.key} className="flex items-center gap-3 shrink-0 snap-start">
+                        <div key={stage.key} className="flex items-center gap-2 shrink-0 snap-start">
 
                             {/* Connector Arrow (except first) */}
-                            {idx > 0 && <ArrowRight className="w-4 h-4 text-white/10 shrink-0 mx-1" />}
+                            {idx > 0 && <ArrowRight className="w-4 h-4 text-muted-foreground/30 shrink-0 mx-2" />}
 
                             {/* Pill */}
                             <div className={cn(
-                                "flex items-center gap-4 px-5 py-2.5 rounded-sm border transition-all hover:glass-sm shadow-lg",
-                                stage.color.replace('bg-', 'bg-black/40 bg-')
+                                "flex items-center gap-4 px-4 py-2.5 rounded-full border transition-all hover:brightness-110",
+                                stage.color
                             )}>
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] font-bold uppercase tracking-[0.1em] opacity-40 font-sans">
+                                    <span className="text-[11px] font-semibold uppercase tracking-wider opacity-80">
                                         {stage.label}
                                     </span>
                                     <div className="flex items-baseline gap-2 mt-0.5">
-                                        <span className="text-[15px] font-bold font-display tracking-tight">
+                                        <span className="text-[14px] font-bold">
                                             {formatCurrency(stage.value)}
                                         </span>
                                     </div>
                                 </div>
 
-                                <div className="ml-2 w-7 h-7 rounded-sm bg-white/5 flex items-center justify-center border border-white/10 shadow-inner shrink-0">
-                                    <span className="text-[12px] font-bold font-sans tabular-nums">{stage.count}</span>
+                                <div className="ml-2 w-6 h-6 rounded-full bg-background/50 flex items-center justify-center border border-current/10 shadow-sm shrink-0">
+                                    <span className="text-[11px] font-bold">{stage.count}</span>
                                 </div>
                             </div>
                         </div>

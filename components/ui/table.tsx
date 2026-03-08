@@ -23,7 +23,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
     <thead
       data-slot="table-header"
-      className={cn("[&_tr]:border-b [&_tr]:border-border/60 bg-secondary/30 backdrop-blur-sm", className)}
+      className={cn("[&_tr]:border-b", className)}
       {...props}
     />
   )
@@ -58,7 +58,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.ComponentProps<"tr"
       ref={ref}
       data-slot="table-row"
       className={cn(
-        "hover:bg-muted/40 data-[state=selected]:bg-muted/60 border-b border-border/40 transition-colors duration-300",
+        "hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors",
         className
       )}
       {...props}
@@ -72,7 +72,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "text-foreground h-12 px-4 text-left align-middle font-bold uppercase tracking-wider text-[10px] whitespace-nowrap font-display [&:has([role=checkbox])]:pr-0",
+        "text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         className
       )}
       {...props}
@@ -85,7 +85,7 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
     <td
       data-slot="table-cell"
       className={cn(
-        "p-4 align-middle whitespace-nowrap font-sans text-sm text-foreground/80 [&:has([role=checkbox])]:pr-0",
+        "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
         className
       )}
       {...props}

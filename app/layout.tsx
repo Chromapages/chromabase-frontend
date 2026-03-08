@@ -3,17 +3,27 @@ import type { Metadata, Viewport } from 'next';
 import { Providers } from './providers';
 import { AppShell } from '@/components/layout/app-shell';
 import { Toaster } from 'sonner';
-import { Fira_Code } from 'next/font/google';
+import { Fira_Code, Inter } from 'next/font/google';
 
 /*
- * Fonts — Soft Swiss Modernism 2.0
- * Fonts are imported globally in globals.css via Fontshare (Satoshi & General Sans)
- * Fira Code: kept for mono variable consistency
+ * Fonts — Swiss Modernism 2.0
+ * Inter: screen-optimised Helvetica Neue descendant, perfect Swiss grid weight
+ * Fira Code: monospace for API docs, code blocks
+ *
+ * Variable names match what globals.css @theme references:
+ *   --font-geist-sans → Inter
+ *   --font-geist-mono → Fira Code
  */
+const inter = Inter({
+    subsets: ['latin'],
+    variable: '--font-geist-sans',
+    display: 'swap',
+    weight: ['300', '400', '500', '600', '700', '800'],
+});
 
 const firaCode = Fira_Code({
     subsets: ['latin'],
-    variable: '--font-mono',
+    variable: '--font-geist-mono',
     display: 'swap',
     weight: ['400', '500', '600'],
 });
@@ -22,8 +32,8 @@ export const viewport: Viewport = {
     width: 'device-width',
     initialScale: 1,
     themeColor: [
-        { media: '(prefers-color-scheme: light)', color: '#F2F2F7' },
-        { media: '(prefers-color-scheme: dark)', color: '#050505' },
+        { media: '(prefers-color-scheme: light)', color: '#f5f5f7' },
+        { media: '(prefers-color-scheme: dark)', color: '#000000' },
     ],
 };
 
@@ -37,9 +47,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html
             lang="en"
             suppressHydrationWarning
-            className={`${firaCode.variable}`}
+            className={`${inter.variable} ${firaCode.variable}`}
         >
-            <body className="font-sans antialiased text-foreground selection:bg-primary/20">
+            <body className="font-sans antialiased">
                 <Providers>
                     <AppShell>
                         {children}

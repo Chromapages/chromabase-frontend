@@ -28,16 +28,16 @@ export function KanbanColumn({ column, leads }: KanbanColumnProps) {
         <div
             ref={setNodeRef}
             className={cn(
-                "flex flex-col glass-sm border border-white/5 rounded-sm w-[280px] shrink-0 h-full max-h-full transition-all duration-300",
-                isOver ? "bg-white/10 border-primary shadow-[0_0_20px_rgba(249,115,22,0.1)]" : "shadow-xl"
+                "flex flex-col bg-muted/30 border border-border/30 rounded-3xl w-[280px] shrink-0 h-full max-h-full transition-all duration-300",
+                isOver ? "bg-primary/5 border-primary/30 ring-1 ring-primary/20 shadow-md" : "shadow-sm hover:shadow"
             )}
         >
-            <div className="p-4 flex items-center justify-between border-b border-white/5 bg-white/5 rounded-t-sm">
-                <div className="flex flex-col gap-1">
-                    <h3 className="font-bold text-[10px] uppercase tracking-[0.2em] text-muted-foreground/40 leading-none font-sans">{column.label}</h3>
-                    <span className="text-[13px] font-bold text-foreground font-display tracking-tight">${totalValue.toLocaleString()}</span>
+            <div className="p-4 flex items-center justify-between border-b border-border/20 bg-muted/10 rounded-t-3xl">
+                <div className="flex flex-col gap-0.5">
+                    <h3 className="font-semibold text-sm text-foreground/90 tracking-tight leading-none">{column.label}</h3>
+                    <span className="text-[10px] font-bold text-primary/80">${totalValue.toLocaleString()}</span>
                 </div>
-                <Badge variant="glass" className="h-6 px-2 min-w-[1.5rem] flex justify-center text-[11px] font-bold font-sans tabular-nums">
+                <Badge variant="secondary" className="h-4.5 px-1.5 min-w-[1.25rem] flex justify-center text-[10px] bg-background/50 border-border/40">
                     {leads.length}
                 </Badge>
             </div>
