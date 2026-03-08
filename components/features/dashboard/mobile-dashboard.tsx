@@ -13,19 +13,8 @@ import {
     Bell, Briefcase, CheckSquare, FileText,
     Clock, ChevronRight, CalendarDays,
     TrendingUp, UserCheck, CheckCircle2,
-    Menu,
 } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/use-auth';
-import {
-    Sheet,
-    SheetContent,
-    SheetTrigger,
-    SheetHeader,
-    SheetTitle,
-} from '@/components/ui/sheet';
-import { Sidebar } from '@/components/layout/sidebar';
-
 interface MobileDashboardProps {
     leads: Lead[] | undefined;
     clients: Client[] | undefined;
@@ -62,67 +51,11 @@ export function MobileDashboard({
     const meetingsTodayCount = appointmentsToday.length;
     const nextMeeting = appointmentsToday[0];
 
-    const getTimeGreeting = () => {
-        const hour = new Date().getHours();
-        if (hour < 12) return 'morning';
-        if (hour < 17) return 'afternoon';
-        return 'evening';
-    };
-
-    const displayName = user?.displayName?.split(' ')[0] || 'Operator';
 
     return (
-        <div className="fixed inset-0 bg-background z-[45] overflow-hidden flex flex-col">
+        <div className="fixed inset-0 bg-background z-[45] overflow-hidden flex flex-col pt-14">
             {/* ── Scrollable Content ── */}
             <div className="flex-1 overflow-y-auto scrollbar-none pb-32">
-
-                {/* ── HEADER ── */}
-                <div className="flex items-center justify-between px-5 pt-14 pb-4">
-                    <div className="flex items-center gap-4">
-                        <Sheet>
-                            <SheetTrigger asChild>
-                                <button
-                                    className="w-10 h-10 rounded-xl bg-accent/50 border border-border/40 flex items-center justify-center active:scale-95 transition-all"
-                                    aria-label="Toggle Menu"
-                                >
-                                    <Menu className="w-5 h-5 text-foreground/70" strokeWidth={1.8} />
-                                </button>
-                            </SheetTrigger>
-                            <SheetContent side="left" className="p-0 border-none w-[280px]" showCloseButton={false}>
-                                <SheetHeader className="sr-only">
-                                    <SheetTitle>Navigation Menu</SheetTitle>
-                                </SheetHeader>
-                                <Sidebar isMobile />
-                            </SheetContent>
-                        </Sheet>
-
-                        <div className="flex items-center gap-3">
-                            <Avatar className="w-9 h-9 ring-2 ring-primary/10">
-                                <AvatarImage
-                                    src={user?.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=6366f1&color=fff&bold=true`}
-                                    alt={displayName}
-                                />
-                                <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
-                                    {displayName.charAt(0).toUpperCase()}
-                                </AvatarFallback>
-                            </Avatar>
-                            <div>
-                                <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">{format(new Date(), 'EEE, MMM d')}</p>
-                                <h1 className="text-[15px] font-bold text-foreground leading-tight tracking-tight">
-                                    {displayName}
-                                </h1>
-                            </div>
-                        </div>
-                    </div>
-                    <button
-                        className="relative w-10 h-10 rounded-xl bg-accent/50 border border-border/40 flex items-center justify-center active:scale-95 transition-all cursor-pointer"
-                        aria-label="Notifications"
-                    >
-                        <Bell className="w-4.5 h-4.5 text-foreground/70" strokeWidth={1.8} />
-                        <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-blue-500 rounded-full border-2 border-background" />
-                    </button>
-                </div>
-
                 {/* ── HERO BADGES (Pipeline Value + Next Meeting) ── */}
                 <div className="flex gap-2.5 px-5 pb-6">
                     <Link

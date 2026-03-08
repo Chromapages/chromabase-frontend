@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants';
@@ -57,16 +57,21 @@ function NavSection({
     items,
     pathname,
     isCollapsed,
+    isMobile = false,
 }: {
     label?: string;
     items: Array<{ name: string; href: string; icon: LucideIcon }>;
     pathname: string;
     isCollapsed: boolean;
+    isMobile?: boolean;
 }) {
     return (
-        <div className="space-y-1">
+        <div className={cn("space-y-1", isMobile && "space-y-1.5")}>
             {label && !isCollapsed && (
-                <p className="text-label-micro text-muted-foreground/40 px-3 pt-6 pb-2 select-none tracking-widest transition-opacity duration-300">
+                <p className={cn(
+                    "text-label-micro text-muted-foreground/40 px-3 pt-6 pb-2 select-none tracking-widest transition-opacity duration-300 uppercase",
+                    isMobile && "px-4 pt-8 pb-3 text-[10px]"
+                )}>
                     {label}
                 </p>
             )}
@@ -84,17 +89,25 @@ function NavSection({
                         key={item.name}
                         href={item.href}
                         className={cn(
-                            'group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[14px] font-medium transition-all duration-200 outline-none',
+                            'group flex items-center transition-all duration-300 outline-none',
+                            isMobile
+                                ? 'gap-4 px-4 py-4 rounded-2xl text-[15px]'
+                                : 'gap-3 px-3 py-2.5 rounded-xl text-[14px]',
                             isActive
-                                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[1.02]'
-                                : 'text-foreground/70 hover:text-foreground hover:bg-secondary/50'
+                                ? isMobile
+                                    ? 'bg-primary/10 text-primary font-bold shadow-[inset_0_0_0_1px_rgba(var(--primary),0.1)]'
+                                    : 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[1.02]'
+                                : 'text-foreground/70 active:bg-secondary/60'
                         )}
                         title={isCollapsed ? item.name : undefined}
                     >
                         <Icon
                             className={cn(
-                                'w-[18px] h-[18px] shrink-0 transition-transform duration-200 group-active:scale-95',
-                                isActive ? 'text-primary-foreground' : 'text-foreground/40 group-hover:text-foreground/70'
+                                'shrink-0 transition-all duration-300 group-active:scale-90',
+                                isMobile ? 'w-5 h-5' : 'w-[18px] h-[18px]',
+                                isActive
+                                    ? isMobile ? 'text-primary' : 'text-primary-foreground'
+                                    : 'text-foreground/40 group-hover:text-foreground/70'
                             )}
                         />
                         {!isCollapsed && (
@@ -124,18 +137,91 @@ export function Sidebar({ className, isMobile = false }: { className?: string; i
         .join('')
         .toUpperCase() || 'U';
 
+    const [sidebarWidth, setSidebarWidth] = useState(280);
+    const [isResizing, setIsResizing] = useState(false);
+    const sidebarRef = useRef<HTMLDivElement>(null);
+
+    // Load width from localStorage
+    useEffect(() => {
+        const saved = localStorage.getItem('sidebar-width');
+        if (saved) {
+            const width = parseInt(saved, 10);
+            if (!isNaN(width)) setSidebarWidth(width);
+        }
+    }, []);
+
+    const startResizing = useCallback((e: React.PointerEvent) => {
+        e.preventDefault();
+        setIsResizing(true);
+    }, []);
+
+    const stopResizing = useCallback(() => {
+        if (isResizing) {
+            setIsResizing(false);
+            localStorage.setItem('sidebar-width', sidebarWidth.toString());
+        }
+    }, [isResizing, sidebarWidth]);
+
+    const resize = useCallback((e: PointerEvent) => {
+        if (!isResizing) return;
+
+        let newWidth = e.clientX;
+        if (newWidth < 200) newWidth = 200;
+        if (newWidth > 480) newWidth = 480;
+
+        setSidebarWidth(newWidth);
+    }, [isResizing]);
+
+    useEffect(() => {
+        if (isResizing) {
+            window.addEventListener('pointermove', resize);
+            window.addEventListener('pointerup', stopResizing);
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+        } else {
+            window.removeEventListener('pointermove', resize);
+            window.removeEventListener('pointerup', stopResizing);
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        }
+        return () => {
+            window.removeEventListener('pointermove', resize);
+            window.removeEventListener('pointerup', stopResizing);
+        };
+    }, [isResizing, resize, stopResizing]);
+
     // Force expanded state on mobile
     const effectiveCollapsed = isMobile ? false : isCollapsed;
 
     return (
         <div
+            ref={sidebarRef}
             className={cn(
                 'relative flex flex-col h-full glass transition-all duration-400 ease-spring border-r border-border/50 group/sidebar',
-                effectiveCollapsed ? 'w-[78px]' : 'w-[280px]',
-                isMobile && "w-full border-r-0",
+                isMobile ? "w-full h-screen border-r-0 overflow-hidden" : "",
+                isResizing && "transition-none",
                 className
             )}
+            style={{
+                width: isMobile ? undefined : (effectiveCollapsed ? '78px' : `${sidebarWidth}px`)
+            }}
         >
+            {/* ── Resize Handle ─────────────────────────────────── */}
+            {!isMobile && !effectiveCollapsed && (
+                <div
+                    onPointerDown={startResizing}
+                    className={cn(
+                        "absolute right-0 top-0 bottom-0 w-1 cursor-col-resize z-50 group/handle transition-colors",
+                        isResizing ? "bg-primary/40" : "hover:bg-primary/20"
+                    )}
+                >
+                    <div className={cn(
+                        "absolute right-0 top-1/2 -translate-y-1/2 w-0.5 h-8 rounded-full bg-border transition-all group-hover/handle:h-12 group-hover/handle:bg-primary/40",
+                        isResizing && "bg-primary/60 h-16"
+                    )} />
+                </div>
+            )}
+
             {/* ── Collapse Toggle ────────────────────────────────── */}
             {!isMobile && (
                 <Button
@@ -152,21 +238,24 @@ export function Sidebar({ className, isMobile = false }: { className?: string; i
                 </Button>
             )}
 
-            {/* ── Header / Logo ─────────────────────────────────── */}
             <div className={cn(
                 "h-20 flex items-center shrink-0 transition-all duration-300 px-6",
-                effectiveCollapsed && "px-0 justify-center"
+                effectiveCollapsed && "px-0 justify-center",
+                isMobile && "px-6 pt-4"
             )}>
                 <Link
                     href={ROUTES.DASHBOARD}
                     className="flex items-center gap-3 group/logo"
                 >
-                    <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/25 group-hover/logo:scale-105 transition-transform duration-300">
+                    <div className={cn(
+                        "rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/25 transition-transform duration-300",
+                        isMobile ? "w-9 h-9" : "w-10 h-10 group-hover/logo:scale-105"
+                    )}>
                         <svg
                             viewBox="0 0 20 20"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
-                            className="w-6 h-6"
+                            className={isMobile ? "w-5 h-5" : "w-6 h-6"}
                         >
                             <path
                                 d="M10 2L3 10L10 18L17 10L10 2Z"
@@ -179,11 +268,20 @@ export function Sidebar({ className, isMobile = false }: { className?: string; i
                         </svg>
                     </div>
                     {!effectiveCollapsed && (
-                        <div className="flex flex-col leading-tight animate-in fade-in duration-500">
-                            <span className="text-xl font-bold tracking-tighter text-foreground">
+                        <div className={cn(
+                            "flex flex-col leading-tight animate-in fade-in duration-500",
+                            isMobile && "gap-0.5 ml-1"
+                        )}>
+                            <span className={cn(
+                                "font-bold tracking-tighter text-foreground",
+                                isMobile ? "text-lg" : "text-xl"
+                            )}>
                                 Chroma<span className="text-primary tracking-normal">BASE</span>
                             </span>
-                            <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-muted-foreground/60">
+                            <span className={cn(
+                                "font-semibold tracking-[0.2em] uppercase text-muted-foreground/60 decoration-primary/30 underline-offset-4 decoration-2",
+                                isMobile ? "text-[9px]" : "text-[10px]"
+                            )}>
                                 CRM Intelligence
                             </span>
                         </div>
@@ -192,49 +290,65 @@ export function Sidebar({ className, isMobile = false }: { className?: string; i
             </div>
 
             {/* ── Navigation List ────────────────────────────────── */}
-            <ScrollArea className="flex-1 px-4 scrollbar-thin">
-                <div className="py-2 space-y-1">
-                    <NavSection items={MAIN_NAV} pathname={pathname} isCollapsed={effectiveCollapsed} />
-                    <NavSection label="Workspace" items={WORK_NAV} pathname={pathname} isCollapsed={effectiveCollapsed} />
-                    <NavSection label="Organization" items={TEAM_NAV} pathname={pathname} isCollapsed={effectiveCollapsed} />
+            <ScrollArea className={cn("flex-1 min-h-0 px-4 scrollbar-thin", isMobile && "px-4")}>
+                <div className={cn("py-2 space-y-1", isMobile && "pt-4 pb-8 space-y-4")}>
+                    <NavSection items={MAIN_NAV} pathname={pathname} isCollapsed={effectiveCollapsed} isMobile={isMobile} />
+                    <NavSection label="Workspace" items={WORK_NAV} pathname={pathname} isCollapsed={effectiveCollapsed} isMobile={isMobile} />
+                    <NavSection label="Organization" items={TEAM_NAV} pathname={pathname} isCollapsed={effectiveCollapsed} isMobile={isMobile} />
                 </div>
             </ScrollArea>
 
             {/* ── Footer / User / Status ─────────────────────────── */}
-            <div className="shrink-0 p-4 space-y-2">
+            <div className={cn(
+                "shrink-0 p-4 space-y-2",
+                isMobile && "p-4 pb-[calc(24px+env(safe-area-inset-bottom))] bg-secondary/10 border-t border-border/20"
+            )}>
                 {/* User Snippet */}
                 <div className={cn(
-                    "flex items-center gap-3 p-2 rounded-2xl bg-secondary/30 transition-all duration-300",
-                    effectiveCollapsed ? "justify-center px-0 bg-transparent" : "hover:bg-secondary/50 cursor-pointer"
+                    "flex items-center gap-3 p-2 rounded-2xl transition-all duration-300",
+                    isMobile
+                        ? "bg-card border border-border/50 shadow-sm p-3 mb-4"
+                        : (effectiveCollapsed ? "justify-center px-0 bg-transparent" : "bg-secondary/30 hover:bg-secondary/50 cursor-pointer")
                 )}>
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center text-[13px] font-bold text-primary-foreground shadow-sm">
+                    <div className={cn(
+                        "rounded-xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center font-bold text-primary-foreground shadow-sm shrink-0",
+                        isMobile ? "w-10 h-10 text-[14px]" : "w-9 h-9 text-[13px]"
+                    )}>
                         {initials}
                     </div>
                     {!effectiveCollapsed && (
                         <div className="flex flex-col min-w-0 pr-2">
-                            <span className="text-[13px] font-bold truncate text-foreground">{displayName}</span>
-                            <span className="text-[11px] text-muted-foreground truncate leading-none">{userSubtext}</span>
+                            <span className={cn(
+                                "font-bold truncate text-foreground",
+                                isMobile ? "text-[14px]" : "text-[13px]"
+                            )}>{displayName}</span>
+                            <span className={cn(
+                                "text-muted-foreground truncate leading-none mt-0.5",
+                                isMobile ? "text-[12px]" : "text-[11px]"
+                            )}>{userSubtext}</span>
                         </div>
                     )}
                 </div>
 
                 {!effectiveCollapsed ? (
-                    <div className="space-y-1 pt-2">
+                    <div className={cn("space-y-1 pt-2", isMobile && "pt-0 grid grid-cols-2 gap-2 space-y-0")}>
                         <Link
                             href={ROUTES.SETTINGS}
                             className={cn(
                                 "flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-medium transition-all group",
-                                pathname === ROUTES.SETTINGS ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-secondary/40"
+                                isMobile && "bg-secondary/40 justify-center h-11 px-4",
+                                pathname === ROUTES.SETTINGS ? "text-primary bg-primary/5" : "text-muted-foreground hover:text-foreground hover:bg-secondary/40"
                             )}
                         >
-                            <Settings className="w-[17px] h-[17px] group-hover:rotate-45 transition-transform duration-300" />
+                            <Settings className={cn("w-[17px] h-[17px] transition-transform duration-500", !isMobile && "group-hover:rotate-45")} />
                             Settings
                         </Link>
                         <Link
                             href={ROUTES.API_DOCS}
                             className={cn(
                                 "flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-medium transition-all group",
-                                pathname === ROUTES.API_DOCS ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-secondary/40"
+                                isMobile && "bg-secondary/40 justify-center h-11 px-4",
+                                pathname === ROUTES.API_DOCS ? "text-primary bg-primary/5" : "text-muted-foreground hover:text-foreground hover:bg-secondary/40"
                             )}
                         >
                             <Terminal className="w-[17px] h-[17px]" />
@@ -242,7 +356,10 @@ export function Sidebar({ className, isMobile = false }: { className?: string; i
                         </Link>
 
                         {/* Status Dot */}
-                        <div className="flex items-center justify-between px-3 pt-4 border-t border-border/40 mt-2">
+                        <div className={cn(
+                            "flex items-center justify-between px-3 pt-4 border-t border-border/40 mt-2",
+                            isMobile && "col-span-2 border-t-0 pt-2 px-1"
+                        )}>
                             <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/50">Core System</span>
                             <div className="flex items-center gap-2">
                                 <span className="relative flex h-2 w-2">

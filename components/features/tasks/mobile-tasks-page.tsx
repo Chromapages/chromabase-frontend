@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { CRMTask, Client, TaskStatus, TaskPriority } from '@/types';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Search, Plus, X, Calendar as CalendarIcon, Flag, Layout } from 'lucide-react';
+import { CheckCircle2, Plus, X, Calendar as CalendarIcon, Flag, Layout } from 'lucide-react';
 import { isPast, isToday, endOfDay, addDays, format } from 'date-fns';
 import { SwipeableTaskCard } from './swipeable-task-card';
 import { Button } from '@/components/ui/button';
@@ -23,41 +23,7 @@ interface MobileTasksPageProps {
 
 type GroupType = 'OVERDUE' | 'TODAY' | 'UPCOMING' | 'SOMEDAY';
 
-function ProgressRing({ percent }: { percent: number }) {
-    const radius = 18;
-    const circumference = 2 * Math.PI * radius;
-    const offset = circumference - (percent / 100) * circumference;
 
-    return (
-        <div className="relative w-12 h-12 flex items-center justify-center">
-            <svg className="w-12 h-12 -rotate-90">
-                <circle
-                    cx="24"
-                    cy="24"
-                    r={radius}
-                    stroke="currentColor"
-                    strokeWidth="3.5"
-                    fill="transparent"
-                    className="text-muted/10"
-                />
-                <motion.circle
-                    cx="24"
-                    cy="24"
-                    r={radius}
-                    stroke="currentColor"
-                    strokeWidth="3.5"
-                    fill="transparent"
-                    strokeDasharray={circumference}
-                    initial={{ strokeDashoffset: circumference }}
-                    animate={{ strokeDashoffset: offset }}
-                    transition={{ duration: 1.5, ease: "circOut" }}
-                    className="text-primary"
-                />
-            </svg>
-            <span className="absolute text-[10px] font-black tracking-tighter">{Math.round(percent)}%</span>
-        </div>
-    );
-}
 
 function TaskSkeleton() {
     return (
@@ -199,36 +165,14 @@ export function MobileTasksPage({ tasks, clients, onUpdateStatus, onDeleteTask }
     const overdueCount = groupedTasks.OVERDUE?.length || 0;
 
     if (!tasks) return (
-        <div className="flex flex-col h-full bg-background relative selection:bg-primary/10">
-            <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-2xl border-b border-border/20 p-5">
-                <div className="h-12 w-32 bg-muted/10 rounded-2xl animate-pulse" />
-            </header>
+        <div className="flex flex-col h-full bg-background relative selection:bg-primary/10 pt-14">
             <TaskSkeleton />
         </div>
     );
 
     return (
-        <div className="flex flex-col h-full bg-background relative selection:bg-primary/10">
+        <div className="flex flex-col h-full bg-background relative selection:bg-primary/10 pt-14">
             {showConfetti && <ConfettiBurst x={confettiPos.x} y={confettiPos.y} />}
-            {/* Header */}
-            <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-2xl border-b border-border/20 p-5">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <ProgressRing percent={progressPercent} />
-                        <div className="flex flex-col">
-                            <h1 className="text-xl font-bold tracking-tight text-foreground/90 italic uppercase tracking-tighter">Workflow</h1>
-                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] opacity-60">
-                                {tasks?.filter(t => t.status !== 'completed').length} Tasks Pending
-                            </p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Button variant="outline" size="icon" className="rounded-2xl h-12 w-12 bg-card/40 border-border/30">
-                            <Search className="w-5 h-5 text-muted-foreground" />
-                        </Button>
-                    </div>
-                </div>
-            </header>
 
             {/* Overdue Banner */}
             <AnimatePresence>

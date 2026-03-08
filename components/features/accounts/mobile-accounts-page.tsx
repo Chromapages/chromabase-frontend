@@ -3,18 +3,14 @@
 import { useState, useMemo } from 'react';
 import { Client } from '@/types';
 import { MobileAccountCard } from './mobile-account-card';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Menu, MoreVertical, X, TrendingUp, Users, CheckCircle2 } from 'lucide-react';
+import { Search, X, TrendingUp, Users, CheckCircle2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants';
 import { MobileFAB } from '@/components/features/dashboard/mobile-fab';
-import { createPortal } from 'react-dom';
-import { Sidebar } from '@/components/layout/sidebar';
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
 interface MobileAccountsPageProps {
     accounts: Client[] | undefined;
@@ -75,60 +71,7 @@ export function MobileAccountsPage({ accounts, isLoading, onNewAccount }: Mobile
     };
 
     return (
-        <div className="fixed inset-0 bg-background z-[45] flex flex-col overflow-hidden pb-[70px]">
-            {/* Header */}
-            <header className="px-5 pt-8 pb-4 bg-background/80 backdrop-blur-md sticky top-0 z-50 border-b border-border/40">
-                <div className="flex items-center justify-between mb-4">
-                    <Sheet>
-                        <SheetTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full border border-border/40 active:scale-95 transition-transform">
-                                <Menu className="h-5 w-5" />
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="left" className="p-0 w-[280px] border-r-border/40">
-                            <SheetHeader className="sr-only">
-                                <SheetTitle>Navigation Menu</SheetTitle>
-                            </SheetHeader>
-                            <Sidebar className="border-none" />
-                        </SheetContent>
-                    </Sheet>
-
-                    <div className="text-center">
-                        <h1 className="text-[17px] font-bold tracking-tight">Accounts</h1>
-                        <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-widest mt-0.5 opacity-70">
-                            {format(new Date(), 'MMMM d, yyyy')}
-                        </p>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full border border-border/40">
-                            <MoreVertical className="h-5 w-5" />
-                        </Button>
-                    </div>
-                </div>
-
-                {/* Search Bar */}
-                <div className="relative group">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-foreground transition-colors" />
-                    <Input
-                        placeholder="Search accounts..."
-                        className="h-11 pl-10 bg-accent/30 border-none rounded-2xl text-[15px] focus-visible:ring-1 focus-visible:ring-primary/20 transition-all shadow-inner"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                    {searchQuery && (
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-lg text-muted-foreground hover:bg-accent/50"
-                            onClick={() => setSearchQuery('')}
-                        >
-                            <X className="h-3.5 w-3.5" />
-                        </Button>
-                    )}
-                </div>
-            </header>
-
+        <div className="fixed inset-0 bg-background z-[45] flex flex-col overflow-hidden pb-[70px] pt-14">
             {/* Summary Bar */}
             <div className="px-5 py-3 flex gap-3 overflow-x-auto no-scrollbar scroll-smooth">
                 <div className="flex-shrink-0 bg-blue-600/10 border border-blue-500/20 rounded-2xl px-4 py-2.5 flex items-center gap-3">

@@ -3,6 +3,7 @@
 import { Bell, Search, Menu, Moon, Sun, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
+import { usePathname } from 'next/navigation';
 import { NotificationCenter } from '@/components/features/notifications/notification-center';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
@@ -25,9 +26,30 @@ import { Sidebar } from './sidebar';
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/constants';
 
+const MOBILE_PAGE_TITLES: Record<string, string> = {
+    '/': 'ChromaBASE',
+    '/leads': 'Leads',
+    '/accounts': 'Accounts',
+    '/deals': 'Deals',
+    '/contacts': 'Contacts',
+    '/tasks': 'Tasks',
+    '/calendar': 'Calendar',
+    '/campaigns': 'Campaigns',
+    '/proposals': 'Proposals',
+    '/quotes': 'Quotes',
+    '/reports': 'Reports',
+    '/team': 'Team Hub',
+    '/settings': 'Settings',
+    '/activities': 'Activities',
+    '/workflows': 'Workflows',
+    '/guide': 'Guide',
+    '/api-docs': 'API Docs',
+};
+
 export function Header() {
     const { theme, setTheme } = useTheme();
     const { user, loading, signInWithGoogle, logout } = useAuth();
+    const pathname = usePathname();
 
     return (
         <header
@@ -35,7 +57,7 @@ export function Header() {
                 'h-14 border-b border-border/60',
                 'bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70',
                 'flex items-center justify-between px-4 md:px-5',
-                'sticky top-0 z-40 transition-all duration-200',
+                'sticky top-0 z-50',
             )}
         >
             {/* ── Left: Mobile menu + Search ───────────────────── */}
@@ -52,7 +74,7 @@ export function Header() {
                             <span className="sr-only">Open menu</span>
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side="left" className="p-0 w-60">
+                    <SheetContent side="left" className="p-0 w-64 h-screen">
                         <SheetTitle className="sr-only">Navigation</SheetTitle>
                         <Sidebar isMobile />
                     </SheetContent>
@@ -82,6 +104,13 @@ export function Header() {
                 </button>
             </div>
 
+            {/* Mobile Page Title — center, mobile only */}
+            <div className="md:hidden absolute left-1/2 -translate-x-1/2 pointer-events-none">
+                <span className="text-[15px] font-semibold tracking-[-0.02em] text-foreground">
+                    {MOBILE_PAGE_TITLES[pathname] ?? 'ChromaBASE'}
+                </span>
+            </div>
+
             {/* ── Right: Actions + Avatar ───────────────────────── */}
             <div className="flex items-center gap-1">
                 {/* Mobile search */}
@@ -95,31 +124,6 @@ export function Header() {
                 >
                     <Search className="w-4 h-4" />
                     <span className="sr-only">Search</span>
-                </Button>
-
-                {/* Help button */}
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                    asChild
-                >
-                    <Link href={ROUTES.GUIDE}>
-                        <HelpCircle className="h-4 w-4" />
-                        <span className="sr-only">Help Guide</span>
-                    </Link>
-                </Button>
-
-                {/* Theme toggle */}
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                >
-                    <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <span className="sr-only">Toggle theme</span>
                 </Button>
 
                 {/* Notifications */}
@@ -163,11 +167,33 @@ export function Header() {
                                 </div>
                             </DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-[13px] cursor-pointer">
-                                Profile
+                            <DropdownMenuItem className="text-[13px] cursor-pointer" asChild>
+                                <Link href={ROUTES.GUIDE} className="flex items-center gap-2">
+                                    <HelpCircle className="h-4 w-4" />
+                                    <span>User Guide</span>
+                                </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem className="text-[13px] cursor-pointer">
                                 Settings
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                                className="text-[13px] cursor-pointer"
+                            >
+                                <div className="flex items-center gap-2 w-full">
+                                    {theme === 'dark' ? (
+                                        <>
+                                            <Sun className="h-4 w-4" />
+                                            <span>Light Mode</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Moon className="h-4 w-4" />
+                                            <span>Dark Mode</span>
+                                        </>
+                                    )}
+                                </div>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem

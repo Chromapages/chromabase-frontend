@@ -7,20 +7,9 @@ import { MobileFAB } from '../dashboard/mobile-fab';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Search, Menu, Plus,
+    Search, Plus,
     TrendingUp, Users, CheckCircle2,
-    X, Filter
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-    Sheet,
-    SheetContent,
-    SheetTrigger,
-    SheetHeader,
-    SheetTitle,
-} from '@/components/ui/sheet';
-import { Sidebar } from '@/components/layout/sidebar';
 import { LEAD_STATUS_OPTIONS } from '@/constants';
 import { format } from 'date-fns';
 
@@ -54,76 +43,7 @@ export function MobileLeadsPage({
     const wonLeadsCount = leads.filter(l => l.status === 'won').length;
 
     return (
-        <div className="fixed inset-0 bg-background z-[45] flex flex-col overflow-hidden">
-            {/* --- HEADER --- */}
-            <div className="pt-14 pb-4 px-5 flex items-center justify-between border-b border-border/10 bg-background/80 backdrop-blur-xl shrink-0">
-                <div className="flex items-center gap-4">
-                    <Sheet>
-                        <SheetTrigger asChild>
-                            <button
-                                className="w-10 h-10 rounded-xl bg-accent/50 border border-border/40 flex items-center justify-center active:scale-95 transition-all text-foreground/70"
-                                aria-label="Toggle Menu"
-                            >
-                                <Menu className="w-5 h-5" strokeWidth={1.8} />
-                            </button>
-                        </SheetTrigger>
-                        <SheetContent side="left" className="p-0 border-none w-[280px]" showCloseButton={false}>
-                            <SheetHeader className="sr-only">
-                                <SheetTitle>Navigation Menu</SheetTitle>
-                            </SheetHeader>
-                            <Sidebar isMobile />
-                        </SheetContent>
-                    </Sheet>
-
-                    {!isSearchVisible && (
-                        <div className="flex flex-col">
-                            <h1 className="text-xl font-bold text-foreground">Leads</h1>
-                            <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">
-                                {format(new Date(), 'EEEE, MMM d')}
-                            </p>
-                        </div>
-                    )}
-                </div>
-
-                <div className="flex items-center gap-2">
-                    <AnimatePresence mode="wait">
-                        {isSearchVisible ? (
-                            <motion.div
-                                initial={{ width: 0, opacity: 0 }}
-                                animate={{ width: '200px', opacity: 1 }}
-                                exit={{ width: 0, opacity: 0 }}
-                                className="relative flex items-center"
-                            >
-                                <Input
-                                    autoFocus
-                                    placeholder="Search leads..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="h-10 pl-10 pr-4 rounded-xl border-border/40 bg-accent/30 focus-visible:ring-primary/20 text-[13px]"
-                                />
-                                <Search className="absolute left-3.5 h-4 w-4 text-muted-foreground/60" />
-                                <button
-                                    onClick={() => {
-                                        setIsSearchVisible(false);
-                                        setSearchQuery('');
-                                    }}
-                                    className="ml-2 p-2 rounded-full hover:bg-accent/50"
-                                >
-                                    <X className="h-4 w-4 text-muted-foreground" />
-                                </button>
-                            </motion.div>
-                        ) : (
-                            <button
-                                onClick={() => setIsSearchVisible(true)}
-                                className="w-10 h-10 rounded-xl bg-accent/50 border border-border/40 flex items-center justify-center active:scale-95 transition-all text-foreground/70"
-                            >
-                                <Search className="w-5 h-5" strokeWidth={1.8} />
-                            </button>
-                        )}
-                    </AnimatePresence>
-                </div>
-            </div>
-
+        <div className="fixed inset-0 bg-background z-[45] flex flex-col overflow-hidden pt-14">
             {/* --- SUMMARY STATS --- */}
             <div className="px-5 py-4 flex gap-3 overflow-x-auto scrollbar-none snap-x snap-mandatory">
                 <div className="flex-1 min-w-[120px] p-3 rounded-2xl bg-blue-500/5 border border-blue-500/10 flex flex-col gap-1 snap-center">
