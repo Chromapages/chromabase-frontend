@@ -142,18 +142,18 @@ export function ActivityFeed({
                 {timeline.slice(0, 5).map((item) => {
                     const Icon = item.icon;
                     return (
-                        <div key={item.id} className="flex gap-4 group cursor-pointer">
+                        <div key={item.id} className="flex gap-4 group cursor-pointer p-2 rounded-sm hover:bg-white/5 hover:glass-xs transition-all">
                             <div className={cn(
-                                "w-10 h-10 rounded-2xl flex shrink-0 items-center justify-center border shadow-sm transition-transform duration-300 group-hover:scale-110",
+                                "w-10 h-10 rounded-sm flex shrink-0 items-center justify-center border shadow-sm transition-all duration-300",
                                 item.color
                             )}>
                                 <Icon className="w-5 h-5" />
                             </div>
                             <div className="flex flex-col justify-center min-w-0">
-                                <p className="text-[13px] font-bold text-foreground leading-tight truncate group-hover:text-primary transition-colors">
+                                <p className="text-[13px] font-bold text-foreground leading-tight truncate group-hover:text-primary transition-colors font-display tracking-tight">
                                     {item.title}
                                 </p>
-                                <p className="text-[11px] text-muted-foreground/60 mt-0.5">
+                                <p className="text-[11px] text-muted-foreground/40 mt-1 uppercase tracking-widest font-sans font-medium italic">
                                     {formatDistanceToNow(item.timestamp, { addSuffix: true })}
                                 </p>
                             </div>
@@ -179,7 +179,7 @@ export function ActivityFeed({
                     {groups.map(([label, items]) => (
                         <div key={label} className="relative">
                             {/* Date Group Header */}
-                            <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 mb-4 pl-8 bg-background/50 backdrop-blur-xs sticky top-0 py-1 z-10">
+                            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 mb-4 pl-8 font-sans">
                                 {label}
                             </h3>
 
@@ -190,37 +190,37 @@ export function ActivityFeed({
                                         <motion.div
                                             key={item.id}
                                             variants={itemVariants}
-                                            whileHover={{ x: 4 }}
+                                            whileHover={{ x: 2 }}
                                             className="relative flex items-start group pl-8"
                                         >
                                             {/* Connector point */}
                                             <div className={cn(
-                                                "absolute left-[-4.5px] top-2 w-[10px] h-[10px] rounded-full border-2 border-background shadow-xs ring-1 ring-border/20 z-10 transition-transform duration-300 group-hover:scale-125",
-                                                item.isHighPriority ? "bg-primary animate-pulse" : "bg-muted-foreground/40 group-hover:bg-primary/60"
+                                                "absolute left-[-4px] top-2.5 w-2 h-2 rounded-full border border-background shadow-xs z-10 transition-transform duration-300 group-hover:scale-125",
+                                                item.isHighPriority ? "bg-primary animate-pulse shadow-[0_0_8px_rgba(249,115,22,0.5)]" : "bg-muted-foreground/20 group-hover:bg-primary/40"
                                             )} />
 
-                                            <div className="w-full flex gap-3 p-2 rounded-xl transition-all duration-300 hover:bg-muted/50 hover:glass-sm cursor-pointer">
+                                            <div className="w-full flex gap-3 p-3 rounded-sm transition-all duration-300 hover:bg-white/5 hover:glass-xs border border-transparent hover:border-white/10 cursor-pointer">
                                                 {/* Icon Container */}
                                                 <div className={cn(
-                                                    "w-9 h-9 rounded-xl flex shrink-0 items-center justify-center border shadow-xs transition-transform duration-300 group-hover:rotate-6",
+                                                    "w-10 h-10 rounded-sm flex shrink-0 items-center justify-center border shadow-xs transition-all duration-300 group-hover:bg-white/10",
                                                     item.color
                                                 )}>
-                                                    <Icon className="w-4.5 h-4.5" />
+                                                    <Icon className="w-5 h-5" />
                                                 </div>
 
                                                 {/* Text Content */}
                                                 <div className="flex flex-col min-w-0 justify-center">
-                                                    <p className="text-[13px] font-semibold text-foreground leading-none group-hover:text-primary transition-colors">
+                                                    <p className="text-[13px] font-bold text-foreground leading-tight tracking-tight group-hover:text-primary transition-colors font-display">
                                                         {item.title}
                                                     </p>
-                                                    <div className="flex items-center gap-1.5 mt-1.5">
+                                                    <div className="flex items-center gap-1.5 mt-1">
                                                         {item.subtitle && (
-                                                            <span className="text-[11px] text-muted-foreground/80 truncate font-medium">
+                                                            <span className="text-[11px] text-muted-foreground/60 truncate font-semibold uppercase tracking-wider font-sans">
                                                                 {item.subtitle}
                                                             </span>
                                                         )}
-                                                        <span className="text-[11px] text-muted-foreground/30">•</span>
-                                                        <span className="text-[10px] text-muted-foreground/60 tabular-nums">
+                                                        <span className="text-[11px] text-muted-foreground/20">•</span>
+                                                        <span className="text-[10px] text-muted-foreground/40 tabular-nums font-medium font-sans italic">
                                                             {formatDistanceToNow(item.timestamp, { addSuffix: true })}
                                                         </span>
                                                     </div>

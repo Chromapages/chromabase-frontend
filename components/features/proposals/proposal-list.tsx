@@ -19,14 +19,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { useProposals } from '@/hooks';
 import { ProposalDialog } from '@/components/features/proposals/proposal-dialog';
+import { cn } from '@/lib/utils';
 
 interface ProposalListProps {
     proposals: Proposal[] | undefined;
     clients: Client[] | undefined;
     isLoading: boolean;
+    className?: string;
 }
 
-export function ProposalList({ proposals, clients, isLoading }: ProposalListProps) {
+export function ProposalList({ proposals, clients, isLoading, className }: ProposalListProps) {
     const { useUpdate } = useProposals();
     const updateProposal = useUpdate();
 
@@ -146,55 +148,72 @@ export function ProposalList({ proposals, clients, isLoading }: ProposalListProp
     ];
 
     return (
-        <div className="space-y-8">
+        <div className={cn("space-y-8 animate-in fade-in duration-500", className)}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="col-span-1 p-6 bg-gradient-to-br from-indigo-500/10 to-indigo-500/5 border border-indigo-500/20 rounded-2xl">
-                    <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">Pipeline Value</p>
-                    <h3 className="text-2xl font-bold mt-1 text-zinc-900 dark:text-zinc-50">
-                        ${proposals?.reduce((acc, curr) => acc + curr.value, 0).toLocaleString()}
-                    </h3>
-                    <p className="text-xs text-muted-foreground mt-1">Total value across {proposals?.length} open proposals</p>
+                <div className="p-6 glass-md border-white/5 bg-black/5 rounded-sm shadow-xl flex flex-col justify-between group hover:border-chroma-orange/20 transition-all">
+                    <div>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/30 mb-1">Fiscal Pipeline</p>
+                        <h3 className="text-[24px] font-bold tracking-tighter text-foreground group-hover:text-chroma-orange transition-colors">
+                            ${proposals?.reduce((acc, curr) => acc + curr.value, 0).toLocaleString()}
+                        </h3>
+                    </div>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/20 mt-4 font-sans">
+                        Aggregate of {proposals?.length} active instruments
+                    </p>
                 </div>
-                <div className="col-span-1 p-6 bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border border-emerald-500/20 rounded-2xl">
-                    <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Approval Rate</p>
-                    <h3 className="text-2xl font-bold mt-1 text-zinc-900 dark:text-zinc-50">72%</h3>
-                    <p className="text-xs text-muted-foreground mt-1">+5% from last month</p>
+                <div className="p-6 glass-md border-white/5 bg-black/5 rounded-sm shadow-xl flex flex-col justify-between group hover:border-emerald-500/20 transition-all">
+                    <div>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/30 mb-1">Conversion Efficiency</p>
+                        <h3 className="text-[24px] font-bold tracking-tighter text-foreground group-hover:text-emerald-500 transition-colors">72%</h3>
+                    </div>
+                    <div className="mt-4 flex items-center justify-between">
+                        <p className="text-[9px] font-bold uppercase tracking-widest text-emerald-500/50 font-sans">+5% delta</p>
+                        <div className="h-1 w-24 bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-full bg-emerald-500/40 w-[72%]" />
+                        </div>
+                    </div>
                 </div>
-                <div className="col-span-1 p-6 border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl">
-                    <p className="text-sm font-medium text-zinc-500">Average Review Time</p>
-                    <h3 className="text-2xl font-bold mt-1 text-zinc-900 dark:text-zinc-50">4.2 Days</h3>
-                    <p className="text-xs text-muted-foreground mt-1">From sent to decision</p>
+                <div className="p-6 glass-md border-white/5 bg-black/5 rounded-sm shadow-xl flex flex-col justify-between group hover:border-white/10 transition-all">
+                    <div>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/30 mb-1">Latency Metrics</p>
+                        <h3 className="text-[24px] font-bold tracking-tighter text-foreground">4.2 <span className="text-[11px] uppercase tracking-widest text-muted-foreground/40 font-sans ml-1">Cycles</span></h3>
+                    </div>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/10 mt-4 font-sans">
+                        Decision-to-Execution Average
+                    </p>
                 </div>
             </div>
 
-            <FilterBar
-                searchQuery={searchQuery}
-                onSearchChange={(v) => { setSearchQuery(v); setPage(1); }}
-                searchPlaceholder="Search proposals by title or client..."
-                actionButton={{
-                    label: 'New Proposal',
-                    onClick: () => {
-                        setSelectedProposal(undefined);
-                        setIsDialogOpen(true);
-                    },
-                    icon: Plus
-                }}
-            />
+            <div className="glass-sm border-white/5 p-4 rounded-sm">
+                <FilterBar
+                    searchQuery={searchQuery}
+                    onSearchChange={(v) => { setSearchQuery(v); setPage(1); }}
+                    searchPlaceholder="Search instruments by title or client..."
+                    actionButton={{
+                        label: 'Deploy Instrument',
+                        onClick: () => {
+                            setSelectedProposal(undefined);
+                            setIsDialogOpen(true);
+                        },
+                        icon: Plus
+                    }}
+                />
+            </div>
 
             {isLoading ? (
                 <div className="space-y-4">
                     <TableSkeleton rows={5} />
                 </div>
             ) : (
-                <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm shadow-zinc-200/50 dark:shadow-none">
+                <div className="glass-md border-white/5 rounded-sm overflow-hidden shadow-2xl">
                     {filteredProposals.length === 0 ? (
-                        <div className="p-20 text-center space-y-3">
-                            <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto text-zinc-400">
-                                <Plus className="w-8 h-8" />
+                        <div className="p-32 text-center space-y-4">
+                            <div className="w-16 h-16 bg-white/5 border border-dashed border-white/10 rounded-sm flex items-center justify-center mx-auto text-muted-foreground/20">
+                                <Plus className="w-6 h-6" />
                             </div>
-                            <h3 className="text-lg font-semibold">No proposals found</h3>
-                            <p className="text-muted-foreground max-w-xs mx-auto text-sm">
-                                Create your first proposal to start tracking client approvals and high-value deals.
+                            <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40">Zero Inventory</h3>
+                            <p className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/20 max-w-xs mx-auto">
+                                No proposals registered in the current archive
                             </p>
                         </div>
                     ) : (

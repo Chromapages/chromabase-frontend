@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import { Plus, Search, Filter, Edit, Trash2, Eye, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants';
 import { ClientDialog } from '@/components/features/accounts/client-dialog';
@@ -44,30 +45,45 @@ export function ClientList({ clients, isLoading }: ClientListProps) {
 
     const columns: Column<Client>[] = [
         {
-            header: 'Company',
-            accessorKey: 'companyName',
-            className: 'font-medium'
-        },
-        {
-            header: 'Industry',
-            accessorKey: 'industry',
-            className: 'text-muted-foreground'
+            header: 'Company / Industry',
+            cell: (client) => (
+                <div className="flex flex-col gap-1">
+                    <span className="text-[14px] font-bold text-foreground font-display tracking-tight group-hover:text-primary transition-colors">
+                        {client.companyName}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-[0.1em] font-bold text-muted-foreground/40 font-sans">
+                        {client.industry || 'General'}
+                    </span>
+                </div>
+            )
         },
         {
             header: 'Status',
             cell: (client) => {
                 const statusConfig = {
-                    active: { label: 'Active', className: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/20' },
-                    onboarding: { label: 'Onboarding', className: 'bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500/20' },
-                    inactive: { label: 'Inactive', className: 'bg-muted text-muted-foreground border-border' }
+                    active: { label: 'ACTIVE', className: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 glass-sm' },
+                    onboarding: { label: 'ONBOARDING', className: 'bg-amber-500/10 text-amber-500 border-amber-500/20 glass-sm' },
+                    inactive: { label: 'INACTIVE', className: 'bg-white/5 text-muted-foreground/40 border-white/10 glass-sm' }
                 };
                 const config = statusConfig[client.status as keyof typeof statusConfig] || statusConfig.inactive;
-                return <Badge className={`capitalize text-xs font-medium border ${config.className}`}>{config.label}</Badge>;
+                return (
+                    <span className={cn(
+                        'inline-flex items-center px-2.5 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-[0.1em] border',
+                        config.className
+                    )}>
+                        {config.label}
+                    </span>
+                );
             }
         },
         {
             header: 'Revenue',
-            cell: (client) => <span className="text-muted-foreground font-mono text-sm">${((client.totalRevenue || 0) / 1000).toFixed(0)}k</span>
+            className: 'text-right',
+            cell: (client) => (
+                <span className="text-[14px] font-bold text-foreground font-display tabular-nums tracking-tight">
+                    ${(client.totalRevenue || 0).toLocaleString()}
+                </span>
+            )
         },
         {
             header: 'Added',
@@ -75,50 +91,51 @@ export function ClientList({ clients, isLoading }: ClientListProps) {
                 const date = typeof client.createdAt === 'object' && client.createdAt !== null && 'toDate' in client.createdAt
                     ? (client.createdAt as any).toDate()
                     : new Date(Number(client.createdAt));
-                return <span className="text-muted-foreground text-sm">{format(date, 'MMM d, yyyy')}</span>
+                return (
+                    <span className="text-[11px] font-bold text-muted-foreground/40 font-sans">
+                        {format(date, 'MMM d, yyyy')}
+                    </span>
+                );
             }
         },
         {
             header: '',
+            className: 'w-[100px] text-right',
             cell: (client) => {
-                const [isEditOpen, setIsEditOpen] = useState(false);
                 return (
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0" onClick={(e) => e.stopPropagation()}>
                         <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                            variant="glass"
+                            size="icon"
+                            className="h-9 w-9 text-muted-foreground hover:text-primary rounded-sm border-white/5"
                             onClick={() => router.push(`${ROUTES.ACCOUNTS}/${client.id}`)}
                         >
-                            <Eye className="h-3.5 w-3.5 mr-1" />
-                            View
+                            <Eye className="h-3.5 w-3.5" />
                         </Button>
                         <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                            variant="glass"
+                            size="icon"
+                            className="h-9 w-9 text-muted-foreground hover:text-primary rounded-sm border-white/5"
                             onClick={() => setEditingClient(client)}
                         >
-                            <Edit className="h-3.5 w-3.5 mr-1" />
-                            Edit
+                            <Edit className="h-3.5 w-3.5" />
                         </Button>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
-                                    <span className="sr-only">Open menu</span>
-                                    <MoreHorizontal className="h-4 w-4" />
+                                <Button variant="glass" size="icon" className="h-9 w-9 text-muted-foreground hover:text-primary rounded-sm border-white/5">
+                                    <MoreHorizontal className="h-3.5 w-3.5" />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => router.push(`${ROUTES.ACCOUNTS}/${client.id}`)}>
-                                    <Eye className="mr-2 h-4 w-4" /> View Details
+                            <DropdownMenuContent align="end" className="glass-md border-white/10 shadow-2xl w-48 p-1">
+                                <DropdownMenuItem onClick={() => router.push(`${ROUTES.ACCOUNTS}/${client.id}`)} className="text-[11px] font-bold uppercase tracking-wider">
+                                    <Eye className="mr-2 h-3.5 w-3.5" /> View Details
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setEditingClient(client)}>
-                                    <Edit className="mr-2 h-4 w-4" /> Edit Account
+                                <DropdownMenuItem onClick={() => setEditingClient(client)} className="text-[11px] font-bold uppercase tracking-wider">
+                                    <Edit className="mr-2 h-3.5 w-3.5" /> Edit Account
                                 </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-destructive">
-                                    <Trash2 className="mr-2 h-4 w-4" /> Delete Account
+                                <DropdownMenuSeparator className="bg-white/5" />
+                                <DropdownMenuItem className="text-destructive text-[11px] font-bold uppercase tracking-wider">
+                                    <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete Account
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -129,24 +146,31 @@ export function ClientList({ clients, isLoading }: ClientListProps) {
     ];
 
     return (
-        <div className="space-y-3">
-            <div className="flex items-center gap-3">
+        <div className="space-y-6">
+            <div className="flex items-center gap-4 bg-white/5 p-4 rounded-sm border border-white/10 glass-sm">
                 <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/40" />
                     <Input
                         type="text"
-                        placeholder="Search accounts..."
-                        className="pl-9 bg-card border-border/50 h-9 text-sm"
+                        placeholder="SEARCH ACCOUNTS..."
+                        className="pl-10 bg-white/5 border-white/10 h-11 text-[11px] font-bold tracking-widest placeholder:text-muted-foreground/20 focus:border-chroma-orange/50 transition-all"
                         value={searchQuery}
                         onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
                     />
                 </div>
-                <Button variant="outline" size="sm" onClick={() => console.log('Open advanced filters')} className="h-9 bg-card border-border/50">
-                    <Filter className="h-4 w-4 mr-2" />
+                <Button
+                    variant="glass"
+                    className="h-11 border-white/10 text-[10px] uppercase font-bold tracking-widest px-6"
+                    onClick={() => console.log('Open advanced filters')}
+                >
+                    <Filter className="h-3.5 w-3.5 mr-2" />
                     Filters
                 </Button>
                 <div className="flex-1" />
-                <Button onClick={() => setIsDialogOpen(true)} className="h-9 shadow-sm">
+                <Button
+                    onClick={() => setIsDialogOpen(true)}
+                    className="h-11 px-8 rounded-sm bg-chroma-orange text-white hover:bg-chroma-orange/90 uppercase text-[10px] tracking-[0.2em] font-bold shadow-lg shadow-chroma-orange/20 transition-all"
+                >
                     <Plus className="h-4 w-4 mr-2" />
                     Add Account
                 </Button>

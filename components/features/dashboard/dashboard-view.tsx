@@ -103,58 +103,58 @@ export function DashboardView({
             </div>
 
             {/* DESKTOP (>= lg) — Existing Grid Layout */}
-            <div className="hidden lg:flex flex-col gap-4 p-6 flex-1 overflow-y-auto scrollbar-thin">
+            <div className="hidden lg:flex flex-col gap-6 p-6 flex-1 overflow-y-auto scrollbar-thin">
 
                 {/* KPI Header Row */}
                 <KPICards leads={leads} clients={clients} deals={deals} tasks={tasks} />
 
                 {/* 3-6-3 Grid Layout */}
-                <div className="grid grid-cols-12 gap-4 flex-1 min-h-[580px] max-h-[640px]">
+                <div className="grid grid-cols-12 gap-6 flex-1 min-h-[580px] max-h-[680px]">
 
                     {/* ── LEFT: Activity Feed ── */}
-                    <section className="col-span-3 flex flex-col h-full bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
-                        <div className="px-4 py-3 border-b border-border/50 flex items-center justify-between shrink-0">
-                            <div className="flex items-center gap-2">
-                                <Activity className="w-4 h-4 text-primary/70" />
-                                <h2 className="text-[13px] font-semibold text-foreground tracking-[-0.02em]">
-                                    Activity Feed
+                    <section className="col-span-3 flex flex-col h-full glass-md border border-white/10 rounded-sm overflow-hidden shadow-2xl transition-all duration-300">
+                        <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/5">
+                            <div className="flex items-center gap-3">
+                                <Activity className="w-4 h-4 text-primary" />
+                                <h2 className="text-xs font-bold text-foreground uppercase tracking-[0.2em] font-sans">
+                                    Activity Stream
                                 </h2>
                             </div>
                         </div>
-                        <div className="flex-1 overflow-y-auto scrollbar-thin">
+                        <div className="flex-1 overflow-y-auto scrollbar-thin bg-black/20">
                             <ActivityFeed activities={activities} appointments={appointments} leads={leads} />
                         </div>
                     </section>
 
                     {/* ── CENTER: Calendar ── */}
-                    <section className="col-span-6 flex flex-col h-full bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.07),0_0_0_1px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.04)] transition-shadow duration-200">
-                        <div className="flex-1 overflow-hidden">
+                    <section className="col-span-6 flex flex-col h-full glass-lg border border-white/20 rounded-sm overflow-hidden shadow-2xl transition-all duration-300">
+                        <div className="flex-1 overflow-hidden bg-black/10">
                             <CalendarView tasks={tasks} appointments={appointments} isLoading={false} />
                         </div>
                     </section>
 
                     {/* ── RIGHT: Priority Tasks ── */}
-                    <section className="col-span-3 flex flex-col h-full bg-card border border-border/60 rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-200">
-                        <div className="px-4 py-3 border-b border-border/50 flex flex-col gap-2 shrink-0">
+                    <section className="col-span-3 flex flex-col h-full glass-md border border-white/10 rounded-sm overflow-hidden shadow-2xl transition-all duration-300">
+                        <div className="px-5 py-4 border-b border-white/5 flex flex-col gap-4 shrink-0 bg-white/5">
                             <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <CheckSquare className="w-4 h-4 text-primary/70" />
-                                    <h2 className="text-[13px] font-semibold text-foreground tracking-[-0.02em]">
-                                        Priority Tasks
+                                <div className="flex items-center gap-3">
+                                    <CheckSquare className="w-4 h-4 text-primary" />
+                                    <h2 className="text-xs font-bold text-foreground uppercase tracking-[0.2em] font-sans">
+                                        Action Items
                                     </h2>
                                 </div>
                             </div>
                             {/* Task Filters */}
-                            <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-md">
+                            <div className="flex items-center gap-1 bg-black/40 p-1 rounded-sm border border-white/5">
                                 {(['all', 'high', 'medium', 'low'] as const).map(filter => (
                                     <button
                                         key={filter}
                                         onClick={() => setTaskFilter(filter)}
                                         className={cn(
-                                            "flex-1 text-[10px] font-semibold uppercase tracking-wider py-1 rounded transition-colors",
+                                            "flex-1 text-[10px] font-bold uppercase tracking-[0.1em] py-1.5 rounded-sm transition-all font-sans",
                                             taskFilter === filter
-                                                ? "bg-background shadow-sm text-foreground"
-                                                : "text-muted-foreground/60 hover:text-foreground/80 hover:bg-black/5 dark:hover:bg-white/5"
+                                                ? "bg-primary shadow-lg text-white"
+                                                : "text-muted-foreground/40 hover:text-foreground/80 hover:bg-white/5"
                                         )}
                                     >
                                         {filter}
@@ -163,78 +163,82 @@ export function DashboardView({
                             </div>
                         </div>
 
-                        <div className="overflow-y-auto scrollbar-thin p-2">
+                        <div className="overflow-y-auto scrollbar-thin p-3 bg-black/20">
                             {priorityTasks.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-8 text-center gap-1">
-                                    <CheckCircle2 className="w-8 h-8 text-success/40 mb-1" />
-                                    <p className="text-[12px] font-medium text-muted-foreground/60">
-                                        All caught up
+                                <div className="flex flex-col items-center justify-center py-12 text-center gap-2">
+                                    <CheckCircle2 className="w-10 h-10 text-emerald-500/20 mb-2" />
+                                    <p className="text-xs font-bold text-foreground/50 uppercase tracking-widest font-sans">
+                                        Clear Slate
                                     </p>
-                                    <p className="text-[11px] text-muted-foreground/40">
-                                        No pending tasks for this filter
+                                    <p className="text-[10px] text-muted-foreground/30 font-medium italic">
+                                        All objectives reached for this cycle
                                     </p>
                                 </div>
                             ) : (
-                                priorityTasks.map(task => {
-                                    const pCfg = priorityConfig[task.priority as keyof typeof priorityConfig]
-                                        ?? priorityConfig.low;
-                                    const isOverdue = task.dueDate && task.dueDate < nowTimestamp;
-                                    const isToday = task.dueDate && new Date(task.dueDate).toDateString() === todayDateString;
+                                <div className="space-y-2">
+                                    {priorityTasks.map(task => {
+                                        const pCfg = priorityConfig[task.priority as keyof typeof priorityConfig]
+                                            ?? priorityConfig.low;
+                                        const isOverdue = task.dueDate && task.dueDate < nowTimestamp;
+                                        const isToday = task.dueDate && new Date(task.dueDate).toDateString() === todayDateString;
 
-                                    return (
-                                        <div
-                                            key={task.id}
-                                            className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/60 transition-colors group cursor-pointer"
-                                        >
-                                            <button
-                                                className="mt-0.5 w-4 h-4 rounded-full border border-border/60 hover:border-success hover:bg-success/10 shrink-0 flex items-center justify-center transition-all duration-150 cursor-pointer"
-                                                title="Mark as complete"
+                                        return (
+                                            <div
+                                                key={task.id}
+                                                className="flex items-start gap-4 px-4 py-3 rounded-sm glass-xs hover:glass-sm border border-transparent hover:border-white/10 transition-all group cursor-pointer"
                                             >
-                                                <CheckCircle2 className="h-3 w-3 text-transparent group-hover:text-success/70 transition-colors" />
-                                            </button>
+                                                <button
+                                                    className="mt-0.5 w-5 h-5 rounded-sm border border-white/10 hover:border-primary hover:bg-primary/10 shrink-0 flex items-center justify-center transition-all cursor-pointer"
+                                                    title="Resolve Task"
+                                                >
+                                                    <CheckCircle2 className="h-3.5 w-3.5 text-transparent group-hover:text-primary/70 transition-colors" />
+                                                </button>
 
-                                            <div className="min-w-0 flex-1">
-                                                <p className="text-[13px] font-medium text-foreground leading-snug group-hover:text-primary transition-colors truncate">
-                                                    {task.title}
-                                                </p>
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="text-[13px] font-bold text-foreground leading-tight group-hover:text-primary transition-colors truncate font-display tracking-tight">
+                                                        {task.title}
+                                                    </p>
 
-                                                <div className="flex items-center justify-between mt-1 gap-1">
-                                                    <div className="flex items-center gap-1.5">
-                                                        <span className={cn('w-1.5 h-1.5 rounded-full shrink-0', pCfg.dot)} />
-                                                        <span className={cn('text-label-micro', pCfg.label)}>
-                                                            {task.priority}
-                                                        </span>
+                                                    <div className="flex items-center justify-between mt-2 gap-2">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className={cn('w-2 h-2 rounded-full shrink-0 shadow-[0_0_8px_currentColor]', pCfg.label.replace('text-', 'bg-'))} />
+                                                            <span className={cn('text-[10px] font-bold uppercase tracking-widest font-sans opacity-60', pCfg.label)}>
+                                                                {task.priority}
+                                                            </span>
+                                                        </div>
+
+                                                        {task.dueDate && (
+                                                            <span className={cn(
+                                                                'text-[10px] font-bold shrink-0 px-2 py-0.5 rounded-sm uppercase tracking-tighter font-sans',
+                                                                isOverdue ? 'bg-rose-500/20 text-rose-400'
+                                                                    : isToday ? 'bg-amber-500/20 text-amber-400'
+                                                                        : 'text-muted-foreground/40 italic'
+                                                            )}>
+                                                                {isOverdue ? 'Overdue' : isToday ? 'Today' : formatDistanceToNow(task.dueDate, { addSuffix: true })}
+                                                            </span>
+                                                        )}
                                                     </div>
 
-                                                    {task.dueDate && (
-                                                        <span className={cn(
-                                                            'text-[10px] font-bold shrink-0 px-1.5 py-0.5 rounded-sm',
-                                                            isOverdue ? 'bg-destructive/10 text-destructive'
-                                                                : isToday ? 'bg-warning/10 text-warning-foreground'
-                                                                    : 'text-muted-foreground/60'
-                                                        )}>
-                                                            {isOverdue ? 'Overdue' : isToday ? 'Today' : formatDistanceToNow(task.dueDate, { addSuffix: true })}
-                                                        </span>
+                                                    {task.accountId && clients?.some(c => c.id === task.accountId) && (
+                                                        <p className="text-[10px] text-muted-foreground/30 mt-2 truncate flex items-center gap-1.5 font-medium italic">
+                                                            <Building2 className="w-3 h-3" />
+                                                            {clients.find(c => c.id === task.accountId)?.companyName}
+                                                        </p>
                                                     )}
                                                 </div>
-
-                                                {task.accountId && clients?.some(c => c.id === task.accountId) && (
-                                                    <p className="text-[10px] text-muted-foreground/40 mt-1 truncate flex items-center gap-1">
-                                                        <Building2 className="w-3 h-3" />
-                                                        {clients.find(c => c.id === task.accountId)?.companyName}
-                                                    </p>
-                                                )}
                                             </div>
-                                        </div>
-                                    );
-                                })
+                                        );
+                                    })}
+                                </div>
                             )}
                         </div>
                     </section>
                 </div>
 
                 {/* Phase 3: Pipeline Strip */}
-                <PipelineStrip deals={deals} />
+                <div className="mt-2">
+                    <PipelineStrip deals={deals} />
+                </div>
             </div>
         </div>
     );

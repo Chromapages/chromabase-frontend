@@ -15,17 +15,17 @@ export function PageHeader({ title, description, children, className }: PageHead
     return (
         <div className={cn('flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6', className)}>
             <div className="min-w-0 flex-1">
-                <h1 className="text-[1.75rem] font-bold tracking-[-0.04em] text-foreground leading-[1.1]">
+                <h1 className="text-3xl font-bold tracking-[-0.05em] text-foreground leading-tight font-display italic">
                     {title}
                 </h1>
                 {description && (
-                    <p className="text-[13px] text-muted-foreground mt-1.5 leading-relaxed max-w-[60ch]">
+                    <p className="text-xs text-muted-foreground/60 mt-1 uppercase tracking-widest font-sans font-medium">
                         {description}
                     </p>
                 )}
             </div>
             {children && (
-                <div className="flex items-center gap-2 shrink-0 md:mt-0.5">
+                <div className="flex items-center gap-3 shrink-0">
                     {children}
                 </div>
             )}

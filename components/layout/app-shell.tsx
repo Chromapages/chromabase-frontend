@@ -40,7 +40,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         className="absolute inset-0 pointer-events-none"
                         style={{
                             background:
-                                'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,122,255,0.025) 0%, transparent 70%)',
+                                'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(249,115,22,0.035) 0%, transparent 70%)',
                         }}
                         aria-hidden
                     />

@@ -96,8 +96,8 @@ function NavSection({
                             isActive
                                 ? isMobile
                                     ? 'bg-primary/10 text-primary font-bold shadow-[inset_0_0_0_1px_rgba(var(--primary),0.1)]'
-                                    : 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[1.02]'
-                                : 'text-foreground/70 active:bg-secondary/60'
+                                    : 'bg-primary text-primary-foreground shadow-[0_4px_20px_-4px_rgba(249,115,22,0.4)] scale-[1.02] font-display'
+                                : 'text-foreground/70 active:bg-secondary/60 font-sans'
                         )}
                         title={isCollapsed ? item.name : undefined}
                     >
@@ -197,7 +197,7 @@ export function Sidebar({ className, isMobile = false }: { className?: string; i
         <div
             ref={sidebarRef}
             className={cn(
-                'relative flex flex-col h-full glass transition-all duration-400 ease-spring border-r border-border/50 group/sidebar',
+                'relative flex flex-col h-full bg-background lg:bg-transparent lg:glass transition-all duration-400 ease-soft border-r border-border/50 group/sidebar',
                 isMobile ? "w-full h-screen border-r-0 overflow-hidden" : "",
                 isResizing && "transition-none",
                 className
@@ -273,14 +273,14 @@ export function Sidebar({ className, isMobile = false }: { className?: string; i
                             isMobile && "gap-0.5 ml-1"
                         )}>
                             <span className={cn(
-                                "font-bold tracking-tighter text-foreground",
+                                "font-bold tracking-tighter text-foreground font-display",
                                 isMobile ? "text-lg" : "text-xl"
                             )}>
                                 Chroma<span className="text-primary tracking-normal">BASE</span>
                             </span>
                             <span className={cn(
-                                "font-semibold tracking-[0.2em] uppercase text-muted-foreground/60 decoration-primary/30 underline-offset-4 decoration-2",
-                                isMobile ? "text-[9px]" : "text-[10px]"
+                                "font-medium tracking-[0.25em] uppercase text-muted-foreground/50 decoration-primary/30 underline-offset-4 decoration-2",
+                                isMobile ? "text-[9px]" : "text-[9px]"
                             )}>
                                 CRM Intelligence
                             </span>
