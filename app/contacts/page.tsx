@@ -53,7 +53,16 @@ export default function ContactsPage() {
         });
     }, [contactsWithClient, searchQuery, selectedClientId]);
 
-    const handleSaveContact = (data: any) => {
+    type ContactFormData = {
+        clientId: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        phone: string;
+        position: string;
+    };
+
+    const handleSaveContact = (data: ContactFormData) => {
         if (editingContact) {
             updateContact.mutate({ id: editingContact, data });
         } else {
