@@ -7,6 +7,7 @@ import { ContactsTable } from '@/components/features/contacts/contacts-table';
 import { ContactsFilterBar } from '@/components/features/contacts/contacts-filter-bar';
 import { ContactDialog } from '@/components/features/contacts/contact-dialog';
 import { TableSkeleton } from '@/components/shared/loading-skeleton';
+import type { ContactFormData } from '@/types';
 
 export default function ContactsPage() {
     const { useList, useCreate, useUpdate, useDelete } = useContacts();
@@ -52,15 +53,6 @@ export default function ContactsPage() {
             return matchesSearch && matchesClient;
         });
     }, [contactsWithClient, searchQuery, selectedClientId]);
-
-    type ContactFormData = {
-        clientId: string;
-        firstName: string;
-        lastName: string;
-        email: string;
-        phone: string;
-        position: string;
-    };
 
     const handleSaveContact = (data: ContactFormData) => {
         if (editingContact) {

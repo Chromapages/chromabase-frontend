@@ -60,6 +60,16 @@ export interface Contact {
   updatedAt: number;
 }
 
+// Form data types (for create/update operations)
+export interface ContactFormData {
+  clientId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  jobTitle: string;
+}
+
 export type DealStage = 'discovery' | 'proposal' | 'negotiation' | 'closed_won' | 'closed_lost';
 
 export interface Deal {

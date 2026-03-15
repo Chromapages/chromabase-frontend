@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Contact, Client } from '@/types';
+import { Contact, Client, ContactFormData } from '@/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +13,7 @@ interface ContactDialogProps {
     onOpenChange: (open: boolean) => void;
     contact?: Contact;
     clients: Client[];
-    onSave: (data: Partial<Contact>) => void;
+    onSave: (data: ContactFormData) => void;
 }
 
 export function ContactDialog({
@@ -66,9 +66,12 @@ export function ContactDialog({
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSave({
-            ...formData,
-            phone: formData.phone || null,
-            lastContactedAt: formData.lastContactedAt,
+            clientId: formData.clientId,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            jobTitle: formData.jobTitle,
         });
     };
 
